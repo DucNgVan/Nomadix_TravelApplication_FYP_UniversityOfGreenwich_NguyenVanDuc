@@ -19,6 +19,8 @@ Thư mục này chứa đầy đủ bộ đặc tả yêu cầu phần mềm ch�
 | **D2-03** | [**`03-user-stories.md`**](./03-user-stories.md) | Bộ sưu tập **28 User Stories (`US-01` đến `US-28`)** chuẩn Agile theo cấu trúc *As a... I want to... So that...* |
 | **D2-04** | [**`04-acceptance-criteria.md`**](./04-acceptance-criteria.md) | **14 Kịch bản nghiệm thu chấp nhận** chuẩn ngôn ngữ **BDD Gherkin** (*Given – When – Then*) làm tiêu chuẩn kiểm thử tự động. |
 | **D2-05** | [**`05-traceability-matrix.md`**](./05-traceability-matrix.md) | **Ma trận truy xuất nguồn gốc yêu cầu (RTM)** kết nối Mục tiêu Đồ án ➔ User Stories ➔ FR/NFR ➔ Database ➔ API ➔ Test Cases ➔ Tuần triển khai. |
+| **D2-06** | [**`06-detailed-booking-and-itinerary-specs.md`**](./06-detailed-booking-and-itinerary-specs.md) | **Đặc tả chuyên sâu User Stories & BDD Acceptance Criteria** cho Module 2 (Booking Aggregator) và Module 3 (Itinerary Planner). |
+| **D2-07** | [**`07-detailed-gamification-and-community-specs.md`**](./07-detailed-gamification-and-community-specs.md) | **Đặc tả chuyên sâu User Stories & BDD Acceptance Criteria** cho Module 4 (Gamification & Geofencing) và Module 5 (Community Q&A Forum). |
 
 ---
 
