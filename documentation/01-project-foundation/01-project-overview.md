@@ -52,10 +52,11 @@
 
 ## 4. Key Concept & Features
 
-Nomadix integrates the entire independent travel continuum:
+Nomadix integrates the entire independent and group travel continuum:
 
 * **Travel Search & Discovery:** Multi-provider search and comparison for flights and hotels.
-* **Smart Itinerary Planner:** Drag-and-drop daily scheduling with interactive Google Maps routing, distance, and duration calculation.
+* **Smart & Collaborative Itinerary Planner:** Drag-and-drop daily scheduling with interactive Google Maps routing, distance/duration calculation, plus **multi-user companion invitation** where friends can view and edit the same shared itinerary in real time.
+* **Group Expense Tracking & Bill Splitting:** Integrated trip treasury where companions can upload bills/receipts, log shared expenses across categories, split costs equally or custom, view real-time net balances, and run debt simplification settlement calculations.
 * **Location-Based Check-in:** Real-time GPS geofence validation ($\le 100\text{m}$) and native camera photo upload.
 * **Cultural Gamification:** Landmark-specific cultural quizzes, XP progression, and collectible City Badges.
 * **Community Q&A with Verified Badges:** City-specific Q&A forums where answers from badge holders display a **"City Verified"** trust indicator.

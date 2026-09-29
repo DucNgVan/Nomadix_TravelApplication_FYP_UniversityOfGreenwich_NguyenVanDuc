@@ -20,9 +20,10 @@ Hệ thống **Nomadix** định nghĩa **4 nhóm tác nhân (Actors)** bao gồ
 │ Actor                 │ Phân loại & Trách nhiệm chính                  │
 ├───────────────────────┼────────────────────────────────────────────────┤
 │ 1. Traveler           │ Primary User (Người dùng du lịch tự túc)       │
-│ 2. Experienced User   │ Specialized User (Du khách có Huy hiệu Đã đến) │
-│ 3. Administrator      │ System Operator (Quản trị viên & Kiểm duyệt)   │
-│ 4. External System    │ Secondary System (Google Maps, Cloudinary, API)│
+│ 2. Trip Companion     │ Collaborative User (Thành viên nhóm du lịch)   │
+│ 3. Experienced User   │ Specialized User (Du khách có Huy hiệu Đã đến) │
+│ 4. Administrator      │ System Operator (Quản trị viên & Kiểm duyệt)   │
+│ 5. External System    │ Secondary System (Google Maps, Cloudinary, API)│
 └───────────────────────┴────────────────────────────────────────────────┘
 ```
 
@@ -131,3 +132,6 @@ classDiagram
 | **`UC-17`** | Quản lý Ngân hàng Câu hỏi Quiz | Administration | Administrator | — |
 | **`UC-18`** | Kiểm duyệt nội dung báo cáo | Administration | Administrator | — |
 | **`UC-19`** | Cấu hình Mock Data & Giám sát hệ thống | Administration | Administrator | PostgreSQL, Mongo, Redis |
+| **`UC-20`** | Mời bạn bè & Đồng bộ lịch trình nhóm | Collaboration | Trip Owner, Companion | MongoDB, PostgreSQL |
+| **`UC-21`** | Tải lên hóa đơn & Ghi nhận chi tiêu nhóm | Expense Hub | Trip Companion | Cloudinary, PostgreSQL |
+| **`UC-22`** | Chia tiền linh hoạt & Quyết toán công nợ | Expense Hub | Trip Companion | Greedy Algorithm Engine |

@@ -78,6 +78,10 @@
 ### 2.4 Cloudinary Media Service
 * **Đăng ký:** Tài khoản Cloudinary Developer Plan.
 * **Hạn mức miễn phí:** 25 Credits / tháng tương đương khoảng 25,000 lượt tải ảnh hoặc $25\text{ GB}$ lưu trữ và băng thông.
+* **Cấu trúc thư mục lưu trữ:**
+  * `/nomadix/avatars/`: Ảnh đại diện người dùng (`c_fill,g_face,w_300,h_300`).
+  * `/nomadix/checkins/`: Ảnh chụp thực tế tại địa danh văn hóa (kèm lớp phủ watermark tọa độ và thời gian).
+  * `/nomadix/receipts/{tripId}/`: Ảnh chụp hóa đơn chi tiêu của nhóm phục vụ tính năng chia tiền và lưu trữ chứng từ minh bạch.
 * **Quy trình tối ưu hóa (Transformations):**
   * Tự động chuyển đổi định dạng: `f_auto` ➔ WebP trên Android/iOS.
   * Tự động nén chất lượng: `q_auto` (Giảm dung lượng $70\%$ mà không giảm chất lượng nhìn thấy bằng mắt thường).
@@ -93,3 +97,4 @@
 | **API đối tác bị Timeout (> 5s)** | Trung bình | Cao | Đặt `timeout: 5000` trên Axios instance ➔ Tự ngắt và chuyển sang Mock Data. |
 | **Google Maps Quota bị khóa** | Thấp | Thấp | Kích hoạt công thức toán học **Haversine cục bộ** tính khoảng cách đường chim bay. |
 | **Mất kết nối Internet khi Check-in** | Cao | Trung bình | Hàng đợi **Offline Check-in Queue** lưu tạm vào AsyncStorage và tự upload lại khi có mạng. |
+| **Ảnh hóa đơn bị mờ / Dung lượng lớn** | Thấp | Trung bình | Tự động nén ảnh trên Mobile bằng `react-native-image-resizer` xuống $< 1\text{MB}$ trước khi đẩy lên Cloudinary. |

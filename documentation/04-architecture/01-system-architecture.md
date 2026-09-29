@@ -20,7 +20,7 @@ Hệ thống **Nomadix** được thiết kế theo mô hình **Kiến trúc ph�
 │ 1. PRESENTATION LAYER (React Native Mobile Client - iOS & Android)    │
 │    ├── UI Components (Atomic Design System)                            │
 │    ├── Screen Navigation (Stack & Bottom Tabs)                         │
-│    ├── State Management (AuthContext, ThemeContext)                    │
+│    ├── State Management (AuthContext, TripContext, ThemeContext)       │
 │    └── Native Hardware Services (Camera, GPS Geolocation, MapView)     │
 ├────────────────────────────────────────────────────────────────────────┤
 │ 2. API GATEWAY & SECURITY MIDDLEWARE LAYER                             │
@@ -33,7 +33,9 @@ Hệ thống **Nomadix** được thiết kế theo mô hình **Kiến trúc ph�
 │ 3. BUSINESS LOGIC & SERVICE LAYER                                      │
 │    ├── Auth & Profile Service                                          │
 │    ├── Booking Aggregator Service & Normalization Adapters             │
-│    ├── Itinerary Planner & Distance Calculation Service                │
+│    ├── Collaborative Itinerary & Companion Sync Service                │
+│    ├── Group Expense & Bill Splitting Service                          │
+│    ├── Debt Simplification Algorithm Engine (Greedy Cashflow)          │
 │    ├── Gamification Geofence & Cultural Quiz Engine                    │
 │    ├── Badge Evaluator & Level Progression Engine                      │
 │    └── Community Q&A & "City Verified" Credibility Engine              │
@@ -43,11 +45,11 @@ Hệ thống **Nomadix** được thiết kế theo mô hình **Kiến trúc ph�
 │    ├── RapidAPI Travel Adapter                                         │
 │    ├── Fallback Mock Data Provider Engine                              │
 │    ├── Google Maps & Distance Matrix API Client                        │
-│    └── Cloudinary Media Optimization Client                            │
+│    └── Cloudinary Media Optimization Client (Watermarks & Receipts)    │
 ├────────────────────────────────────────────────────────────────────────┤
 │ 5. DATA PERSISTENCE & CACHING LAYER (POLYGLOT PERSISTENCE)             │
-│    ├── PostgreSQL (ACID Relational: Users, Badges, Check-ins, Quizzes) │
-│    ├── MongoDB Atlas (Document Store: Itineraries, Forum Q&A, Comments)│
+│    ├── PostgreSQL (ACID: Users, Badges, Quizzes, Expenses & Splits)    │
+│    ├── MongoDB Atlas (Document Store: Itineraries & Collaborators, Q&A)│
 │    └── Redis (In-Memory Key-Value: Search Queries & Rate Limits)       │
 └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -82,6 +84,9 @@ Hệ thống **Nomadix** được thiết kế theo mô hình **Kiến trúc ph�
   * `AuthService`: Xử lý băm mật khẩu Bcrypt, cấp phát token JWT.
   * `BookingAggregatorService`: Điều phối gọi đa nguồn API song song và điều phối Normalizer.
   * `ItineraryService`: Quản lý cấu trúc lịch trình nhiều ngày và tính toán lộ trình di chuyển.
+  * `TripCollaborationService`: Xử lý mời bạn bè, phân quyền vai trò (`owner`, `editor`, `viewer`), và đồng bộ trạng thái kế hoạch nhóm.
+  * `GroupExpenseService`: Quản lý lưu trữ hóa đơn, ghi nhận chi tiêu đa danh mục, tính toán bảng số dư ròng ($\sum \text{balances} = 0$).
+  * `DebtSimplificationEngine`: Thuật toán Greedy tối ưu hóa dòng tiền, giảm số giao dịch chuyển khoản giữa các thành viên.
   * `GamificationService`: Tính toán khoảng cách Geofence Haversine, chấm điểm Quiz, tính điểm XP và mở khóa Badge.
   * `CommunityService`: Kiểm tra quyền sở hữu Huy hiệu và tự động gán nhãn "City Verified".
 

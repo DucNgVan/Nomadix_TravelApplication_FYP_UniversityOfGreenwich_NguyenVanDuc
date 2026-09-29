@@ -11,7 +11,7 @@
 
 ## 1. SƠ ĐỒ THỰC THỂ QUAN HỆ TOÀN DIỆN POSTGRESQL (RELATIONAL ERD 3NF)
 
-Sơ đồ dưới đây mô hình hóa **toàn bộ 9 bảng quan hệ** trong cơ sở dữ liệu PostgreSQL của hệ thống Nomadix, tuân thủ chuẩn hóa 3NF (Third Normal Form), thể hiện đầy đủ các trường, kiểu dữ liệu, khóa chính (PK), khóa ngoại (FK) và mối quan hệ (Cardinality):
+Sơ đồ dưới đây mô hình hóa **toàn bộ 13 bảng quan hệ trọng tâm** trong cơ sở dữ liệu PostgreSQL của hệ thống Nomadix, tuân thủ chuẩn hóa 3NF (Third Normal Form), thể hiện đầy đủ các trường, kiểu dữ liệu, khóa chính (PK), khóa ngoại (FK) và mối quan hệ (Cardinality):
 
 ```mermaid
 erDiagram
@@ -109,6 +109,50 @@ erDiagram
         timestamp attempted_at "Thời điểm hoàn thành bài thi"
     }
 
+    TRIP_MEMBERS {
+        uuid id PK "UUID v4 định danh thành viên nhóm"
+        varchar trip_id "Chuỗi ObjectId tham chiếu MongoDB itineraries(_id)"
+        uuid user_id FK "Tham chiếu USERS(id)"
+        varchar role "Quyền hạn: owner, editor, viewer"
+        varchar invitation_status "Trạng thái: pending, accepted, declined"
+        uuid invited_by FK "Tham chiếu USERS(id)"
+        timestamp joined_at "Thời điểm tham gia"
+    }
+
+    TRIP_EXPENSES {
+        uuid id PK "UUID v4 định danh khoản chi"
+        varchar trip_id "Chuỗi ObjectId tham chiếu MongoDB itineraries(_id)"
+        uuid payer_id FK "Tham chiếu USERS(id) người thanh toán"
+        varchar title "Mục chi tiêu (ví dụ: Ăn tối Hải Sản Bé Mặn)"
+        numeric amount "Tổng số tiền chi (VND)"
+        char currency "Mã tiền tệ: VND"
+        varchar category "food, stay, transport, sightseeing, shopping, other"
+        text receipt_url "HTTPS URL hóa đơn trên Cloudinary"
+        varchar split_strategy "equal, exact, percentage, shares"
+        varchar notes "Ghi chú chi tiêu"
+        timestamp expense_date "Thời điểm phát sinh chi phí"
+    }
+
+    TRIP_EXPENSE_SPLITS {
+        uuid id PK "UUID v4 định danh phần chia khoản chi"
+        uuid expense_id FK "Tham chiếu TRIP_EXPENSES(id)"
+        uuid user_id FK "Tham chiếu USERS(id) người có nghĩa vụ trả"
+        numeric split_amount "Số tiền phải chia (VND)"
+        boolean is_settled "Trạng thái đã thanh quyết toán: true/false"
+    }
+
+    TRIP_SETTLEMENTS {
+        uuid id PK "UUID v4 định danh thanh toán công nợ"
+        varchar trip_id "Chuỗi ObjectId tham chiếu MongoDB itineraries(_id)"
+        uuid debtor_id FK "Tham chiếu USERS(id) người nợ"
+        uuid creditor_id FK "Tham chiếu USERS(id) người nhận tiền"
+        numeric amount "Số tiền chuyển khoản quyết toán (VND)"
+        char currency "Mã tiền tệ: VND"
+        varchar status "Trạng thái: pending, confirmed, rejected"
+        text proof_image_url "HTTPS URL ủy nhiệm chi / ảnh chuyển khoản"
+        timestamp settled_at "Thời điểm xác nhận hoàn tất"
+    }
+
     %% CÁC QUAN HỆ RÀNG BUỘC KHÓA NGOẠI (RELATIONSHIPS)
     ROLES ||--o{ USERS : "defines_role_of"
     USERS ||--o{ CHECKINS : "performs"
@@ -119,6 +163,11 @@ erDiagram
     QUIZZES ||--o{ QUIZ_QUESTIONS : "composed_of"
     USERS ||--o{ QUIZ_ATTEMPTS : "takes_exam"
     QUIZZES ||--o{ QUIZ_ATTEMPTS : "attempted_in"
+    USERS ||--o{ TRIP_MEMBERS : "joins_as_member"
+    USERS ||--o{ TRIP_EXPENSES : "pays_for_expense"
+    TRIP_EXPENSES ||--|{ TRIP_EXPENSE_SPLITS : "split_among"
+    USERS ||--o{ TRIP_EXPENSE_SPLITS : "owes_share"
+    USERS ||--o{ TRIP_SETTLEMENTS : "transfers_or_receives"
 ```
 
 ---
@@ -140,6 +189,7 @@ erDiagram
         number budgetEstimate "Ngân sách ước tính VND"
         boolean isPublic "Công khai chia sẻ cộng đồng: true/false"
         number cloneCount "Số lượt người dùng khác nhân bản"
+        array collaborators "Mảng thành viên đồng hành: [{ userId, role, joinedAt, status }]"
         array days "Mảng các ngày: Array of DayObjects"
         date createdAt "Thời điểm tạo"
         date updatedAt "Thời điểm cập nhật"
@@ -205,14 +255,23 @@ graph TD
         PG_Badge["badges (id: UUID, city: 'Da Nang')"]
         PG_UserBadge["user_badges (user_id, badge_id)"]
         PG_Checkin["checkins (user_id, landmark_id)"]
+        PG_Member["trip_members (trip_id, user_id, role)"]
+        PG_Expense["trip_expenses (trip_id, payer_id, amount)"]
+        PG_Split["trip_expense_splits (expense_id, user_id, split_amount)"]
+        PG_Settlement["trip_settlements (trip_id, debtor_id, creditor_id)"]
 
         PG_User --> PG_UserBadge
         PG_Badge --> PG_UserBadge
         PG_User --> PG_Checkin
+        PG_User --> PG_Member
+        PG_User --> PG_Expense
+        PG_Expense --> PG_Split
+        PG_User --> PG_Split
+        PG_User --> PG_Settlement
     end
 
     subgraph "MongoDB Atlas (Document Store)"
-        MG_Itin["itineraries (userId: UUID string)"]
+        MG_Itin["itineraries (_id: ObjectId, userId: UUID, collaborators[])"]
         MG_Question["forum_questions (userId: UUID string)"]
         MG_Answer["forum_answers (userId: UUID string, isCityVerified: bool)"]
 
@@ -229,4 +288,7 @@ graph TD
     PG_User -.->|"userId (UUID String Reference)"| MG_Itin
     PG_User -.->|"userId (UUID String Reference)"| MG_Question
     PG_UserBadge -.->|"Check City Badge Ownership\n➔ Set isCityVerified=true"| MG_Answer
+    MG_Itin -.->|"_id String Reference (trip_id)"| PG_Member
+    MG_Itin -.->|"_id String Reference (trip_id)"| PG_Expense
+    MG_Itin -.->|"_id String Reference (trip_id)"| PG_Settlement
 ```

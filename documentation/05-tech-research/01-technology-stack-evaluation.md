@@ -90,7 +90,22 @@ Redis (Bộ nhớ đệm In-Memory siêu tốc)
    * Dịch vụ **Google Distance Matrix API** hỗ trợ tính toán khoảng cách thực tế trên đường bộ (Driving / Walking) thay vì chỉ đo đường chim bay.
 2. **Cloudinary Media Service:**
    * Tích hợp đường ống nén tự động (Auto-compression WebP) và tối ưu hóa hình ảnh di động ngay tại rìa CDN (Edge delivery).
-   * Giúp ứng dụng di động hiển thị ảnh địa danh và ảnh check-in sắc nét với dung lượng đường truyền tối thiểu ($< 300\text{KB}$/ảnh).
+   * Giúp ứng dụng di động hiển thị ảnh địa danh, ảnh check-in có watermark và ảnh hóa đơn chi tiêu (Receipt Bills) sắc nét với dung lượng đường truyền tối thiểu ($< 300\text{KB}$/ảnh).
+
+---
+
+### 2.8 Thuật toán Cân bằng Công nợ: Greedy Minimum Cash-Flow vs. Pairwise Matrix
+
+Khi nhiều thành viên cùng chi tiêu trong chuyến đi (Người trả tiền ăn, người trả tiền khách sạn, người trả tiền xăng xe...), bài toán chia nợ tạo ra một mạng lưới giao dịch chéo phức tạp:
+
+| Tiêu chí | Pairwise Direct (Thông thường) | Greedy Min-Cashflow (Nomadix Lựa chọn) | Max-Flow Min-Cut (Đồ thị) |
+|---|---|---|---|
+| **Số giao dịch** | $O(N^2)$ (rất nhiều lần chuyển tiền) | **Tối đa $N-1$ giao dịch** (tối giản) | Tối ưu số tiền nhưng khó phân rã |
+| **Độ phức tạp** | $O(1)$ cho mỗi giao dịch | **$O(N \log N)$** (rất nhanh trên Mobile/API) | $O(V \cdot E^2)$ (quá phức tạp) |
+| **Trải nghiệm người dùng** | Gây rối mắt, dễ nhầm lẫn nợ chéo | **Rõ ràng, trực quan, 1 người chỉ trả 1-2 lần** | Phức tạp trong diễn giải |
+| **Tính bảo toàn** | Không tự cân bằng nợ trung gian | **$\sum \text{NetBalance} = 0$ tuyệt đối** | Bảo toàn |
+
+> **Kết luận học thuật:** Nomadix lựa chọn giải thuật **Greedy Minimum Cash-Flow** kết hợp hai hàng đợi ưu tiên (Max Heap Debtors & Max Heap Creditors) giúp giảm triệt để số giao dịch chuyển tiền cho nhóm bạn sau chuyến đi.
 
 ---
 
@@ -103,7 +118,8 @@ Redis (Bộ nhớ đệm In-Memory siêu tốc)
 │ @react-navigation/native (v6)        │ Quản lý điều hướng Stack & Tabs │
 │ react-native-maps                    │ Bản đồ tương tác Google Maps    │
 │ react-native-geolocation-service     │ Định vị GPS độ chính xác cao    │
-│ react-native-vision-camera           │ Máy ảnh chụp ảnh check-in app   │
+│ react-native-vision-camera           │ Chụp ảnh check-in & hóa đơn bill│
+│ react-native-image-picker            │ Chọn ảnh hóa đơn từ thư viện ảnh│
 │ react-native-draggable-flatlist      │ Kéo-thả sắp xếp thứ tự lịch     │
 │ react-native-fast-image              │ Lưu cache hình ảnh mượt mà      │
 │ @react-native-async-storage          │ Lưu trữ token và cache cục bộ   │

@@ -8,13 +8,13 @@
 
 ## 1. Project Vision
 
-> **"To create an integrated travel platform where users can discover destinations, compare travel options, plan their journeys, experience local culture, verify their physical visits, earn achievements and contribute trusted travel knowledge to the community."**
+> **"To create an integrated travel platform where travelers and companion groups can discover destinations, compare travel options, co-plan their journeys in real time, transparently manage group expenses, experience local culture, verify physical visits, earn achievements, and contribute trusted travel knowledge to the community."**
 
 ---
 
 ## 2. Project Mission
 
-> **"To simplify independent travel by combining travel discovery, planning, location-based experiences, gamification and community knowledge into a single mobile platform."**
+> **"To simplify independent and group travel by combining travel discovery, collaborative multi-user planning, shared expense management, location-based experiences, gamification, and verified community knowledge into a single mobile platform."**
 
 ---
 
@@ -28,11 +28,15 @@
 ├─────────────────┼───────────────────────────────────────────┤
 │ 2. Planning     │ Structured, interactive multi-day trips   │
 ├─────────────────┼───────────────────────────────────────────┤
-│ 3. Exploration  │ Real-world physical landmark discovery   │
+│ 3. Collaboration│ Co-planning with companions & shared view │
 ├─────────────────┼───────────────────────────────────────────┤
-│ 4. Learning     │ Cultural quizzes & localized heritage     │
+│ 4. Transparency │ Group expense tracking & bill splitting   │
 ├─────────────────┼───────────────────────────────────────────┤
-│ 5. Trust        │ Verified city badges in community Q&A     │
+│ 5. Exploration  │ Real-world physical landmark discovery   │
+├─────────────────┼───────────────────────────────────────────┤
+│ 6. Learning     │ Cultural quizzes & localized heritage     │
+├─────────────────┼───────────────────────────────────────────┤
+│ 7. Trust        │ Verified city badges in community Q&A     │
 └─────────────────┴───────────────────────────────────────────┘
 ```
 

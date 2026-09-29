@@ -10,7 +10,7 @@
 
 ## 1. TỔNG QUAN HỆ THỐNG YÊU CẦU CHỨC NĂNG (OVERVIEW)
 
-Hệ thống yêu cầu chức năng của **Nomadix** được phân rã thành **35 yêu cầu cụ thể (`FR-01` đến `FR-35`)**, bao quát 6 module cốt lõi và 1 module quản trị hệ thống:
+Hệ thống yêu cầu chức năng của **Nomadix** được phân rã thành **42 yêu cầu cụ thể (`FR-01` đến `FR-42`)**, bao quát 7 module cốt lõi và quản trị hệ thống:
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -27,6 +27,8 @@ Hệ thống yêu cầu chức năng của **Nomadix** được phân rã thành
 │ Module 5 (FR 26–30) │ Community Q&A & "City Verified" Trust Attachment │
 ├─────────────────────┼──────────────────────────────────────────────────┤
 │ Module 6 (FR 31–35) │ Administrative Management & System Moderation    │
+├─────────────────────┼──────────────────────────────────────────────────┤
+│ Module 7 (FR 36–42) │ Collaborative Planning & Group Expense Splitting │
 └─────────────────────┴──────────────────────────────────────────────────┘
 ```
 
@@ -291,3 +293,80 @@ Hệ thống yêu cầu chức năng của **Nomadix** được phân rã thành
 
 ### `FR-35`: Cấu Hình Mock Data & Giám Sát Sức Khỏe Hệ Thống (System Health & Mock Toggle)
 * **Mô tả:** Cho phép bật/tắt chế độ Mock Booking Data qua biến môi trường và cung cấp endpoint `GET /api/v1/health` giám sát độ trễ thời gian thực của PostgreSQL, MongoDB, Redis và Cloudinary.
+
+---
+
+## MODULE 7 — COLLABORATIVE PLANNING & GROUP EXPENSE SPLITTING
+
+### `FR-36`: Mời & Quản Lý Thành Viên Chuyến Đi (Trip Companion Invitation & RBAC)
+* **Mô tả:** Cho phép chủ sở hữu chuyến đi (`owner`) mời bạn bè tham gia chuyến đi qua Email, Username hoặc Mã mời 6 ký tự (`inviteCode`).
+* **Đầu vào:** `itineraryId`, `inviteeIdentifier` (email/username), `role` (`editor` | `viewer`).
+* **Luồng xử lý:**
+  1. Kiểm tra quyền của người gửi: Phải là `owner` của chuyến đi.
+  2. Tìm kiếm người dùng được mời trong PostgreSQL theo email hoặc username.
+  3. Kiểm tra xem người dùng đã là thành viên của chuyến đi chưa.
+  4. Tạo bản ghi thành viên với trạng thái `pending` hoặc `accepted`.
+  5. Cập nhật mảng `collaborators` trong tài liệu `itineraries` (MongoDB) và bảng quan hệ `trip_members` (PostgreSQL).
+* **Đầu ra:** HTTP 201 Created + Thông tin thành viên mới tham gia.
+
+---
+
+### `FR-37`: Đồng Bộ Lịch Trình Nhóm Thời Gian Thực (Shared Trip Synchronization)
+* **Mô tả:** Cho phép tất cả các thành viên trong chuyến đi cùng thấy dữ liệu lịch trình, danh sách điểm dừng, ghi chú và lộ trình Google Maps đồng nhất như nhau.
+* **Luồng xử lý:**
+  1. Khi bất kỳ thành viên có quyền `editor` thêm, xóa hoặc kéo thả sắp xếp lại thứ tự điểm đến trong ngày, hệ thống cập nhật tài liệu MongoDB.
+  2. Tăng chỉ số phiên bản tài liệu `__v` (Optimistic Concurrency Control) và phát thông báo đồng bộ tới các thiết bị của thành viên nhóm.
+  3. Đảm bảo mọi thành viên khi mở màn hình lịch trình đều tải được trạng thái mới nhất từ server.
+* **Đầu ra:** Toàn bộ thành viên nhìn thấy giao diện và lộ trình bản đồ hoàn toàn khớp nhau.
+
+---
+
+### `FR-38`: Tải Lên & Quản Lý Hóa Đơn Chuyến Đi (Receipt Bill Upload & Storage)
+* **Mô tả:** Cho phép thành viên chụp ảnh trực tiếp hoặc tải hóa đơn thanh toán (nhà hàng, vé xe, khách sạn...) đính kèm vào khoản chi tiêu nhóm.
+* **Đầu vào:** File ảnh hóa đơn (JPEG/PNG/HEIC, tối đa 10MB), `tripId`.
+* **Luồng xử lý:**
+  1. Xác thực người tải lên phải có vai trò `owner` hoặc `editor` trong chuyến đi.
+  2. Nén và tải ảnh lên Cloudinary qua thư mục chuyên dụng `/nomadix/receipts/{tripId}/`.
+  3. Nhận về URL ảnh an toàn (`secure_url`) và lưu trữ đính kèm vào bản ghi chi tiêu.
+* **Đầu ra:** `receiptImageUrl` được xác thực và hiển thị ảnh phóng to khi thành viên bấm xem hóa đơn.
+
+---
+
+### `FR-39`: Ghi Nhận Khoản Chi Tiêu Nhóm Đa Danh Mục (Group Expense Logging)
+* **Mô tả:** Cho phép ghi nhận các khoản tiền đã chi trong suốt chuyến đi kèm phân loại danh mục chi tiết.
+* **Đầu vào:** `tripId`, `payerId` (thành viên đã ứng tiền trước), `amount` (số tiền > 0), `currency` (`VND`, `USD`), `category` (`food`, `stay`, `transport`, `sightseeing`, `shopping`, `other`), `description`, `receiptUrl`, `expenseDate`.
+* **Luồng xử lý:**
+  1. Kiểm tra tính hợp lệ của người chi tiền và số tiền.
+  2. Lưu bản ghi vào bảng `trip_expenses` (PostgreSQL).
+  3. Cập nhật tổng chi phí lũy kế của chuyến đi.
+* **Đầu ra:** Bản ghi chi tiêu mới với ID duy nhất, hiển thị ngay trên bảng tin chi phí nhóm.
+
+---
+
+### `FR-40`: Cơ Chế Chia Tiền Linh Hoạt (Flexible Expense Splitting Engine)
+* **Mô tả:** Hệ thống hỗ trợ đa dạng phương thức phân bổ chi phí giữa các thành viên:
+  * **Chia đều (Split Equally):** Chia đều số tiền cho toàn bộ hoặc một nhóm thành viên được chọn: $\text{Share} = \text{Total} / N$.
+  * **Chia theo số tiền cụ thể (Split by Exact Amount):** Chỉ định chính xác từng thành viên phải trả bao nhiêu, đảm bảo $\sum \text{Shares} = \text{Total}$.
+  * **Chia theo phần trăm hoặc số phần (Split by Percentage / Ratio):** Phân bổ theo tỷ lệ thỏa thuận, đảm bảo $\sum \% = 100\%$.
+* **Đầu ra:** Các bản ghi chi tiết trong bảng `trip_expense_splits` gán cho từng `userId`.
+
+---
+
+### `FR-41`: Bảng Tổng Hợp Chi Phí & Số Dư Ròng Nhóm (Group Spending Dashboard & Balances)
+* **Mô tả:** Cung cấp giao diện trực quan hiển thị bức tranh tài chính toàn diện của chuyến đi:
+  * Tổng số tiền nhóm đã chi và chi tiêu bình quân mỗi người.
+  * Biểu đồ phân bổ chi phí theo từng danh mục (Ăn uống, Chỗ ở, Di chuyển...).
+  * **Bảng Số Dư Ròng (Net Balance Sheet):** Đối với mỗi thành viên $i$:
+    $$\text{NetBalance}_i = \text{TotalPaid}_i - \text{TotalOwed}_i$$
+    * Nếu $\text{NetBalance}_i > 0$: Thành viên được nhận lại tiền (+).
+    * Nếu $\text{NetBalance}_i < 0$: Thành viên đang nợ nhóm (-).
+    * Ràng buộc bảo toàn: $\sum_{i=1}^N \text{NetBalance}_i = 0$.
+* **Đầu ra:** Dữ liệu JSON bảng cân đối tài chính và danh sách công nợ trực quan.
+
+---
+
+### `FR-42`: Thuật Toán Cân Bằng Công Nợ & Xác Nhận Quyết Toán (Debt Simplification & Settlement)
+* **Mô tả:** 
+  1. **Thuật toán Tối ưu hóa Dòng tiền (Greedy Debt Simplification):** Tự động quy đổi mạng lưới nợ chéo phức tạp giữa nhiều người thành số lượng giao dịch chuyển khoản ít nhất (Ví dụ: Thay vì A trả B, B trả C thì chuyển trực tiếp A trả C).
+  2. **Ghi nhận & Quyết toán (Settle Up):** Khi một thành viên đã chuyển khoản xong, người nhận xác nhận thanh toán; hệ thống cập nhật trạng thái `settled`, tự động trừ nợ và lưu vào lịch sử quyết toán `trip_settlements`.
+* **Đầu ra:** Danh sách hướng dẫn chuyển khoản tối ưu (*"Ai cần chuyển cho Ai bao nhiêu tiền"*) và cập nhật trạng thái số dư về 0 khi tất cả đã tất toán.

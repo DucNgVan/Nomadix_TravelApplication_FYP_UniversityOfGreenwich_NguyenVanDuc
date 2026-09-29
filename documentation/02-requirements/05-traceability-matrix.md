@@ -44,6 +44,9 @@ Bảng ma trận này giúp Giảng viên hướng dẫn (Supervisor) và Hội 
 | **OBJ-6:** Phân quyền quản trị | `US-26`, `US-27` | `FR-31`, `FR-32`, `FR-33` | PostgreSQL: `roles`, `landmarks`, `quizzes` | `POST /api/v1/admin/landmarks`<br>`POST /api/v1/admin/quizzes` | Admin Tests | **Week 06, 19** |
 | **OBJ-6:** Kiểm duyệt vi phạm | `US-28` | `FR-34` | MongoDB: `reports` | `POST /api/v1/community/report`<br>`GET /api/v1/admin/reports` | Admin Tests | **Week 16, 19** |
 | **OBJ-7:** Khả năng tự phục hồi | Hệ thống | `FR-35`, `NFR-03` | Mock Data Fallback Engine | `GET /api/v1/health` | Scenario 14 | **Week 09, 19** |
+| **OBJ-8:** Đồng hành & Kế hoạch nhóm | `US-29`, `US-30`, `US-31` | `FR-36`, `FR-37`, `NFR-05` | PostgreSQL: `trip_members`<br>MongoDB: `collaborators` | `POST /api/v1/itineraries/:id/members`<br>`GET /api/v1/itineraries/:id/sync` | Scenario 15 | **Week 12** |
+| **OBJ-9:** Hóa đơn & Chia tiền nhóm | `US-32`, `US-33` | `FR-38`, `FR-39`, `FR-40` | PostgreSQL: `trip_expenses`, `trip_expense_splits`<br>Cloudinary: Receipts | `POST /api/v1/trips/:id/expenses`<br>`POST /api/v1/trips/:id/expenses/receipt` | Scenario 16 | **Week 13** |
+| **OBJ-9:** Cân đối tài chính & Quyết toán nợ | `US-34`, `US-35` | `FR-41`, `FR-42`, `NFR-02` | PostgreSQL: `trip_settlements`<br>Greedy Debt Simplifier | `GET /api/v1/trips/:id/expenses/summary`<br>`POST /api/v1/trips/:id/settlements` | Scenario 17 | **Week 13** |
 
 ---
 

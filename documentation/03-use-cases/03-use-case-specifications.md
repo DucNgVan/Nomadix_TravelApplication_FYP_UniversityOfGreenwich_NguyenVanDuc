@@ -8,11 +8,11 @@
 
 ---
 
-## 1. DANH MỤC 8 USE CASES TRỌNG ĐIỂM (CORE USE CASES)
+## 1. DANH MỤC 10 USE CASES TRỌNG ĐIỂM (CORE USE CASES)
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
-│                        CORE 8 USE CASE SPECIFICATIONS                  │
+│                       CORE 10 USE CASE SPECIFICATIONS                  │
 ├────────┬──────────────────────────────────────┬────────────────────────┤
 │ UC-01  │ User Registration & Authentication   │ Module 1: Auth         │
 │ UC-02  │ Search & Compare Flights and Hotels  │ Module 2: Booking      │
@@ -22,6 +22,8 @@
 │ UC-06  │ Post Verified Answer in Community    │ Module 5: Community    │
 │ UC-07  │ Clone Public Itinerary               │ Module 3: Itinerary    │
 │ UC-08  │ Moderate Community & System Control  │ Module 6: Admin        │
+│ UC-09  │ Invite Companions & Sync Shared Trip │ Module 7: Collaboration│
+│ UC-10  │ Log Expense, Upload Bill & Settle Debt│ Module 7: Expense Hub  │
 └────────┴──────────────────────────────────────┴────────────────────────┘
 ```
 
@@ -223,3 +225,64 @@
    * Xem danh sách các bài viết bị người dùng gắn cờ báo cáo Spam.
    * Bấm nút "Xóa bài viết vi phạm" ➔ Hệ thống xóa bài khỏi MongoDB và gửi thông báo cảnh cáo tới người vi phạm.
 5. Quản trị viên kiểm tra endpoint `/api/v1/health` theo dõi độ trễ thời gian thực của PostgreSQL, MongoDB, Redis.
+
+---
+
+### `UC-09`: Invite Companions & Synchronize Shared Trip
+
+* **Mã Use Case:** `UC-09` (Traces to `FR-36`, `FR-37`, `US-29`, `US-30`)
+* **Tên Use Case:** Mời bạn bè & Đồng bộ lịch trình nhóm (Invite Companions & Sync Shared Itinerary).
+* **Tác nhân chính:** `Trip Owner`, `Trip Companion`.
+* **Tiền điều kiện:** Chuyến đi đã được khởi tạo trong MongoDB; người được mời đã có tài khoản Nomadix.
+* **Hậu điều kiện:** Thành viên được thêm vào `trip_members` (PostgreSQL) và `itineraries.collaborators` (MongoDB); tất cả thành viên nhìn thấy lịch trình cập nhật giống hệt nhau.
+
+#### Luồng sự kiện chính (Main Flow):
+1. Chủ chuyến đi (`Trip Owner`) mở màn hình chuyến đi, bấm biểu tượng "Thêm bạn bè" (+).
+2. Chủ chuyến đi nhập Email hoặc Username của bạn đồng hành và chọn vai trò: `Editor` (có quyền thêm/sửa hoạt động và thêm chi phí) hoặc `Viewer` (chỉ xem).
+3. Hệ thống tìm kiếm tài khoản người dùng trong PostgreSQL, kiểm tra hợp lệ và tạo bản ghi thành viên trong bảng `trip_members` và mảng `collaborators` của MongoDB.
+4. Hệ thống gửi thông báo mời tham gia tới tài khoản bạn đồng hành.
+5. Bạn đồng hành mở ứng dụng Nomadix, thấy chuyến đi xuất hiện ngay trong tab "Chuyến đi của tôi" kèm nhãn "Shared Trip".
+6. Khi một trong các thành viên có quyền `Editor` thêm điểm đến mới hoặc đổi thứ tự lộ trình:
+   * Bản ghi MongoDB được cập nhật và tăng số hiệu phiên bản `__v`.
+   * Màn hình của tất cả các thành viên trong nhóm tự động đồng bộ hiển thị các Marker trên Google Maps và danh sách hoạt động giống nhau.
+
+#### Các luồng phụ / ngoại lệ (Alternative & Exception Flows):
+* **`3a. Người dùng chưa đăng ký:`** Hệ thống hiển thị thông báo *"Tài khoản không tồn tại"* và cho phép Chủ chuyến đi copy "Mã mời chuyến đi" (6 ký tự) gửi qua Zalo/tin nhắn để bạn bè đăng ký xong nhập mã tham gia sau.
+* **`6a. Xung đột đồng thời (Concurrency):** Nếu hai người cùng sửa một lúc, hệ thống sử dụng Optimistic Concurrency Control (dựa trên `__v`) để đảm bảo không ghi đè dữ liệu mất mát và thông báo cho người thao tác sau làm mới dữ liệu.
+
+---
+
+### `UC-10`: Log Group Expense, Upload Bill & Settle Debts
+
+* **Mã Use Case:** `UC-10` (Traces to `FR-38` đến `FR-42`, `US-32` đến `US-35`)
+* **Tên Use Case:** Quản lý Chi tiêu Nhóm, Tải lên Hóa đơn & Quyết toán Công nợ (Log Expense, Upload Bill & Settle Debts).
+* **Tác nhân chính:** `Trip Companion` (Owner hoặc Editor).
+* **Tiền điều kiện:** Chuyến đi có từ 2 thành viên trở lên; người thực hiện là thành viên hợp lệ.
+* **Hậu điều kiện:** Khoản chi được ghi nhận trong `trip_expenses`, hóa đơn được lưu trên Cloudinary, các phần chia nợ được tính trong `trip_expense_splits`, bảng số dư nhóm cập nhật bảo toàn $\sum \text{NetBalance} = 0$.
+
+#### Luồng sự kiện chính (Main Flow):
+1. Thành viên mở Tab "Chi tiêu Nhóm" (Group Expenses) của chuyến đi.
+2. Bấm nút "Thêm khoản chi mới" (+):
+   * Nhập tiêu đề khoản chi (ví dụ: *"Bữa tối Hải sản Bé Mặn"*).
+   * Nhập số tiền đã thanh toán (ví dụ: `1.200.000 VND`).
+   * Chọn người đã ứng tiền trước (`Payer`).
+   * Chọn danh mục (Ăn uống, Chỗ ở, Di chuyển, Vé tham quan, Mua sắm, Khác).
+3. Thành viên bấm "Chụp / Tải ảnh hóa đơn" ➔ Máy ảnh kích hoạt, ảnh hóa đơn được chụp và tải lên Cloudinary, trả về `receiptUrl`.
+4. Thành viên chọn phương thức chia tiền:
+   * **Chia đều:** Hệ thống tự động chia đều $1.200.000 / 3 = 400.000\text{ VND/người}$.
+   * **Chia tùy chỉnh:** Chỉ định chính xác từng thành viên chịu bao nhiêu tiền.
+5. Bấm "Lưu khoản chi" ➔ Hệ thống lưu vào PostgreSQL `trip_expenses` và `trip_expense_splits` trong cùng một Transaction ACID.
+6. Màn hình Bảng tổng kết chi phí tự động cập nhật:
+   * Tổng số tiền đã chi của cả nhóm.
+   * Biểu đồ tròn tỷ trọng các danh mục chi tiêu.
+   * Bảng số dư ròng hiển thị rõ ai là chủ nợ (+), ai là con nợ (-).
+7. Khi nhóm bấm xem "Kế hoạch Quyết toán" (Settle Up):
+   * Thuật toán Greedy Debt Simplification tự động tính toán phương án trả nợ tối ưu với số giao dịch ít nhất.
+   * Hiển thị hướng dẫn chuyển khoản rõ ràng (*"Nam chuyển 400k cho Đức"*).
+8. Khi người nợ chuyển tiền ngoài đời thực và chủ nợ bấm "Xác nhận đã nhận tiền":
+   * Hệ thống cập nhật bản ghi `trip_settlements` sang trạng thái `completed`.
+   * Cập nhật số dư nợ của hai người về 0.
+
+#### Các luồng phụ / ngoại lệ (Alternative & Exception Flows):
+* **`4a. Tổng tiền chia lẻ không khớp tổng hóa đơn:`** Hệ thống kiểm tra $\sum \text{Shares} \ne \text{Total Amount}$, thông báo lỗi và yêu cầu điều chỉnh lại số tiền trước khi lưu.
+* **`3a. Không có hóa đơn giấy:`** Cho phép bỏ qua bước tải ảnh hóa đơn (tùy chọn) và chỉ nhập thông tin số tiền.

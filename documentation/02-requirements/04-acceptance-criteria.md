@@ -195,3 +195,47 @@ Scenario: Graceful Fallback to Mock Data on External API Failure
     And hệ thống tự động kích hoạt MockProvider trả về dữ liệu mẫu chất lượng cao
     And ứng dụng hiển thị danh sách chuyến bay bình thường mà không hề báo lỗi đỏ hay crash app
 ```
+
+---
+
+### 🟤 MODULE 7: COLLABORATIVE PLANNING & GROUP EXPENSES
+
+#### Kịch bản 15: Mời bạn bè vào chuyến đi và đồng bộ hiển thị cùng thấy
+```gherkin
+Scenario: Invite Travel Companion and Synchronize Shared Itinerary
+  Given Người dùng A đã tạo chuyến đi "Đà Nẵng 3N2Đ cùng Hội Bạn"
+  When Người dùng A gửi lời mời tới bạn bè "travelmate@nomadix.com" với vai trò Editor
+  Then hệ thống tạo bản ghi trong trip_members với trạng thái accepted
+    And bạn "travelmate" nhận được thông báo mời vào chuyến đi
+  When bạn "travelmate" mở ứng dụng Nomadix trên thiết bị của mình
+  Then ứng dụng tải chính xác chuyến đi "Đà Nẵng 3N2Đ cùng Hội Bạn"
+    And bạn nhìn thấy toàn bộ các Tab Ngày, danh sách điểm dừng và đường nối lộ trình trên Google Maps hoàn toàn giống với Người dùng A
+    And khi một người cập nhật thêm điểm đến mới, thiết bị người kia tự động đồng bộ hiển thị
+```
+
+#### Kịch bản 16: Tải lên hóa đơn bữa ăn và chia tiền đều cho nhóm
+```gherkin
+Scenario: Upload Bill Receipt and Split Expense Equally
+  Given chuyến đi "Đà Nẵng 3N2Đ" gồm 3 thành viên: Đức (Payer), Nam, và Hoa
+  When Đức chụp ảnh hóa đơn bữa ăn hải sản Bé Mặn giá "1.200.000 VND"
+    And Đức chọn phương thức chia đều cho cả 3 người
+    And Đức bấm nút "Lưu khoản chi"
+  Then hệ thống nén và tải ảnh hóa đơn lên Cloudinary an toàn
+    And hệ thống lưu bản ghi khoản chi 1.200.000 VND vào bảng trip_expenses
+    And tự động tạo 3 bản ghi chi tiết trong trip_expense_splits với số tiền 400.000 VND/người
+    And Bảng số dư ròng hiển thị: Đức (+800.000 VND), Nam (-400.000 VND), Hoa (-400.000 VND)
+    And tổng số dư cả nhóm luôn đảm bảo bằng 0 (800k - 400k - 400k = 0)
+```
+
+#### Kịch bản 17: Thuật toán tối ưu hóa công nợ và quyết toán (Settle Up)
+```gherkin
+Scenario: Greedy Debt Simplification and Settle Up
+  Given chuyến đi có mạng lưới chi tiêu chéo: Nam nợ Đức 400.000 VND, Đức nợ Hoa 400.000 VND
+  When các thành viên mở tab "Quyết toán Công nợ" (Debt Settlement)
+  Then thuật toán tối ưu hóa công nợ tự động triệt tiêu giao dịch trung gian của Đức
+    And đưa ra giải pháp chuyển tiền tối thiểu: "Nam chuyển trực tiếp 400.000 VND cho Hoa"
+  When Nam chuyển khoản ngoài cho Hoa và Hoa bấm nút "Xác nhận đã nhận tiền"
+  Then hệ thống chuyển trạng thái khoản nợ sang "settled"
+    And cập nhật số dư của toàn bộ thành viên về 0 VND
+    And lưu vết giao dịch quyết toán vào bảng trip_settlements
+```

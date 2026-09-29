@@ -424,6 +424,8 @@ Scenario: Fallback when Partner Deep Link is Malformed or Unreachable
 │ US-ITIN-05  │ Distance & Duration Matrix with Haversine Drop  │ MUST     │ 5 Pts     │
 │ US-ITIN-06  │ Importing Aggregated Bookings into Itinerary    │ SHOULD   │ 5 Pts     │
 │ US-ITIN-07  │ Public Community Sharing & One-Click Trip Clone │ MUST     │ 5 Pts     │
+│ US-ITIN-08  │ Travel Companion Invitation & Role Permissions  │ MUST     │ 5 Pts     │
+│ US-ITIN-09  │ Multi-User Shared Itinerary Synchronization     │ MUST     │ 8 Pts     │
 └─────────────┴─────────────────────────────────────────────────┴──────────┴───────────┘
 ```
 
@@ -831,8 +833,9 @@ Scenario: Rejection of Publishing Empty Itinerary
 | **`US-ITIN-03`** | `FR-15` | `UC-03` | MongoDB `itineraries` | React Native Draggable FlatList| `drag-drop-reorder.spec.js` |
 | **`US-ITIN-04`** | `FR-16` | `UC-03` | MongoDB `itineraries` | Google Maps SDK Polylines | `maps-polyline.spec.js` |
 | **`US-ITIN-05`** | `FR-17` | `UC-03` | MongoDB `itineraries` | Google Distance Matrix / Haversine | `distance-matrix.spec.js`|
-| **`US-ITIN-06`** | `FR-06`, `FR-14` | `UC-02, 03` | MongoDB `itineraries` | Cross-Module Adapter | `booking-to-itin.spec.js`|
 | **`US-ITIN-07`** | `FR-18` | `UC-07` | MongoDB `itineraries` | MongoDB Atomic `$inc` | `clone-trip.spec.js` |
+| **`US-ITIN-08`** | `FR-36` | `UC-20` | PostgreSQL `trip_members` | Express ItineraryRouter | `trip-collaborators.spec.js` |
+| **`US-ITIN-09`** | `FR-37` | `UC-20` | MongoDB `collaborators`, `__v` | Client Sync & Polling | `trip-sync.spec.js` |
 
 ---
 

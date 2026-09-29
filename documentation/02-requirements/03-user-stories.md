@@ -25,6 +25,10 @@
 │ Epic 5 │ Community Q&A & Verified Experience  │ US-21 đến US-25        │
 ├────────┼──────────────────────────────────────┼────────────────────────┤
 │ Epic 6 │ System Administration & Moderation   │ US-26 đến US-28        │
+├────────┼──────────────────────────────────────┼────────────────────────┤
+│ Epic 7 │ Collaborative Companion Planning     │ US-29 đến US-31        │
+├────────┼──────────────────────────────────────┼────────────────────────┤
+│ Epic 8 │ Group Expense Hub & Bill Splitting   │ US-32 đến US-35        │
 └────────┴──────────────────────────────────────┴────────────────────────┘
 ```
 
@@ -193,3 +197,46 @@
   * **As a** Moderator / Administrator,  
   * **I want to** nhận các thông báo báo cáo vi phạm và có quyền ẩn hoặc xóa các bài viết rác, xúc phạm,  
   * **So that** diễn đàn Nomadix luôn duy trì một môi trường văn minh, tích cực và đáng tin cậy.
+
+---
+
+### 🟣 EPIC 7: COLLABORATIVE COMPANION PLANNING
+
+* **`US-29` (Mời bạn bè vào chuyến đi):**  
+  * **As a** Trip Organizer / Owner,  
+  * **I want to** mời bạn bè tham gia vào chuyến đi của mình bằng email, username hoặc gửi mã code tham gia,  
+  * **So that** chúng tôi có thể cùng chuẩn bị cho chuyến đi chung trên cùng một kế hoạch mà không cần trao đổi rời rạc qua tin nhắn.
+
+* **`US-30` (Đồng bộ lịch trình nhóm cùng thấy):**  
+  * **As a** Trip Companion,  
+  * **I want to** mở ứng dụng và nhìn thấy toàn bộ lịch trình, danh sách địa điểm và đường vẽ bản đồ y hệt như người tạo chuyến đi,  
+  * **So that** tôi luôn nắm rõ giờ giấc, lịch trình tiếp theo và có thể cùng đóng góp ý kiến chỉnh sửa điểm đến.
+
+* **`US-31` (Phân quyền thành viên chuyến đi):**  
+  * **As a** Trip Owner,  
+  * **I want to** phân định quyền hạn rõ ràng cho từng người tham gia (Người chỉnh sửa - Editor hoặc Chỉ xem - Viewer),  
+  * **So that** tôi bảo vệ được cấu trúc lịch trình chính thức không bị người ngoài vô tình sửa đổi lung tung.
+
+---
+
+### 🟤 EPIC 8: GROUP EXPENSE HUB & BILL SPLITTING
+
+* **`US-32` (Chụp & Tải lên hóa đơn chi tiêu):**  
+  * **As a** Trip Companion,  
+  * **I want to** chụp ảnh hóa đơn bữa ăn/khách sạn/vé tham quan và đính kèm vào khoản chi tiêu của nhóm,  
+  * **So that** mọi người trong nhóm có bằng chứng chi tiêu rõ ràng, minh bạch và không lo bị thất lạc hóa đơn giấy.
+
+* **`US-33` (Ghi nhận & Chia tiền linh hoạt):**  
+  * **As a** Payer (Người ứng tiền trước),  
+  * **I want to** nhập số tiền đã chi, chọn danh mục và chia đều cho tất cả mọi người hoặc chia theo tỷ lệ/số tiền riêng biệt cho những ai thực sự tham gia hoạt động đó,  
+  * **So that** chi phí được phân bổ công bằng tuyệt đối cho từng thành viên.
+
+* **`US-34` (Bảng theo dõi tổng chi phí & số dư nợ):**  
+  * **As a** Group Traveler,  
+  * **I want to** xem màn hình tổng hợp chi phí hiển thị tổng số tiền cả nhóm đã tiêu, biểu đồ từng danh mục và bảng số dư hiển thị rõ tôi đang nợ ai hay ai đang nợ tôi bao nhiêu,  
+  * **So that** tôi luôn kiểm soát được ngân sách cá nhân trong suốt chuyến đi.
+
+* **`US-35` (Cân bằng công nợ tối ưu & Xác nhận thanh toán):**  
+  * **As a** Group Member,  
+  * **I want to** hệ thống tự động tính toán phương án trả nợ tối ưu với số lần chuyển tiền ít nhất giữa các thành viên và bấm nút "Xác nhận đã trả nợ" khi nhận được tiền,  
+  * **So that** nhóm tôi có thể quyết toán tài chính sòng phẳng, nhanh chóng sau chuyến đi mà không cần đau đầu tính toán thủ công.

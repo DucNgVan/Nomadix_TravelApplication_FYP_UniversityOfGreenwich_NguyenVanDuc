@@ -16,6 +16,8 @@ graph LR
         UC_Auth["UC-01: Authenticate & Manage Profile"]
         UC_Book["UC-03: Search & Compare Booking"]
         UC_Itin["UC-05: Plan Multi-day Itinerary"]
+        UC_Collab["UC-20: Invite Companions & Sync Itinerary"]
+        UC_Expense["UC-21 & 22: Group Expenses & Debt Splitting"]
         UC_Gamify["UC-09: GPS Check-in & Cultural Quiz"]
         UC_Forum["UC-13: Community Q&A & City Verified"]
         UC_Admin["UC-16: System Administration & Moderation"]
@@ -24,8 +26,13 @@ graph LR
     Traveler((Traveler)) --> UC_Auth
     Traveler --> UC_Book
     Traveler --> UC_Itin
+    Traveler --> UC_Collab
+    Traveler --> UC_Expense
     Traveler --> UC_Gamify
     Traveler --> UC_Forum
+
+    Companion((Trip Companion)) --> UC_Collab
+    Companion --> UC_Expense
 
     ExpTraveler((Experienced Traveler)) --> UC_Forum
     ExpTraveler --> UC_Itin
@@ -34,7 +41,8 @@ graph LR
 
     UC_Book -.-> ExtOTA["<<System>> External OTA APIs"]
     UC_Itin -.-> ExtMaps["<<System>> Google Maps Platform"]
-    UC_Gamify -.-> ExtCloud["<<System>> Cloudinary Storage"]
+    UC_Expense -.-> ExtCloud["<<System>> Cloudinary CDN"]
+    UC_Gamify -.-> ExtCloud
 ```
 
 ---
@@ -204,4 +212,47 @@ graph LR
     Administrator --> UC_AdminHealth
 
     UC_AdminHealth -.-> SystemNodes["<<Internal>> Postgres, Mongo, Redis"]
+```
+
+---
+
+### 🟤 MODULE 7: COLLABORATIVE PLANNING & GROUP EXPENSE HUB USE CASE DIAGRAM
+
+```mermaid
+graph LR
+    subgraph "Module 7: Collaborative Planning & Expense Hub"
+        UC_Invite("Invite Companions to Trip")
+        UC_SetRole("Manage Member Permissions (Owner/Editor/Viewer)")
+        UC_SyncPlan("Sync Shared Itinerary in Real Time")
+        UC_UploadReceipt("Upload Bill Receipt Photo")
+        UC_LogExpense("Log Group Expense (Food, Stay, Transit)")
+        UC_SplitExpense("Split Expense (Equal, Shares, Exact)")
+        UC_ViewBalances("View Group Spending & Net Balance Sheet")
+        UC_SimplifyDebt("Calculate Optimal Settlements (Greedy Algorithm)")
+        UC_SettleUp("Confirm Debt Settlement Payment")
+
+        UC_Invite -.->|<<extend>>| UC_SetRole
+        UC_LogExpense -.->|<<include>>| UC_SplitExpense
+        UC_LogExpense -.->|<<extend>>| UC_UploadReceipt
+        UC_SplitExpense -.->|<<include>>| UC_ViewBalances
+        UC_ViewBalances -.->|<<include>>| UC_SimplifyDebt
+        UC_SimplifyDebt -.->|<<extend>>| UC_SettleUp
+    end
+
+    Owner((Trip Owner)) --> UC_Invite
+    Owner --> UC_SetRole
+    Owner --> UC_SyncPlan
+    Owner --> UC_LogExpense
+    Owner --> UC_ViewBalances
+    Owner --> UC_SettleUp
+
+    Companion((Trip Companion)) --> UC_SyncPlan
+    Companion --> UC_UploadReceipt
+    Companion --> UC_LogExpense
+    Companion --> UC_ViewBalances
+    Companion --> UC_SettleUp
+
+    UC_UploadReceipt -.-> Cloudinary["<<System>> Cloudinary CDN"]
+    UC_LogExpense -.-> PostgresDB[("<<Database>> PostgreSQL trip_expenses")]
+    UC_SyncPlan -.-> MongoDB[("<<Database>> MongoDB itineraries")]
 ```

@@ -84,6 +84,8 @@ server/src/
 │   ├── flight.controller.js
 │   ├── hotel.controller.js
 │   ├── itinerary.controller.js
+│   ├── collaboration.controller.js # Mời bạn bè & đồng bộ chuyến đi
+│   ├── expense.controller.js       # Quản lý hóa đơn & chia tiền nhóm
 │   ├── landmark.controller.js
 │   ├── checkin.controller.js
 │   ├── quiz.controller.js
@@ -95,6 +97,9 @@ server/src/
 │   ├── user.service.js
 │   ├── bookingAggregator.service.js
 │   ├── itinerary.service.js
+│   ├── collaboration.service.js    # Quản lý thành viên & phân quyền
+│   ├── expense.service.js          # Tính toán chia tiền & hóa đơn
+│   ├── debtSimplifier.service.js   # Thuật toán Greedy tối ưu hóa công nợ
 │   ├── map.service.js
 │   ├── gamification.service.js
 │   ├── badgeEvaluator.service.js
@@ -114,12 +119,16 @@ server/src/
 ├── models/                  # Định nghĩa Lược đồ PostgreSQL & MongoDB
 │   ├── postgres/            # Schema DDL & Model PostgreSQL
 │   │   ├── user.model.js
+│   │   ├── tripMember.model.js     # Thành viên chuyến đi & vai trò
+│   │   ├── expense.model.js        # Khoản chi tiêu & hóa đơn
+│   │   ├── expenseSplit.model.js   # Chi tiết phân bổ tiền nợ
+│   │   ├── settlement.model.js     # Lịch sử quyết toán công nợ
 │   │   ├── landmark.model.js
 │   │   ├── checkin.model.js
 │   │   ├── badge.model.js
 │   │   └── quiz.model.js
 │   └── mongo/               # Mongoose Schemas MongoDB
-│       ├── itinerary.model.js
+│       ├── itinerary.model.js      # Lịch trình & mảng collaborators
 │       ├── forumQuestion.model.js
 │       ├── forumAnswer.model.js
 │       └── report.model.js

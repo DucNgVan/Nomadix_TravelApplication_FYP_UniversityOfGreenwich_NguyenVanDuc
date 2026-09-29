@@ -63,8 +63,13 @@ Travel planning, on-site physical travel, cultural learning, and post-trip knowl
 Planning  ≠  Travel  ≠  Physical Visit  ≠  Learning  ≠  Achievement  ≠  Community
 ```
 
+### 2.6 Group Travel Coordination Chaos & Expense Splitting Friction
+Traveling with friends or family is inherently collaborative, yet existing apps force groups into chaotic workarounds:
+* **Desynchronized Itineraries:** Plans are negotiated in messaging apps (Zalo, Messenger, WhatsApp), leading to lost recommendations, conflicting schedules, and constant *"Where are we going next?"* friction.
+* **Awkward Expense Management & Lost Receipts:** Friends take turns paying for meals, ride-hailing, hotels, and tickets. Paper bills get lost or faded, mental tracking breaks down, and end-of-trip manual recalculations on spreadsheets or third-party tools cause forgotten debts, disputes, and awkward social tension.
+
 ---
 
 ## 3. The Nomadix Opportunity
 
-Nomadix solves this problem by closing the loop between digital planning, physical on-site exploration, gamified cultural learning, and verified community trust within a single, integrated mobile application.
+Nomadix solves this problem by closing the loop between digital multi-user planning, physical on-site exploration, gamified cultural learning, transparent group expense splitting, and verified community trust within a single, integrated mobile application.

@@ -20,6 +20,8 @@ Tài liệu này mô hình hóa 4 luồng dữ liệu nghiệp vụ quan trọng
 │ Flow 2 │ Itinerary Drag-and-Drop & Maps Route │ Module 3: Itinerary    │
 │ Flow 3 │ GPS Geofence Check-in & Quiz Loop    │ Module 4: Gamification │
 │ Flow 4 │ Cross-DB "City Verified" Attachment  │ Module 5: Community    │
+│ Flow 5 │ Companion Invitation & Shared Sync   │ Module 7: Collaboration│
+│ Flow 6 │ Bill Upload, Expense Split & Settle  │ Module 7: Expense Hub  │
 └────────┴──────────────────────────────────────┴────────────────────────┘
 ```
 
@@ -203,4 +205,85 @@ sequenceDiagram
     Mongo-->>Gateway: Return Answers List (Verified Answers Pinned at Top)
     Gateway-->>Mobile: HTTP 200 OK
     Mobile->>OtherUser: Hiển thị câu trả lời với KHUNG VIỀN VÀNG NỔI BẬT & Nhãn "✓ Da Nang Verified"!
+```
+
+---
+
+### 🔹 FLOW 5: TRIP COMPANION INVITATION & SHARED ITINERARY SYNCHRONIZATION
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Owner as Trip Owner (Mobile A)
+    actor Companion as Trip Companion (Mobile B)
+    participant ClientA as React Native (Client A)
+    participant ClientB as React Native (Client B)
+    participant Gateway as Express API Gateway
+    participant CollabService as TripCollaborationService
+    participant Postgres as PostgreSQL (trip_members)
+    participant Mongo as MongoDB Atlas (itineraries)
+
+    Owner->>ClientA: Bấm "Mời bạn" ➔ Nhập email nam.tran@nomadix.com & role = Editor
+    ClientA->>Gateway: POST /api/v1/itineraries/:id/members { email, role: 'editor' }
+    Gateway->>CollabService: inviteMember(tripId, ownerId, email, role)
+    CollabService->>Postgres: Verify owner permissions & lookup invitee user_id
+    Postgres-->>CollabService: Invitee found (UUID: user-nam-02)
+    CollabService->>Postgres: INSERT INTO trip_members (trip_id, user_id, role, status) VALUES (...)
+    CollabService->>Mongo: UPDATE itineraries SET collaborators.push({ userId, role }) & inc __v
+    Mongo-->>CollabService: Itinerary document updated
+    CollabService-->>Gateway: Return { success: true, member: { ... } }
+    Gateway-->>ClientA: HTTP 201 Created (Member added)
+    ClientA->>Owner: Hiển thị avatar Nam Trần trong danh sách bạn đồng hành
+
+    Note over Companion,ClientB: Companion đăng nhập trên thiết bị B
+    Companion->>ClientB: Mở tab "Chuyến đi của tôi"
+    ClientB->>Gateway: GET /api/v1/itineraries/me
+    Gateway->>Mongo: find({ $or: [ { userId: myId }, { "collaborators.userId": myId } ] })
+    Mongo-->>Gateway: Return Shared Trips List (Includes Đà Nẵng 3N2Đ)
+    Gateway-->>ClientB: HTTP 200 OK
+    ClientB->>Companion: Hiển thị chuyến đi chung với đầy đủ điểm đến & bản đồ đồng bộ!
+```
+
+---
+
+### 🔹 FLOW 6: GROUP EXPENSE CREATION, BILL UPLOAD & GREEDY DEBT SIMPLIFICATION
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Payer as Companion A (Payer)
+    actor Debtor as Companion B (Debtor)
+    participant ClientA as React Native (Client A)
+    participant Gateway as Express API Gateway
+    participant ExpenseService as GroupExpenseService
+    participant Cloudinary as Cloudinary CDN
+    participant DebtEngine as DebtSimplificationEngine
+    participant Postgres as PostgreSQL (trip_expenses, splits, settlements)
+
+    Payer->>ClientA: Chụp ảnh hóa đơn nhà hàng (1.200.000 VND)
+    Payer->>ClientA: Chọn chia đều cho 3 người (400k/người)
+    ClientA->>Cloudinary: POST /image/upload (Multipart Receipt File)
+    Cloudinary-->>ClientA: Return { secure_url: "https://res.cloudinary.../rec_01.webp" }
+    
+    ClientA->>Gateway: POST /api/v1/trips/:id/expenses { amount: 1200000, paidBy, splits, receiptUrl }
+    Gateway->>ExpenseService: recordGroupExpense(tripId, payload)
+    
+    ExpenseService->>Postgres: BEGIN TRANSACTION
+    ExpenseService->>Postgres: INSERT INTO trip_expenses (trip_id, payer_id, amount, category, receipt_url)
+    ExpenseService->>Postgres: INSERT INTO trip_expense_splits (expense_id, user_id, split_amount) [Batch 3 rows]
+    ExpenseService->>Postgres: COMMIT TRANSACTION
+    Postgres-->>ExpenseService: Expense & Splits successfully persisted
+    ExpenseService-->>Gateway: Return Expense Summary Object
+    Gateway-->>ClientA: HTTP 201 Created
+    ClientA->>Payer: Hiển thị khoản chi kèm ảnh hóa đơn & cập nhật số dư ròng
+
+    Note over Debtor,DebtEngine: Thành viên B mở xem bảng quyết toán nợ
+    Debtor->>Gateway: GET /api/v1/trips/:id/debts/settlement-plan
+    Gateway->>ExpenseService: getTripExpensesSummary(tripId)
+    ExpenseService->>Postgres: Aggregate Total Paid & Total Owed per member
+    Postgres-->>ExpenseService: Return Net Balances [A: +800k, B: -400k, C: -400k]
+    ExpenseService->>DebtEngine: simplifyDebts(netBalances)
+    DebtEngine-->>ExpenseService: Return Minimal Settlements: [B ➔ A: 400k, C ➔ A: 400k]
+    ExpenseService-->>Gateway: Return Settlement Plan
+    Gateway-->>Debtor: HTTP 200 OK + Hướng dẫn chuyển tiền "B chuyển 400.000 VND cho A"
 ```

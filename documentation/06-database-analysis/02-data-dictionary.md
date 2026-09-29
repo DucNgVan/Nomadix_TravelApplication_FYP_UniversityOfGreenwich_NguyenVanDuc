@@ -131,6 +131,86 @@
 
 ---
 
+### 1.10 Bảng `trip_members` (Bảng thành viên đồng hành chuyến đi)
+* **Mục đích:** Quản lý danh sách thành viên tham gia chuyến đi nhóm, vai trò phân quyền (owner/editor/viewer) và trạng thái lời mời.
+* **Khóa chính:** `id` (UUID).
+* **Khóa ngoại:** `user_id` ➔ `users(id)`, `invited_by` ➔ `users(id)`.
+* **Ràng buộc duy nhất:** `UNIQUE(trip_id, user_id)` (Một người dùng chỉ có 1 bản ghi thành viên trong mỗi chuyến đi).
+
+| Tên trường | Kiểu dữ liệu | Nullable | Mặc định | Ràng buộc | Chỉ mục (Index) | Mô tả chi tiết |
+|---|---|:---:|---|---|:---:|---|
+| `id` | `UUID` | NO | `gen_random_uuid()` | PRIMARY KEY | PK Index | Định danh duy nhất bản ghi thành viên. |
+| `trip_id` | `VARCHAR(50)` | NO | None | NOT NULL | B-Tree Index | Tham chiếu chéo tới MongoDB `itineraries._id`. |
+| `user_id` | `UUID` | NO | None | FOREIGN KEY | B-Tree Index | Tham chiếu người dùng tham gia `users(id)`. |
+| `role` | `VARCHAR(20)` | NO | `'editor'` | CHECK (`role IN ('owner', 'editor', 'viewer')`) | None | Vai trò quyền hạn trong chuyến đi. |
+| `invitation_status` | `VARCHAR(20)` | NO | `'accepted'` | CHECK (`invitation_status IN ('pending', 'accepted', 'declined')`) | None | Trạng thái tiếp nhận lời mời tham gia. |
+| `invited_by` | `UUID` | YES | NULL | FOREIGN KEY | None | Người dùng gửi lời mời `users(id)`. |
+| `joined_at` | `TIMESTAMPTZ` | NO | `CURRENT_TIMESTAMP` | NOT NULL | None | Thời điểm chấp nhận tham gia nhóm. |
+| `created_at` | `TIMESTAMPTZ` | NO | `CURRENT_TIMESTAMP` | NOT NULL | None | Thời điểm tạo lời mời. |
+
+---
+
+### 1.11 Bảng `trip_expenses` (Bảng sổ chi tiêu nhóm chuyến đi)
+* **Mục đích:** Lưu trữ các khoản chi thực tế phát sinh trong chuyến đi nhóm, người chi trả, danh mục, hình ảnh hóa đơn bill (Cloudinary) và phương thức chia tiền.
+* **Khóa chính:** `id` (UUID).
+* **Khóa ngoại:** `payer_id` ➔ `users(id)`.
+
+| Tên trường | Kiểu dữ liệu | Nullable | Mặc định | Ràng buộc | Chỉ mục (Index) | Mô tả chi tiết |
+|---|---|:---:|---|---|:---:|---|
+| `id` | `UUID` | NO | `gen_random_uuid()` | PRIMARY KEY | PK Index | Định danh duy nhất khoản chi tiêu. |
+| `trip_id` | `VARCHAR(50)` | NO | None | NOT NULL | B-Tree Index | Tham chiếu chéo tới MongoDB `itineraries._id`. |
+| `payer_id` | `UUID` | NO | None | FOREIGN KEY | B-Tree Index | Người thanh toán khoản chi `users(id)`. |
+| `title` | `VARCHAR(150)` | NO | None | NOT NULL | None | Tên hoặc mô tả khoản chi (ví dụ: *Hải Sản Bé Mặn*). |
+| `amount` | `NUMERIC(12, 2)` | NO | None | CHECK (`amount > 0`) | None | Tổng giá trị khoản chi (VND). |
+| `currency` | `CHAR(3)` | NO | `'VND'` | NOT NULL | None | Đơn vị tiền tệ chuẩn ISO 4217. |
+| `category` | `VARCHAR(30)` | NO | `'other'` | CHECK (`category IN ('food', 'stay', 'transport', 'sightseeing', 'shopping', 'other')`) | None | Phân loại danh mục chi tiêu. |
+| `receipt_url` | `TEXT` | YES | NULL | None | None | Đường dẫn HTTPS ảnh hóa đơn/bill trên Cloudinary. |
+| `split_strategy` | `VARCHAR(20)` | NO | `'equal'` | CHECK (`split_strategy IN ('equal', 'exact', 'percentage', 'shares')`) | None | Chiến lược phân chia tiền trong nhóm. |
+| `notes` | `VARCHAR(500)` | YES | NULL | None | None | Ghi chú thêm về khoản chi. |
+| `expense_date` | `TIMESTAMPTZ` | NO | `CURRENT_TIMESTAMP` | NOT NULL | B-Tree Index | Thời điểm phát sinh chi phí thực tế. |
+| `created_at` | `TIMESTAMPTZ` | NO | `CURRENT_TIMESTAMP` | NOT NULL | None | Thời điểm nhập khoản chi vào hệ thống. |
+| `updated_at` | `TIMESTAMPTZ` | NO | `CURRENT_TIMESTAMP` | NOT NULL | None | Thời điểm cập nhật khoản chi gần nhất. |
+
+---
+
+### 1.12 Bảng `trip_expense_splits` (Bảng phân chia khoản chi từng thành viên)
+* **Mục đích:** Ghi nhận nghĩa vụ tài chính chi tiết của từng thành viên trong nhóm đối với một khoản chi cụ thể.
+* **Khóa chính:** `id` (UUID).
+* **Khóa ngoại:** `expense_id` ➔ `trip_expenses(id)`, `user_id` ➔ `users(id)`.
+* **Ràng buộc duy nhất:** `UNIQUE(expense_id, user_id)` (Mỗi thành viên chỉ có 1 phần chia trên 1 khoản chi).
+
+| Tên trường | Kiểu dữ liệu | Nullable | Mặc định | Ràng buộc | Chỉ mục (Index) | Mô tả chi tiết |
+|---|---|:---:|---|---|:---:|---|
+| `id` | `UUID` | NO | `gen_random_uuid()` | PRIMARY KEY | PK Index | Định danh duy nhất phần chia. |
+| `expense_id` | `UUID` | NO | None | FOREIGN KEY CASCADE | B-Tree Index | Tham chiếu tới khoản chi `trip_expenses(id)`. |
+| `user_id` | `UUID` | NO | None | FOREIGN KEY RESTRICT | B-Tree Index | Thành viên có nghĩa vụ trả phần này `users(id)`. |
+| `split_amount` | `NUMERIC(12, 2)` | NO | None | CHECK (`split_amount >= 0`) | None | Số tiền phần chia của thành viên này (VND). |
+| `is_settled` | `BOOLEAN` | NO | `false` | NOT NULL | None | Đã quyết toán xong phần chi này chưa. |
+| `created_at` | `TIMESTAMPTZ` | NO | `CURRENT_TIMESTAMP` | NOT NULL | None | Thời điểm tạo bản ghi phân chia. |
+
+---
+
+### 1.13 Bảng `trip_settlements` (Bảng quyết toán công nợ giữa các thành viên)
+* **Mục đích:** Lưu trữ các giao dịch hoàn trả nợ trực tiếp (Settlement Transactions) giữa con nợ (Debtor) và chủ nợ (Creditor) theo thuật toán Greedy Min-Cashflow.
+* **Khóa chính:** `id` (UUID).
+* **Khóa ngoại:** `debtor_id` ➔ `users(id)`, `creditor_id` ➔ `users(id)`.
+* **Ràng buộc:** CHECK (`debtor_id <> creditor_id`).
+
+| Tên trường | Kiểu dữ liệu | Nullable | Mặc định | Ràng buộc | Chỉ mục (Index) | Mô tả chi tiết |
+|---|---|:---:|---|---|:---:|---|
+| `id` | `UUID` | NO | `gen_random_uuid()` | PRIMARY KEY | PK Index | Định danh duy nhất giao dịch quyết toán. |
+| `trip_id` | `VARCHAR(50)` | NO | None | NOT NULL | B-Tree Index | Tham chiếu chéo tới MongoDB `itineraries._id`. |
+| `debtor_id` | `UUID` | NO | None | FOREIGN KEY RESTRICT | B-Tree Index | Thành viên nợ tiền cần thanh toán `users(id)`. |
+| `creditor_id` | `UUID` | NO | None | FOREIGN KEY RESTRICT | B-Tree Index | Thành viên nhận lại tiền `users(id)`. |
+| `amount` | `NUMERIC(12, 2)` | NO | None | CHECK (`amount > 0`) | None | Số tiền chuyển khoản quyết toán (VND). |
+| `currency` | `CHAR(3)` | NO | `'VND'` | NOT NULL | None | Đơn vị tiền tệ. |
+| `status` | `VARCHAR(20)` | NO | `'pending'` | CHECK (`status IN ('pending', 'confirmed', 'rejected')`) | None | Trạng thái chuyển khoản: chờ duyệt, đã xác nhận, từ chối. |
+| `proof_image_url` | `TEXT` | YES | NULL | None | None | Đường dẫn HTTPS ảnh bill/ủy nhiệm chi chuyển khoản ngân hàng. |
+| `settled_at` | `TIMESTAMPTZ` | YES | NULL | None | None | Thời điểm chủ nợ xác nhận đã nhận đủ tiền. |
+| `created_at` | `TIMESTAMPTZ` | NO | `CURRENT_TIMESTAMP` | NOT NULL | None | Thời điểm ghi nhận giao dịch thanh toán. |
+
+---
+
 ## 2. TỪ ĐIỂN DỮ LIỆU MONGODB (DOCUMENT COLLECTIONS)
 
 ---
@@ -149,6 +229,12 @@ interface ItineraryDocument {
   budgetEstimate: number;            // 3500000 (VND)
   isPublic: boolean;                 // true/false [Indexed]
   cloneCount: number;                // 14 (Số lượt nhân bản)
+  collaborators: Array<{             // Danh sách bạn bè cùng tham gia và xem chung chuyến đi
+    userId: string;                  // UUID String tham chiếu PostgreSQL users(id) [Indexed]
+    role: "owner" | "editor" | "viewer"; // Phân quyền chỉnh sửa hoặc chỉ xem
+    joinedAt: Date;                  // Thời điểm tham gia chuyến đi
+    status: "pending" | "accepted" | "declined"; // Trạng thái chấp thuận
+  }>;
   days: Array<{                      // Mảng phân cấp các ngày trong chuyến đi
     dayNumber: number;               // 1, 2, 3...
     date: Date;                      // Ngày cụ thể
@@ -171,6 +257,7 @@ interface ItineraryDocument {
 
 * **Chỉ mục (MongoDB Compound Indexes):**
   * `db.itineraries.createIndex({ userId: 1, createdAt: -1 })`
+  * `db.itineraries.createIndex({ "collaborators.userId": 1 })`
   * `db.itineraries.createIndex({ city: 1, isPublic: 1, cloneCount: -1 })`
 
 ---

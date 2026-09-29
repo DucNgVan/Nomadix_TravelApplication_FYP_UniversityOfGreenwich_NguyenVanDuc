@@ -14,8 +14,8 @@ Thư mục này chứa đầy đủ hồ sơ khảo sát công nghệ, đánh gi
 
 | Mã Tài Liệu | Tên Tài Liệu | Nội Dung Cốt Lõi |
 |---|---|---|
-| **D5-01** | [**`01-technology-stack-evaluation.md`**](./01-technology-stack-evaluation.md) | **Báo cáo biện luận Tech Stack (Chapter 2 Thesis)**: Phân tích so sánh định lượng giữa React Native vs Flutter/Native, Node.js Non-blocking I/O vs Spring Boot/Django, Kiến trúc Polyglot Database (PostgreSQL + MongoDB + Redis) và các thư viện React Native phần cứng. |
-| **D5-02** | [**`02-api-feasibility-matrix.md`**](./02-api-feasibility-matrix.md) | **Ma trận khảo sát khả dụng API bên ngoài**: Chi tiết Endpoints, Hạn ngạch Quotas, Cơ chế Auth và Giải pháp quản lý rủi ro đối với Amadeus Sandbox (2,000 free calls), RapidAPI, Google Maps ($200 credit) và Cloudinary CDN (25 credits/tháng). |
+| **D5-01** | [**`01-technology-stack-evaluation.md`**](./01-technology-stack-evaluation.md) | **Báo cáo biện luận Tech Stack (Chapter 2 Thesis)**: Phân tích so sánh định lượng giữa React Native vs Flutter/Native, Node.js vs Spring Boot/Django, Kiến trúc Polyglot Database (PostgreSQL + MongoDB + Redis), **Thuật toán Cân bằng Công nợ Greedy Min-Cashflow** và các thư viện React Native phần cứng & xử lý ảnh hóa đơn. |
+| **D5-02** | [**`02-api-feasibility-matrix.md`**](./02-api-feasibility-matrix.md) | **Ma trận khảo sát khả dụng API bên ngoài**: Chi tiết Endpoints, Hạn ngạch Quotas, Cơ chế Auth và Giải pháp quản lý rủi ro đối với Amadeus Sandbox (2,000 free calls), RapidAPI, Google Maps ($200 credit) và Cloudinary CDN lưu trữ ảnh địa danh & hóa đơn chi tiêu. |
 | **D5-03** | [**`03-mock-provider-design.md`**](./03-mock-provider-design.md) | **Kiến trúc cỗ máy Mock Data Provider Engine**: Cơ chế tự động chuyển mạch Circuit Breaker khi API thật bị timeout/hết quota, cấu trúc dữ liệu mẫu các chuyến bay và khách sạn thật tại Việt Nam, giả lập độ trễ mạng $300\text{ms}$. |
 
 ---
