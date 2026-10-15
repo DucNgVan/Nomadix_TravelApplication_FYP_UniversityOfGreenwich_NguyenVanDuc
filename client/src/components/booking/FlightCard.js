@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useThemeStore } from '../../stores/theme.store';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
@@ -17,23 +18,71 @@ const formatCurrency = (amount) => {
 
 export default function FlightCard({ flight, onSelect, testID }) {
   if (!flight) return null;
+  const { mode, colors: themeColors } = useThemeStore();
+  const [imageError, setImageError] = useState(false);
 
   const isDirect = flight.stops === 0;
   const stopsText = isDirect ? 'Bay thẳng' : `${flight.stops} điểm dừng`;
   const priceAmount = flight.price?.amount ?? 0;
 
+  const carrierCode = (flight.airlineCode || (flight.flightNumber ? flight.flightNumber.slice(0, 2) : 'VN')).toUpperCase();
+  const badgeColor = carrierCode === 'VJ' ? '#E11B22' : carrierCode === 'SQ' ? '#D97706' : '#007AFF';
+  const aircraft = flight.aircraft || (flight.flightNumber?.includes('VN-0240') ? 'Airbus A350-900' : 'Airbus A321');
+  const logoUri = flight.airlineLogo || `https://images.kiwi.com/airlines/64x64/${carrierCode}.png`;
+  const baggageText = flight.baggageSummary || '1 kiện ký gửi (20kg) • 1 kiện xách tay (7kg)';
+
+  // Format departure / arrival times
+  const depTime = flight.departureTime
+    ? flight.departureTime.includes('T')
+      ? flight.departureTime.slice(11, 16)
+      : flight.departureTime
+    : '07:00';
+
+  const arrTime = flight.arrivalTime
+    ? flight.arrivalTime.includes('T')
+      ? flight.arrivalTime.slice(11, 16)
+      : flight.arrivalTime
+    : '09:10';
+
+  const baggageTransferText = !isDirect
+    ? flight.baggageTransfer || (flight.baggageTransferType === 'manual' ? '⚠️ Tự chuyển hành lý' : '🔄 Chuyển hành lý tự động')
+    : null;
+
   return (
     <TouchableOpacity
-      testID={testID}
+      testID={testID || (flight?.id ? `flight-card-${flight.id}` : undefined)}
       activeOpacity={0.85}
       onPress={() => onSelect && onSelect(flight)}
-      style={styles.card}
+      style={[
+        styles.card,
+        {
+          backgroundColor: themeColors.card,
+          borderColor: themeColors.border,
+        },
+      ]}
     >
+      {/* Header Row: Airline Logo Image & Flight Number + Direct Badge */}
       <View style={styles.headerRow}>
-        <View>
-          <Text style={styles.airlineName}>{flight.airlineName}</Text>
-          <Text style={styles.flightNumber}>{flight.flightNumber}</Text>
+        <View style={styles.carrierInfo}>
+          {logoUri && !imageError ? (
+            <Image
+              testID="airline-logo-image"
+              source={{ uri: logoUri }}
+              style={styles.carrierLogoImage}
+              resizeMode="contain"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <View style={[styles.carrierBadge, { backgroundColor: badgeColor }]}>
+              <Text style={styles.carrierBadgeText}>{carrierCode}</Text>
+            </View>
+          )}
+          <View>
+            <Text style={[styles.airlineName, { color: themeColors.text }]}>{flight.airlineName}</Text>
+            <Text style={[styles.flightNumber, { color: themeColors.textMuted }]}>{flight.flightNumber} • {aircraft}</Text>
+          </View>
         </View>
+
         <View style={[styles.badge, isDirect ? styles.directBadge : styles.stopsBadge]}>
           <Text style={[styles.badgeText, isDirect ? styles.directBadgeText : styles.stopsBadgeText]}>
             {stopsText}
@@ -41,34 +90,70 @@ export default function FlightCard({ flight, onSelect, testID }) {
         </View>
       </View>
 
-      <View style={styles.routeRow}>
+      {/* Route Timeline */}
+      <View style={[styles.routeRow, { borderTopColor: themeColors.border, borderBottomColor: themeColors.border }]}>
         <View style={styles.stationBlock}>
-          <Text style={styles.airportCode}>{flight.origin}</Text>
-          {flight.departureTime ? (
-            <Text style={styles.timeText}>
-              {new Date(flight.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-            </Text>
-          ) : null}
+          <Text style={[styles.timeText, { color: themeColors.text }]}>{depTime}</Text>
+          <Text style={[styles.airportCode, { color: themeColors.textMuted }]}>{flight.origin}</Text>
         </View>
 
         <View style={styles.middleRoute}>
-          <Text style={styles.durationText}>{formatDuration(flight.durationMinutes)}</Text>
-          <View style={styles.routeLine} />
-          <Text style={styles.cabinClassText}>{flight.cabinClass || 'ECONOMY'}</Text>
+          <Text style={[styles.durationText, { color: themeColors.textMuted }]}>{formatDuration(flight.durationMinutes)}</Text>
+          <View style={styles.routeLineContainer}>
+            <View style={[styles.routeLine, !isDirect && styles.routeLineTransit]} />
+            {isDirect ? (
+              <Text
+                testID="route-plane-icon"
+                style={[
+                  styles.planeIcon,
+                  {
+                    backgroundColor: themeColors.card,
+                    color: themeColors.primary,
+                  },
+                ]}
+              >
+                ✈
+              </Text>
+            ) : (
+              <View style={styles.stopsContainer}>
+                {Array.from({ length: Math.max(1, flight.stops || 1) }).map((_, idx) => (
+                  <View
+                    key={idx}
+                    testID={`stop-dot-${idx}`}
+                    style={[
+                      styles.stopDot,
+                      {
+                        backgroundColor: '#D97706',
+                        borderColor: themeColors.card,
+                      },
+                    ]}
+                  />
+                ))}
+              </View>
+            )}
+          </View>
+          <Text style={[styles.transitNote, isDirect ? styles.directNote : styles.transitNoteText]}>
+            {isDirect ? 'Không dừng' : 'Nối chuyến'}
+          </Text>
         </View>
 
         <View style={[styles.stationBlock, styles.alignRight]}>
-          <Text style={styles.airportCode}>{flight.destination}</Text>
-          {flight.arrivalTime ? (
-            <Text style={styles.timeText}>
-              {new Date(flight.arrivalTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-            </Text>
-          ) : null}
+          <Text style={[styles.timeText, { color: themeColors.text }]}>{arrTime}</Text>
+          <Text style={[styles.airportCode, { color: themeColors.textMuted }]}>{flight.destination}</Text>
         </View>
       </View>
 
+      {/* Rich Metadata: Baggage info & Baggage transfer status */}
+      <View style={[styles.baggageRow, { backgroundColor: mode === 'dark' ? '#273549' : '#F8FAFC' }]}>
+        <Text style={[styles.baggageText, { color: themeColors.textMuted }]}>
+          🧳 {baggageText}
+          {baggageTransferText ? ` • ${baggageTransferText}` : ''}
+        </Text>
+      </View>
+
+      {/* Footer Row: CTA Hint & Localized Price */}
       <View style={styles.footerRow}>
-        <Text style={styles.priceLabel}>Giá mỗi khách</Text>
+        <Text style={[styles.actionHint, { color: themeColors.primary }]}>Ấn để xem chi tiết & đặt Sandbox →</Text>
         <Text style={styles.priceAmount}>{formatCurrency(priceAmount)}</Text>
       </View>
     </TouchableOpacity>
@@ -77,108 +162,194 @@ export default function FlightCard({ flight, onSelect, testID }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     padding: 16,
-    marginVertical: 8,
+    marginVertical: 6,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E5EA',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: 12,
   },
+  carrierInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  carrierLogoImage: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+  },
+  carrierBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  carrierBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '900',
+  },
+  baggageRow: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginVertical: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  baggageText: {
+    fontSize: 11,
+    color: '#64748B',
+    fontWeight: '600',
+  },
   airlineName: {
-    ...typography.h3,
-    color: colors.text,
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#1C1C1E',
   },
   flightNumber: {
-    ...typography.caption,
-    color: colors.textMuted,
-    marginTop: 2,
+    fontSize: 11,
+    color: '#8E8E93',
+    fontWeight: '600',
+    marginTop: 1,
   },
   badge: {
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
   },
   directBadge: {
-    backgroundColor: 'rgba(48, 209, 88, 0.15)',
-  },
-  directBadgeText: {
-    ...typography.caption,
-    color: colors.success,
-    fontWeight: '600',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#D1FAE5',
   },
   stopsBadge: {
-    backgroundColor: 'rgba(255, 214, 10, 0.15)',
+    backgroundColor: '#FFFBEB',
+    borderWidth: 1,
+    borderColor: '#FEE3B8',
+  },
+  badgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  directBadgeText: {
+    color: '#059669',
   },
   stopsBadgeText: {
-    ...typography.caption,
-    color: colors.warning,
-    fontWeight: '600',
+    color: '#D97706',
   },
   routeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
+    paddingVertical: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#F2F2F7',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F2F2F7',
   },
   stationBlock: {
-    minWidth: 60,
+    minWidth: 50,
   },
   alignRight: {
     alignItems: 'flex-end',
   },
-  airportCode: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-  },
   timeText: {
-    ...typography.caption,
-    color: colors.textMuted,
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#1C1C1E',
+  },
+  airportCode: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#8E8E93',
     marginTop: 2,
   },
   middleRoute: {
-    alignItems: 'center',
     flex: 1,
-    paddingHorizontal: 12,
+    alignItems: 'center',
+    paddingHorizontal: 16,
   },
   durationText: {
-    ...typography.caption,
-    color: colors.textMuted,
-    fontWeight: '500',
+    fontSize: 11,
+    color: '#8E8E93',
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  routeLineContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 2,
+    position: 'relative',
   },
   routeLine: {
-    height: 1.5,
-    backgroundColor: colors.border,
     width: '100%',
-    marginVertical: 4,
+    height: 1,
+    backgroundColor: '#E5E5EA',
   },
-  cabinClassText: {
-    fontSize: 11,
-    color: colors.textMuted,
-    textTransform: 'uppercase',
+  routeLineTransit: {
+    backgroundColor: '#FDE68A',
+  },
+  planeIcon: {
+    position: 'absolute',
+    fontSize: 10,
+    color: '#007AFF',
+    paddingHorizontal: 4,
+  },
+  stopsContainer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%',
+    alignItems: 'center',
+  },
+  stopDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: '#D97706',
+    borderWidth: 1.5,
+  },
+  transitNote: {
+    fontSize: 9,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  directNote: {
+    color: '#059669',
+  },
+  transitNoteText: {
+    color: '#D97706',
   },
   footerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 12,
+    paddingTop: 10,
   },
-  priceLabel: {
-    ...typography.caption,
-    color: colors.textMuted,
+  actionHint: {
+    fontSize: 10,
+    color: '#8E8E93',
+    fontWeight: '500',
   },
   priceAmount: {
-    ...typography.h3,
-    color: colors.primary,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#007AFF',
   },
 });

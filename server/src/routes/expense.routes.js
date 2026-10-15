@@ -25,6 +25,11 @@ router.get('/:tripId/expenses', (req, res, next) =>
   expenseController.getExpenses(req, res, next)
 );
 
+// Debt Summary & Aggregate Balance Sheet
+router.get('/:tripId/debts', (req, res, next) =>
+  expenseController.getDebts(req, res, next)
+);
+
 // Debt Simplification Plan
 router.get('/:tripId/debts/settlement-plan', (req, res, next) =>
   expenseController.getSettlementPlan(req, res, next)

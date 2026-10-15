@@ -1,6 +1,8 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import HotelCard from '../../src/components/booking/HotelCard';
+import { useThemeStore } from '../../src/stores/theme.store';
 
 describe('Component Test: HotelCard', () => {
   const mockHotel = {
@@ -59,5 +61,18 @@ describe('Component Test: HotelCard', () => {
 
     // Verify pressing without onSelect does not crash
     fireEvent.press(getByTestId('minimal-hotel'));
+  });
+
+  test('RED-FE-TH-03: HotelCard dynamically renders dark background (#1E293B) and border (#334155) in Dark Mode', () => {
+    useThemeStore.getState().setThemeMode('dark');
+    const { getByTestId } = render(
+      <HotelCard hotel={mockHotel} testID="hotel-card-theme" />
+    );
+    const card = getByTestId('hotel-card-theme');
+    const flatStyle = StyleSheet.flatten(card.props.style);
+    expect(flatStyle.backgroundColor).toBe('#1E293B');
+    expect(flatStyle.borderColor).toBe('#334155');
+
+    useThemeStore.getState().setThemeMode('light');
   });
 });

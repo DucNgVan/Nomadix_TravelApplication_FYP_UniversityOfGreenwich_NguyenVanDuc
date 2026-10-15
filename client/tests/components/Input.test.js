@@ -1,6 +1,8 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import Input from '../../src/components/common/Input';
+import { useThemeStore } from '../../src/stores/theme.store';
 
 describe('Component Test: Input', () => {
   test('should render label, placeholder, and handle text changes', () => {
@@ -26,5 +28,20 @@ describe('Component Test: Input', () => {
     );
 
     expect(getByText('Invalid email address')).toBeTruthy();
+  });
+
+  test('RED-FE-TH-02: Input dynamically renders dark background (#1E293B), border (#334155), and white text in Dark Mode', () => {
+    useThemeStore.getState().setThemeMode('dark');
+    const { getByTestId } = render(
+      <Input placeholder="Enter email" testID="test-themed-input" />
+    );
+    const input = getByTestId('test-themed-input');
+    const flatStyle = StyleSheet.flatten(input.props.style);
+    expect(flatStyle.backgroundColor).toBe('#1E293B');
+    expect(flatStyle.borderColor).toBe('#334155');
+    expect(flatStyle.color).toBe('#FFFFFF');
+    expect(input.props.placeholderTextColor).toBe('#94A3B8');
+
+    useThemeStore.getState().setThemeMode('light');
   });
 });

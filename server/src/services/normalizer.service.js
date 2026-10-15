@@ -17,11 +17,25 @@ class NormalizerService {
       durationMinutes = hours * 60 + mins;
     }
 
+    const airlineCode = (raw.airlineCode || 'VN').toUpperCase();
+    const fallbackLogo = `https://images.kiwi.com/airlines/64x64/${airlineCode}.png`;
+    const aircraft = raw.aircraft || (raw.flightNumber?.includes('VN-0240') ? 'Airbus A350-900' : 'Airbus A321');
+    const baggageSummary = raw.baggageSummary || '1 kiện ký gửi (20kg) • 1 kiện xách tay (7kg)';
+
     return {
       id: raw.id || crypto.randomUUID(),
       provider: raw.provider || 'UNKNOWN',
-      airlineCode: (raw.airlineCode || 'VN').toUpperCase(),
+      airlineCode,
       airlineName: raw.airlineName || 'Airline Partner',
+      airlineLogo: raw.airlineLogo || fallbackLogo,
+      airlineLogoSvg: raw.airlineLogoSvg || null,
+      airlineLogoLockup: raw.airlineLogoLockup || null,
+      conditionsUrl: raw.conditionsUrl || null,
+      aircraft,
+      originAirportName: raw.originAirportName || raw.origin || '',
+      destinationAirportName: raw.destinationAirportName || raw.destination || '',
+      originCity: raw.originCity || '',
+      destinationCity: raw.destinationCity || '',
       flightNumber: raw.flightNumber || 'VN-000',
       origin: (raw.origin || '').toUpperCase(),
       destination: (raw.destination || '').toUpperCase(),
@@ -29,7 +43,17 @@ class NormalizerService {
       arrivalTime: raw.arrivalTime,
       durationMinutes: durationMinutes || 90,
       stops: typeof raw.stops === 'number' ? raw.stops : 0,
+      baggageTransfer: raw.baggageTransfer || (typeof raw.stops === 'number' && raw.stops > 0
+        ? (raw.baggageTransferType === 'manual' || raw.selfTransfer ? 'Tự chuyển hành lý (Thủ công)' : 'Chuyển hành lý tự động')
+        : null),
+      baggageTransferType: raw.baggageTransferType || (typeof raw.stops === 'number' && raw.stops > 0
+        ? (raw.selfTransfer ? 'manual' : 'automatic')
+        : null),
       cabinClass: (raw.cabinClass || 'ECONOMY').toUpperCase(),
+      cabinMarketingName: raw.cabinMarketingName || (raw.cabinClass || 'ECONOMY').toUpperCase(),
+      baggages: raw.baggages || [],
+      baggageSummary,
+      emissionsKg: raw.emissionsKg || null,
       price: {
         currency: 'VND',
         amount: Math.round(raw.price?.amount || 0),

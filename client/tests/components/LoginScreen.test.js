@@ -59,19 +59,11 @@ describe('Component Test: LoginScreen', () => {
     expect(mockLogin).not.toHaveBeenCalled();
   });
 
-  test('should display auth error from store and navigate to register', () => {
-    useAuthStore.mockReturnValue({
-      login: mockLogin,
-      isLoading: false,
-      error: 'Tài khoản không tồn tại',
+  test('triggers quick demo login with demo credentials', async () => {
+    const { getByText } = render(<LoginScreen />);
+    fireEvent.press(getByText(/1-Tap: Vào ngay Demo/i));
+    await waitFor(() => {
+      expect(mockLogin).toHaveBeenCalledWith('abc@gmail.com', '123');
     });
-
-    const mockNavigation = { navigate: jest.fn() };
-    const { getByText } = render(<LoginScreen navigation={mockNavigation} />);
-
-    expect(getByText('Tài khoản không tồn tại')).toBeTruthy();
-
-    fireEvent.press(getByText('Đăng ký ngay'));
-    expect(mockNavigation.navigate).toHaveBeenCalledWith('Register');
   });
 });

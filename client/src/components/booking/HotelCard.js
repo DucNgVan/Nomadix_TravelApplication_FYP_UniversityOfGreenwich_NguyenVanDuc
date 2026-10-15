@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useThemeStore } from '../../stores/theme.store';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
@@ -10,18 +11,25 @@ const formatCurrency = (amount) => {
 
 export default function HotelCard({ hotel, onSelect, testID }) {
   if (!hotel) return null;
+  const { colors: themeColors } = useThemeStore();
 
   return (
     <TouchableOpacity
       testID={testID}
       activeOpacity={0.85}
       onPress={() => onSelect && onSelect(hotel)}
-      style={styles.card}
+      style={[
+        styles.card,
+        {
+          backgroundColor: themeColors.card,
+          borderColor: themeColors.border,
+        },
+      ]}
     >
       <View style={styles.headerRow}>
         <View style={styles.titleContainer}>
-          <Text style={styles.hotelName}>{hotel.name}</Text>
-          <Text style={styles.addressText} numberOfLines={1}>{hotel.address}</Text>
+          <Text style={[styles.hotelName, { color: themeColors.text }]}>{hotel.name}</Text>
+          <Text style={[styles.addressText, { color: themeColors.textMuted }]} numberOfLines={1}>{hotel.address}</Text>
         </View>
         <View style={styles.ratingBadge}>
           <Text style={styles.ratingText}>{hotel.starRating} sao ★</Text>
@@ -35,18 +43,18 @@ export default function HotelCard({ hotel, onSelect, testID }) {
           </View>
         ) : null}
         {hotel.nights ? (
-          <Text style={styles.nightsText}>{hotel.nights} đêm</Text>
+          <Text style={[styles.nightsText, { color: themeColors.textMuted }]}>{hotel.nights} đêm</Text>
         ) : null}
       </View>
 
-      <View style={styles.footerRow}>
+      <View style={[styles.footerRow, { borderTopColor: themeColors.border }]}>
         <View>
-          <Text style={styles.pricePerNightText}>
+          <Text style={[styles.pricePerNightText, { color: themeColors.textMuted }]}>
             {formatCurrency(hotel.pricePerNight)} / đêm
           </Text>
         </View>
         <View style={styles.totalBlock}>
-          <Text style={styles.totalLabel}>Tổng cộng:</Text>
+          <Text style={[styles.totalLabel, { color: themeColors.textMuted }]}>Tổng cộng:</Text>
           <Text style={styles.totalPriceText}>
             {formatCurrency(hotel.totalPrice || hotel.pricePerNight)}
           </Text>

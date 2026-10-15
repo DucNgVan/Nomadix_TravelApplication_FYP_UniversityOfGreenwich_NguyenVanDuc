@@ -128,4 +128,18 @@ describe('Integration Test: Group Expense CRUD Endpoints', () => {
     expect(res.body.data.receiptUrl).toBeDefined();
     expect(typeof res.body.data.receiptUrl).toBe('string');
   });
+
+  test('RED-EXP-13: GET /api/v1/trips/:tripId/debts should return aggregated debts and simplified settlements', async () => {
+    const res = await request(app)
+      .get(`/api/v1/trips/${testTripId}/debts`)
+      .set('Authorization', `Bearer ${tripOwnerToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty('totalExpense');
+    expect(res.body.data).toHaveProperty('memberBalances');
+    expect(res.body.data).toHaveProperty('simplifiedSettlements');
+    expect(Array.isArray(res.body.data.memberBalances)).toBe(true);
+    expect(Array.isArray(res.body.data.simplifiedSettlements)).toBe(true);
+  });
 });

@@ -133,4 +133,15 @@ describe('Unit Test: Expense Store (Group Expense Splitting & Greedy Debt Simpli
     await expect(useExpenseStore.getState().settleDebt('t-1', {})).rejects.toBeDefined();
     expect(useExpenseStore.getState().error).toBe('Lỗi khi thanh toán công nợ');
   });
+
+  test('should handle object payload and default empty array in fetchTripExpenses', async () => {
+    apiClient.get.mockResolvedValueOnce({ expenses: [{ id: 'e-obj', title: 'Coffee' }] });
+    const list = await useExpenseStore.getState().fetchTripExpenses('t-1');
+    expect(list.length).toBe(1);
+    expect(useExpenseStore.getState().expenses[0].id).toBe('e-obj');
+
+    apiClient.get.mockResolvedValueOnce({});
+    const emptyList = await useExpenseStore.getState().fetchTripExpenses('t-1');
+    expect(emptyList).toEqual([]);
+  });
 });

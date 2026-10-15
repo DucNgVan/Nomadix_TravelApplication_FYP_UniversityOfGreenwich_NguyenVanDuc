@@ -28,6 +28,7 @@ class DuffelProvider {
           'Duffel-Version': 'v2',
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          Connection: 'close',
         },
         body: JSON.stringify({
           data: {
@@ -77,14 +78,32 @@ class DuffelProvider {
         amount = Math.round(amount * 27000);
       }
 
-      const carrierCode = segment.operating_carrier.iata_code;
-      const flightNum = `${carrierCode}-${segment.operating_carrier_flight_number}`;
+      const carrierCode = segment.operating_carrier.iata_code || owner.iata_code;
+      const flightNum = `${carrierCode}-${segment.operating_carrier_flight_number || '100'}`;
+
+      // Baggage summary computation
+      const passenger = segment.passengers?.[0];
+      const baggages = passenger?.baggages || [];
+      const checkedBags = baggages.filter((b) => b.type === 'checked');
+      const carryOnBags = baggages.filter((b) => b.type === 'carry_on');
+      const baggageSummary = checkedBags.length > 0
+        ? `${checkedBags.length} kiện ký gửi (${checkedBags.length * 20}kg) • ${carryOnBags.length || 1} kiện xách tay (7kg)`
+        : '1 kiện xách tay (7kg)';
 
       return {
         id: offer.id,
         provider: 'DUFFEL',
         airlineCode: owner.iata_code,
         airlineName: owner.name,
+        airlineLogo: `https://images.kiwi.com/airlines/64x64/${owner.iata_code}.png`,
+        airlineLogoSvg: owner.logo_symbol_url || `https://assets.duffel.com/img/airlines/for-light-background/full-color-logo/${owner.iata_code}.svg`,
+        airlineLogoLockup: owner.logo_lockup_url || null,
+        conditionsUrl: owner.conditions_of_carriage_url || null,
+        aircraft: segment.aircraft?.name || 'Airbus A321',
+        originAirportName: slice.origin?.name || origin.toUpperCase(),
+        destinationAirportName: slice.destination?.name || destination.toUpperCase(),
+        originCity: slice.origin?.city_name || origin.toUpperCase(),
+        destinationCity: slice.destination?.city_name || destination.toUpperCase(),
         flightNumber: flightNum,
         origin: origin.toUpperCase(),
         destination: destination.toUpperCase(),
@@ -92,7 +111,17 @@ class DuffelProvider {
         arrivalTime: segment.arriving_at,
         durationMinutes: this._parseDuration(slice.duration),
         stops: slice.segments.length - 1,
+        baggageTransfer: slice.segments.length > 1
+          ? (offer.is_self_transfer ? 'Tự chuyển hành lý (Thủ công)' : 'Chuyển hành lý tự động')
+          : null,
+        baggageTransferType: slice.segments.length > 1
+          ? (offer.is_self_transfer ? 'manual' : 'automatic')
+          : null,
         cabinClass: offer.cabin_class,
+        cabinMarketingName: passenger?.cabin_class_marketing_name || 'Economy Standard',
+        baggages,
+        baggageSummary,
+        emissionsKg: offer.total_emissions_kg || null,
         price: {
           currency: 'VND',
           amount,

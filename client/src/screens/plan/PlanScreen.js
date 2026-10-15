@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,11 +12,16 @@ import {
 } from 'react-native';
 import { useItineraryStore } from '../../stores/itinerary.store';
 import { useExpenseStore } from '../../stores/expense.store';
+import { usePlacesStore } from '../../stores/places.store';
+import { useThemeStore } from '../../stores/theme.store';
+import PlanMapDiscovery from '../../components/plan/PlanMapDiscovery';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
 export default function PlanScreen() {
-  const [activeSubTab, setActiveSubTab] = useState('itinerary'); // 'itinerary' | 'expense'
+  const { mode, colors: themeColors } = useThemeStore();
+  const styles = React.useMemo(() => getStyles(themeColors), [themeColors]);
+  const [activeSubTab, setActiveSubTab] = useState('itinerary'); // 'map' | 'itinerary' | 'expense'
   const [selectedDayIndex, setSelectedDayIndex] = useState(1);
 
   // Invite Companion Modal State
@@ -29,12 +34,36 @@ export default function PlanScreen() {
   const [stopName, setStopName] = useState('');
   const [stopTime, setStopTime] = useState('');
   const [stopDuration, setStopDuration] = useState('90');
+  // Create Trip Modal State
+  const [createTripModalVisible, setCreateTripModalVisible] = useState(false);
+  const [createTripError, setCreateTripError] = useState('');
+  const [newTripTitle, setNewTripTitle] = useState('');
+  const [newTripDest, setNewTripDest] = useState('');
+  const [newTripStartDate, setNewTripStartDate] = useState('2026-11-01');
+  const [newTripEndDate, setNewTripEndDate] = useState('2026-11-03');
 
   const {
     currentTrip,
+    trips,
+    fetchTrips,
     inviteCompanion,
     addStop,
+    createTrip,
+    applyAiPlan,
   } = useItineraryStore();
+
+  useEffect(() => {
+    try {
+      const p = fetchTrips?.();
+      if (p && typeof p.catch === 'function') {
+        p.catch(() => {});
+      }
+    } catch {
+      // Ignored
+    }
+  }, []);
+
+  const placesStore = usePlacesStore();
 
   const {
     expenses,
@@ -42,47 +71,57 @@ export default function PlanScreen() {
     settleDebt,
   } = useExpenseStore();
 
-  const trip = currentTrip || {
-    id: 'default-trip',
-    title: 'Khám phá Đà Nẵng - Hội An',
-    destination: 'Đà Nẵng',
-    startDate: '2026-10-15',
-    endDate: '2026-10-17',
-    collaborators: [
-      { userId: 'u-1', fullName: 'Đức Nguyễn (Bạn)', role: 'OWNER', status: 'ACCEPTED' },
-      { userId: 'u-2', fullName: 'Hoàng Nam', role: 'EDITOR', status: 'ACCEPTED' },
-    ],
-    days: [
-      {
-        dayIndex: 1,
-        date: '2026-10-15',
-        items: [
-          {
-            id: 'item-1',
-            name: 'Bán đảo Sơn Trà',
-            arrivalTime: '09:00',
-            durationMinutes: 90,
-            transitToNext: { mode: 'DRIVING', distanceKm: 8.5, durationMinutes: 18 },
-          },
-          {
-            id: 'item-2',
-            name: 'Chùa Linh Ứng',
-            arrivalTime: '11:00',
-            durationMinutes: 60,
-          },
-        ],
-      },
-      {
-        dayIndex: 2,
-        date: '2026-10-16',
-        items: [],
-      },
-    ],
+  const rawTrip = currentTrip || (trips && trips.length > 0 ? trips[0] : null);
+  const trip = rawTrip?.itinerary || rawTrip;
+
+  const handleGenerateAiPlan = async (selectedList) => {
+    try {
+      let durationDays = 3;
+      if (trip?.startDate && trip?.endDate) {
+        const diff =
+          Math.ceil(
+            Math.abs(new Date(trip.endDate) - new Date(trip.startDate)) /
+              (1000 * 60 * 60 * 24)
+          ) + 1;
+        if (diff > 0) durationDays = diff;
+      }
+
+      const aiPlan = await placesStore.generateAiPlan?.(durationDays, selectedList);
+      if (aiPlan?.days && trip?.id) {
+        applyAiPlan?.(trip.id, aiPlan.days);
+      }
+      setActiveSubTab('itinerary');
+    } catch {
+      setActiveSubTab('itinerary');
+    }
+  };
+
+  const handleCreateTrip = async () => {
+    if (!newTripTitle.trim() || !newTripDest.trim()) {
+      setCreateTripError('Vui lòng nhập tên chuyến đi và điểm đến');
+      return;
+    }
+    setCreateTripError('');
+    try {
+      await createTrip?.({
+        title: newTripTitle.trim(),
+        destination: newTripDest.trim(),
+        destinationCity: newTripDest.trim(),
+        startDate: newTripStartDate || '2026-11-01',
+        endDate: newTripEndDate || '2026-11-03',
+      });
+      setNewTripTitle('');
+      setNewTripDest('');
+      setCreateTripError('');
+      setCreateTripModalVisible(false);
+    } catch (err) {
+      setCreateTripError(err?.message || 'Lỗi khi tạo chuyến đi');
+    }
   };
 
   const currentDay =
-    trip.days?.find((d) => d.dayIndex === selectedDayIndex) ||
-    trip.days?.[0] || { items: [] };
+    trip?.days?.find((d) => (d.dayIndex ?? d.dayNumber) === selectedDayIndex) ||
+    trip?.days?.[0] || { items: [] };
 
   const handleInvite = async () => {
     if (!inviteEmail.trim()) return;
@@ -133,19 +172,189 @@ export default function PlanScreen() {
     return num.toLocaleString('vi-VN') + ' đ';
   };
 
+  const renderCreateTripModal = () => (
+    <Modal
+      visible={createTripModalVisible}
+      transparent
+      animationType="slide"
+      onRequestClose={() => setCreateTripModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Tạo kế hoạch chuyến đi</Text>
+          <Text style={styles.modalSubtitle}>Nhập thông tin hành trình của bạn</Text>
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Tên chuyến đi (VD: Hành trình Đà Lạt 3 ngày)"
+            placeholderTextColor={themeColors.textMuted}
+            value={newTripTitle}
+            onChangeText={setNewTripTitle}
+          />
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Điểm đến (VD: Đà Lạt)"
+            placeholderTextColor={themeColors.textMuted}
+            value={newTripDest}
+            onChangeText={setNewTripDest}
+          />
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Ngày bắt đầu (YYYY-MM-DD)"
+            placeholderTextColor={themeColors.textMuted}
+            value={newTripStartDate}
+            onChangeText={setNewTripStartDate}
+          />
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Ngày kết thúc (YYYY-MM-DD)"
+            placeholderTextColor={themeColors.textMuted}
+            value={newTripEndDate}
+            onChangeText={setNewTripEndDate}
+          />
+          {createTripError ? (
+            <Text style={{ color: '#EF4444', fontSize: 13, marginBottom: 12, textAlign: 'center', fontWeight: '500' }}>
+              {createTripError}
+            </Text>
+          ) : null}
+          <View style={styles.modalActionsRow}>
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={() => setCreateTripModalVisible(false)}
+            >
+              <Text style={styles.modalCancelText}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalSubmitButton}
+              onPress={handleCreateTrip}
+            >
+              <Text style={styles.modalSubmitText}>Tạo chuyến đi</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  if (!trip) {
+    if (activeSubTab === 'map') {
+      return (
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <TouchableOpacity
+                onPress={() => setActiveSubTab('itinerary')}
+                style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, backgroundColor: themeColors.card }}
+              >
+                <Text style={{ color: themeColors.primary, fontWeight: 'bold' }}>← Quay lại</Text>
+              </TouchableOpacity>
+              <Text style={styles.title}>Khám phá địa điểm</Text>
+              <View style={{ width: 60 }} />
+            </View>
+            <PlanMapDiscovery
+              places={placesStore.places}
+              selectedPlaceIds={placesStore.selectedPlaceIds}
+              onTogglePlace={placesStore.togglePlaceSelection}
+              onGenerateAiPlan={(selectedList) => {
+                setCreateTripError('');
+                setCreateTripModalVisible(true);
+              }}
+            />
+            {renderCreateTripModal()}
+          </View>
+        </SafeAreaView>
+      );
+    }
+
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Kế hoạch chuyến đi</Text>
+            <Text style={styles.subtitle}>Lên lịch trình & quản lý chi tiêu nhóm thông minh</Text>
+          </View>
+          <View style={styles.emptyPlanContainer}>
+            <Text style={styles.emptyPlanIcon}>🗺️</Text>
+            <Text style={styles.emptyPlanTitle}>Chưa có kế hoạch nào</Text>
+            <Text style={styles.emptyPlanSubtitle}>
+              Bắt đầu tạo kế hoạch chuyến đi đầu tiên của bạn để lập lịch trình và chia sẻ chi phí cùng bạn bè.
+            </Text>
+            <TouchableOpacity
+              style={styles.createTripBtn}
+              onPress={() => {
+                setCreateTripError('');
+                setCreateTripModalVisible(true);
+              }}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.createTripBtnText}>+ Tạo kế hoạch mới</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.createTripBtn,
+                {
+                  backgroundColor: 'transparent',
+                  borderWidth: 1,
+                  borderColor: themeColors.primary,
+                  marginTop: 12,
+                },
+              ]}
+              onPress={() => setActiveSubTab('map')}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.createTripBtnText, { color: themeColors.primary }]}>
+                🗺️ Khám phá bản đồ trước
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {renderCreateTripModal()}
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Kế hoạch chuyến đi</Text>
-          <Text style={styles.subtitle}>
-            {trip.destination} • {trip.startDate} - {trip.endDate}
-          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View>
+              <Text style={styles.title}>Kế hoạch chuyến đi</Text>
+              <Text style={styles.subtitle}>
+                {(trip.destinationCity || trip.destination || 'Chưa đặt tên')} • {trip.startDate} - {trip.endDate}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.headerNewTripBtn}
+              onPress={() => setCreateTripModalVisible(true)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.headerNewTripText}>+ Tạo mới</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {/* Sub-Tab Switcher: Itinerary & Squad vs Expenses & Splitting */}
+        {/* Sub-Tab Switcher: Map Discovery vs Itinerary & Squad vs Expenses & Splitting */}
         <View style={styles.subTabBar}>
+          <TouchableOpacity
+            style={[
+              styles.subTabButton,
+              activeSubTab === 'map' && styles.subTabButtonActive,
+            ]}
+            onPress={() => setActiveSubTab('map')}
+            activeOpacity={0.8}
+          >
+            <Text
+              style={[
+                styles.subTabLabel,
+                activeSubTab === 'map' && styles.subTabLabelActive,
+              ]}
+            >
+              Bản đồ & Khám phá
+            </Text>
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={[
               styles.subTabButton,
@@ -182,6 +391,16 @@ export default function PlanScreen() {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Sub-Tab 0: Map Discovery */}
+        {activeSubTab === 'map' && (
+          <PlanMapDiscovery
+            places={placesStore.places}
+            selectedPlaceIds={placesStore.selectedPlaceIds}
+            onTogglePlace={placesStore.togglePlaceSelection}
+            onGenerateAiPlan={handleGenerateAiPlan}
+          />
+        )}
 
         {/* Sub-Tab 1: Itinerary & Squad */}
         {activeSubTab === 'itinerary' && (
@@ -231,25 +450,28 @@ export default function PlanScreen() {
 
             {/* Days Selector */}
             <View style={styles.daySelectorRow}>
-              {trip.days?.map((day) => (
-                <TouchableOpacity
-                  key={day.dayIndex}
-                  style={[
-                    styles.dayChip,
-                    selectedDayIndex === day.dayIndex && styles.dayChipActive,
-                  ]}
-                  onPress={() => setSelectedDayIndex(day.dayIndex)}
-                >
-                  <Text
+              {trip.days?.map((day, idx) => {
+                const dayNum = day.dayIndex ?? day.dayNumber ?? (idx + 1);
+                return (
+                  <TouchableOpacity
+                    key={dayNum}
                     style={[
-                      styles.dayChipText,
-                      selectedDayIndex === day.dayIndex && styles.dayChipTextActive,
+                      styles.dayChip,
+                      selectedDayIndex === dayNum && styles.dayChipActive,
                     ]}
+                    onPress={() => setSelectedDayIndex(dayNum)}
                   >
-                    Ngày {day.dayIndex}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text
+                      style={[
+                        styles.dayChipText,
+                        selectedDayIndex === dayNum && styles.dayChipTextActive,
+                      ]}
+                    >
+                      Ngày {dayNum}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
 
             {/* Timeline Stops */}
@@ -383,7 +605,7 @@ export default function PlanScreen() {
               <TextInput
                 style={styles.modalInput}
                 placeholder="email@example.com"
-                placeholderTextColor={colors.textMuted}
+                placeholderTextColor={themeColors.textMuted}
                 value={inviteEmail}
                 onChangeText={setInviteEmail}
                 autoCapitalize="none"
@@ -462,7 +684,7 @@ export default function PlanScreen() {
               <TextInput
                 style={styles.modalInput}
                 placeholder="Tên địa điểm (VD: Thác Datanla)"
-                placeholderTextColor={colors.textMuted}
+                placeholderTextColor={themeColors.textMuted}
                 value={stopName}
                 onChangeText={setStopName}
               />
@@ -471,14 +693,14 @@ export default function PlanScreen() {
                 <TextInput
                   style={[styles.modalInput, styles.halfInput]}
                   placeholder="Giờ đến (VD: 10:30)"
-                  placeholderTextColor={colors.textMuted}
+                  placeholderTextColor={themeColors.textMuted}
                   value={stopTime}
                   onChangeText={setStopTime}
                 />
                 <TextInput
                   style={[styles.modalInput, styles.halfInput]}
                   placeholder="Thời lượng phút (VD: 120)"
-                  placeholderTextColor={colors.textMuted}
+                  placeholderTextColor={themeColors.textMuted}
                   value={stopDuration}
                   onChangeText={setStopDuration}
                   keyboardType="numeric"
@@ -508,7 +730,7 @@ export default function PlanScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
@@ -934,6 +1156,57 @@ const styles = StyleSheet.create({
   },
   modalSubmitText: {
     color: '#ffffff',
+    fontWeight: '700',
+  },
+  headerNewTripBtn: {
+    backgroundColor: 'rgba(10, 132, 255, 0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  headerNewTripText: {
+    color: colors.primary,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  emptyPlanContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 60,
+  },
+  emptyPlanIcon: {
+    fontSize: 56,
+    marginBottom: 16,
+  },
+  emptyPlanTitle: {
+    ...typography.h2,
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emptyPlanSubtitle: {
+    ...typography.body,
+    color: colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  createTripBtn: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 14,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  createTripBtnText: {
+    color: '#ffffff',
+    fontSize: 15,
     fontWeight: '700',
   },
 });

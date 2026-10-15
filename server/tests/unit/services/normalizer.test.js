@@ -38,6 +38,9 @@ describe('Unit Test: Booking Data Normalizer & Deduplication Service', () => {
       expect(normalized.price.currency).toBe('VND');
       expect(normalized.price.amount).toBe(1550000);
       expect(normalized.stops).toBe(0);
+      expect(normalized.airlineLogo).toBeDefined();
+      expect(normalized.aircraft).toBeDefined();
+      expect(normalized.baggageSummary).toBeDefined();
     });
 
     test('should parse ISO 8601 duration strings like PT2H15M in normalizeFlight', () => {
@@ -52,6 +55,24 @@ describe('Unit Test: Booking Data Normalizer & Deduplication Service', () => {
       expect(normalized.durationMinutes).toBe(135);
       expect(normalized.provider).toBe('UNKNOWN');
       expect(normalized.cabinClass).toBe('ECONOMY');
+    });
+
+    test('RED-BE-FLT-02: normalizeFlight should retain and normalize baggageTransfer and baggageTransferType for connecting flights', () => {
+      const transitRawFlight = {
+        airlineCode: 'VJ',
+        flightNumber: 'VJ-304',
+        origin: 'SGN',
+        destination: 'HAN',
+        stops: 1,
+        baggageTransfer: 'Chuyển hành lý tự động',
+        baggageTransferType: 'automatic',
+        price: { amount: 1500000 },
+      };
+
+      const normalized = normalizeFlight(transitRawFlight);
+      expect(normalized.stops).toBe(1);
+      expect(normalized.baggageTransfer).toBe('Chuyển hành lý tự động');
+      expect(normalized.baggageTransferType).toBe('automatic');
     });
 
     test('RED-BK-02: deduplicateFlights should remove duplicate flights favoring the lowest price', () => {

@@ -103,6 +103,25 @@ class ExpenseController {
     }
   }
 
+  async getDebts(req, res, next) {
+    try {
+      const { tripId } = req.params;
+      const summary = await expenseService.getExpenseSummary(tripId);
+      const plan = await expenseService.getSettlementPlan(tripId);
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          totalExpense: summary.totalTripExpense,
+          memberBalances: summary.memberBalances,
+          simplifiedSettlements: plan.settlementPlan,
+        },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async recordSettlement(req, res, next) {
     try {
       const { tripId } = req.params;

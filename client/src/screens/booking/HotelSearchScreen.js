@@ -13,12 +13,14 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import HotelCard from '../../components/booking/HotelCard';
 import { useBookingStore } from '../../stores/booking.store';
+import { useThemeStore } from '../../stores/theme.store';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
 const QUICK_CITIES = ['Đà Lạt', 'Đà Nẵng', 'Hà Nội', 'TP. Hồ Chí Minh', 'Phú Quốc'];
 
 export default function HotelSearchScreen({ navigation }) {
+  const { mode, colors: themeColors } = useThemeStore();
   const [destination, setDestination] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
@@ -85,24 +87,30 @@ export default function HotelSearchScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: themeColors.background }]}>
+      <View style={[styles.container, { backgroundColor: themeColors.background }]}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Khám phá khách sạn</Text>
-          <Text style={styles.subtitle}>Resort, khách sạn & homestay tốt nhất theo giá phòng</Text>
+          <Text style={[styles.title, { color: themeColors.text }]}>Khám phá khách sạn</Text>
+          <Text style={[styles.subtitle, { color: themeColors.textMuted }]}>Resort, khách sạn & homestay tốt nhất theo giá phòng</Text>
         </View>
 
         {/* Collapsible Search Panel */}
         {isCollapsed ? (
           <TouchableOpacity
-            style={styles.collapsedBar}
+            style={[
+              styles.collapsedBar,
+              {
+                backgroundColor: themeColors.card,
+                borderColor: themeColors.border,
+              },
+            ]}
             onPress={() => setIsCollapsed(false)}
             activeOpacity={0.8}
           >
             <View style={styles.collapsedInfo}>
-              <Text style={styles.collapsedCity}>⌂ {destination || 'Đà Lạt'}</Text>
-              <Text style={styles.collapsedDates}>
+              <Text style={[styles.collapsedCity, { color: themeColors.text }]}>⌂ {destination || 'Đà Lạt'}</Text>
+              <Text style={[styles.collapsedDates, { color: themeColors.textMuted }]}>
                 {checkIn} → {checkOut} • 2 khách
               </Text>
             </View>
@@ -111,7 +119,15 @@ export default function HotelSearchScreen({ navigation }) {
             </View>
           </TouchableOpacity>
         ) : (
-          <View style={styles.searchBox}>
+          <View
+            style={[
+              styles.searchBox,
+              {
+                backgroundColor: themeColors.card,
+                borderColor: themeColors.border,
+              },
+            ]}
+          >
             {/* Quick City Chips */}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
               {QUICK_CITIES.map((city) => (
@@ -119,6 +135,10 @@ export default function HotelSearchScreen({ navigation }) {
                   key={city}
                   style={[
                     styles.cityChip,
+                    {
+                      backgroundColor: mode === 'light' ? '#F0F6FF' : 'rgba(255, 255, 255, 0.05)',
+                      borderColor: themeColors.border,
+                    },
                     destination === city && styles.cityChipActive,
                   ]}
                   onPress={() => {
@@ -131,6 +151,7 @@ export default function HotelSearchScreen({ navigation }) {
                   <Text
                     style={[
                       styles.cityChipText,
+                      { color: themeColors.textMuted },
                       destination === city && styles.cityChipTextActive,
                     ]}
                   >

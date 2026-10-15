@@ -145,9 +145,8 @@ const createItinerarySchema = Joi.object({
   title: Joi.string().min(2).max(100).required().messages({
     'any.required': 'Title is required',
   }),
-  destinationCity: Joi.string().required().messages({
-    'any.required': 'Destination city is required',
-  }),
+  destinationCity: Joi.string().optional(),
+  destination: Joi.string().optional(),
   startDate: Joi.string().isoDate().required().messages({
     'any.required': 'startDate is required',
   }),
@@ -160,6 +159,12 @@ const createItinerarySchema = Joi.object({
     currency: Joi.string().default('VND'),
   }).optional(),
 }).custom((obj, helpers) => {
+  if (!obj.destinationCity && !obj.destination) {
+    return helpers.message('Destination city is required');
+  }
+  if (!obj.destinationCity && obj.destination) {
+    obj.destinationCity = obj.destination;
+  }
   if (new Date(obj.endDate) < new Date(obj.startDate)) {
     return helpers.message('Validation Error: endDate must be greater than or equal to startDate');
   }
@@ -206,6 +211,21 @@ const reorderSchema = Joi.object({
   }),
 });
 
+const placesSearchSchema = Joi.object({
+  city: Joi.string().min(1).required().messages({
+    'any.required': 'City is required',
+  }),
+  category: Joi.string().optional(),
+  query: Joi.string().allow('').optional(),
+});
+
+const placesAiPlanSchema = Joi.object({
+  places: Joi.array().items(Joi.object().unknown(true)).min(1).required().messages({
+    'any.required': 'places array is required',
+  }),
+  durationDays: Joi.number().integer().min(1).max(30).default(1),
+});
+
 module.exports = {
   validate,
   validateQuery,
@@ -218,5 +238,7 @@ module.exports = {
   updateStatusSchema,
   addStopSchema,
   reorderSchema,
+  placesSearchSchema,
+  placesAiPlanSchema,
 };
 

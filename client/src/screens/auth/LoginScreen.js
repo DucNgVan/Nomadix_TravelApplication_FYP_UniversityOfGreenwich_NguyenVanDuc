@@ -5,8 +5,11 @@ import { typography } from '../../theme/typography';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { useAuthStore } from '../../stores/auth.store';
+import { useThemeStore } from '../../stores/theme.store';
 
 export default function LoginScreen({ navigation }) {
+  const { colors: themeColors } = useThemeStore();
+  const styles = React.useMemo(() => getStyles(themeColors), [themeColors]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -118,7 +121,7 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

@@ -71,6 +71,16 @@ describe('Unit Test: Itinerary Store (Collaborative Planning & Companion Invites
     expect(result).toEqual(createdTrip);
   });
 
+  test('RED-FE-ITIN-03b: createTrip should unwrap response if enclosed in { itinerary } envelope', async () => {
+    const innerTrip = { id: 'trip-envelope-1', title: 'Envelope Trip' };
+    apiClient.post.mockResolvedValueOnce({ itinerary: innerTrip });
+
+    const result = await useItineraryStore.getState().createTrip({ title: 'Envelope Trip' });
+    expect(result).toEqual(innerTrip);
+    expect(useItineraryStore.getState().currentTrip).toEqual(innerTrip);
+    expect(useItineraryStore.getState().trips[0]).toEqual(innerTrip);
+  });
+
   test('RED-FE-ITIN-04: inviteCompanion should send invitation and append collaborator', async () => {
     const initialTrip = {
       id: 'trip-101',
@@ -186,5 +196,48 @@ describe('Unit Test: Itinerary Store (Collaborative Planning & Companion Invites
 
     useItineraryStore.getState().setCurrentTrip({ id: 't-set' });
     expect(useItineraryStore.getState().currentTrip.id).toBe('t-set');
+  });
+
+  test('RED-FE-ITIN-05: applyAiPlan should update currentTrip and trips with AI clustered stops', () => {
+    // Branch: currentTrip is null
+    useItineraryStore.setState({ currentTrip: null, trips: [] });
+    useItineraryStore.getState().applyAiPlan('t-1', { 1: [] });
+    expect(useItineraryStore.getState().currentTrip).toBeNull();
+
+    // Branch: valid currentTrip and clustered days
+    const mockTrip = {
+      id: 't-1',
+      title: 'Trip 1',
+      startDate: '2026-10-15',
+      days: [],
+    };
+    useItineraryStore.setState({ currentTrip: mockTrip, trips: [mockTrip] });
+
+    const aiPlanDays = {
+      1: [
+        { id: 'p1', name: 'Cầu Rồng', timeSlot: '09:00 - 10:30', transitKm: 3.2 },
+        { name: 'Biển Mỹ Khê' },
+      ],
+      2: [
+        { id: 'p3', name: 'Bà Nà Hills' },
+      ],
+    };
+
+    useItineraryStore.getState().applyAiPlan('t-1', aiPlanDays);
+
+    const state = useItineraryStore.getState();
+    expect(state.currentTrip.days.length).toBe(2);
+    expect(state.currentTrip.days[0].items.length).toBe(2);
+    expect(state.currentTrip.days[0].items[0].name).toBe('Cầu Rồng');
+    expect(state.currentTrip.days[0].items[0].arrivalTime).toBe('09:00');
+    expect(state.currentTrip.days[0].items[0].transitToNext.distanceKm).toBe(3.2);
+    expect(state.trips[0].days.length).toBe(2);
+  });
+
+  test('should handle object payload in fetchTrips', async () => {
+    apiClient.get.mockResolvedValueOnce({ itineraries: [{ id: 't-obj', title: 'Trip Obj' }] });
+    const result = await useItineraryStore.getState().fetchTrips();
+    expect(result.length).toBe(1);
+    expect(useItineraryStore.getState().trips[0].id).toBe('t-obj');
   });
 });
