@@ -89,8 +89,8 @@
       <div class="w-6 h-6 rounded-lg bg-ios-blue flex items-center justify-center text-white text-xs font-black">
         <i class="ph-bold ph-compass"></i>
       </div>
-      <span class="text-xs font-black text-white">NOMADIX APP</span>
-      <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">Mobile View</span>
+      <span class="text-xs font-black text-white">NOMADIX MAP PROTOTYPE</span>
+      <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">UX/UI</span>
     </div>
 
     <!-- Quick Step Jumper & Controls -->
@@ -99,8 +99,8 @@
         <i class="ph-bold ph-gear"></i> Setup
       </button>
 
-      <a href="index.html" class="px-2 py-1 rounded-xl bg-slate-800 text-[11px] font-bold text-slate-300 hover:text-white flex items-center gap-1" title="Quay lại Showcase Vé Máy Bay">
-        <i class="ph-bold ph-airplane-tilt text-ios-blue"></i> Vé bay
+      <a href="index.html" class="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-300 hover:text-white flex items-center gap-1" title="Quay lại Design System Showcase">
+        <i class="ph-bold ph-palette text-ios-blue"></i> Design System
       </a>
 
       <button onclick="toggleTheme()" class="w-7 h-7 rounded-xl bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs">
@@ -834,7 +834,7 @@
     if (urlMapToken) {
       localStorage.setItem('nomadix_mapbox_token', urlMapToken);
     }
-    mapboxgl.accessToken = urlMapToken || localStorage.getItem('nomadix_mapbox_token') || 'pk.eyJ1Ijoibm9tYWRpeCIsImEiOiJjbTAwMDAwMDAwMDAwMHJ6MGZ3YWRlZmR2In0.mock_token';
+    mapboxgl.accessToken = urlMapToken || localStorage.getItem('nomadix_mapbox_token') || 'pk.demo-placeholder-token';
     let map = null;
     let mapMarkers = [];
     let currentMapCategory = 'all';

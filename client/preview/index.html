@@ -71,12 +71,12 @@
       <div>
         <div class="flex items-center gap-2">
           <h1 class="text-lg font-black tracking-tight text-slate-900 dark:text-white">NOMADIX</h1>
-          <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">Final Showcase</span>
-          <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></span> Live Polyglot Engine
+          <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">UX/UI Prototype</span>
+          <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 animate-pulse"></span> Design System Tokens
           </span>
         </div>
-        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">University of Greenwich (BSc Computing FYP) • Collaborative Squad Travel & Expense Splitting</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">University of Greenwich (BSc Computing FYP) • UI Design Tokens, Typography & Mobile Ergonomics</p>
       </div>
     </div>
 
@@ -118,163 +118,151 @@
   <div class="w-full max-w-[1580px] grid grid-cols-1 xl:grid-cols-[380px_410px_1fr] 2xl:grid-cols-[400px_420px_420px] gap-6 items-start justify-center">
 
     <!-- ======================================================================= -->
-    <!-- COLUMN 1: LEFT SIDEBAR (ARCHITECTURE & POLYGLOT PERSISTENCE) -->
+    <!-- COLUMN 1: LEFT SIDEBAR (UX/UI DESIGN SYSTEM & TYPOGRAPHY) -->
     <!-- ======================================================================= -->
     <aside class="space-y-4 text-xs">
       
-      <!-- Card 1.1: 5-Tier Architecture Summary -->
+      <!-- Card 1.1: System Color Palette & WCAG AA Matrix -->
       <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
           <div class="flex items-center gap-2">
             <span class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-500 dark:text-blue-400 flex items-center justify-center text-xs font-black">1</span>
-            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Kiến Trúc Hệ Thống (5 Tiers)</h2>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Bảng Màu Hệ Thống (Tokens)</h2>
           </div>
-          <span class="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full border border-cyan-400/20">Modular Monolith</span>
+          <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">WCAG 2.1 AA</span>
         </div>
 
-        <div class="space-y-2 font-mono text-[11px]">
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70 flex items-center justify-between">
-            <span class="text-slate-700 dark:text-slate-300 font-bold">Tier 1: Client UI</span>
-            <span class="text-blue-600 dark:text-blue-400 font-semibold">React Native + Zustand</span>
+        <!-- Color Swatch Groups -->
+        <div class="space-y-2.5">
+          <!-- Brand & Theme Tokens -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">1. Brand & Surface Tokens</span>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                <span class="w-4 h-4 rounded-md bg-[#007AFF] shadow-sm shrink-0"></span>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white text-[10px]">#007AFF</div>
+                  <div class="text-[9px] text-slate-400 font-sans">Brand Primary</div>
+                </div>
+              </div>
+              <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                <span class="w-4 h-4 rounded-md bg-[#06B6D4] shadow-sm shrink-0"></span>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white text-[10px]">#06B6D4</div>
+                  <div class="text-[9px] text-slate-400 font-sans">AI Itinerary Accent</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70 flex items-center justify-between">
-            <span class="text-slate-700 dark:text-slate-300 font-bold">Tier 2: API Gateway</span>
-            <span class="text-indigo-600 dark:text-indigo-400 font-semibold">Express + Helmet + Joi DTO</span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70 flex items-center justify-between">
-            <span class="text-slate-700 dark:text-slate-300 font-bold">Tier 3: Domain Core</span>
-            <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Debt Simplification & Travel</span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70 flex items-center justify-between">
-            <span class="text-slate-700 dark:text-slate-300 font-bold">Tier 4: Adapters</span>
-            <span class="text-amber-600 dark:text-amber-400 font-semibold">Duffel NDC + Places + Cloudinary</span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70 flex items-center justify-between">
-            <span class="text-slate-700 dark:text-slate-300 font-bold">Tier 5: Polyglot DB</span>
-            <span class="text-purple-600 dark:text-purple-400 font-semibold">Postgres + Mongo + Redis</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Card 1.2: Polyglot Persistence Matrix (3 Engines) -->
-      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3.5">
-        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
-          <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-black">2</span>
-            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Polyglot Matrix (3 Engines)</h2>
+          <!-- Dual Theme Canvas Tokens -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">2. Dual-Theme Parity Tokens</span>
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+              <div class="p-2 rounded-xl bg-[#F0F6FF] border border-[#DCE8F6] text-slate-900 space-y-1">
+                <div class="font-bold text-[10px] flex items-center justify-between">
+                  <span>☀️ Light Mode</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-white border border-slate-300"></span>
+                </div>
+                <div class="text-[9px] text-slate-600">BG: <code class="font-bold">#F0F6FF</code></div>
+                <div class="text-[9px] text-slate-600">Card: <code class="font-bold">#FFFFFF</code></div>
+                <div class="text-[9px] text-slate-600">Border: <code class="font-bold">#DCE8F6</code></div>
+                <div class="text-[8px] text-emerald-700 font-bold bg-emerald-500/10 px-1 py-0.5 rounded">Contrast 15.4:1 AAA</div>
+              </div>
+              <div class="p-2 rounded-xl bg-[#0D1B2A] border border-[#334155] text-white space-y-1">
+                <div class="font-bold text-[10px] flex items-center justify-between text-cyan-400">
+                  <span>🌙 Dark Mode</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#1E293B] border border-slate-600"></span>
+                </div>
+                <div class="text-[9px] text-slate-300">BG: <code class="font-bold text-white">#0D1B2A</code></div>
+                <div class="text-[9px] text-slate-300">Card: <code class="font-bold text-white">#1E293B</code></div>
+                <div class="text-[9px] text-slate-300">Border: <code class="font-bold text-white">#334155</code></div>
+                <div class="text-[8px] text-emerald-400 font-bold bg-emerald-500/20 px-1 py-0.5 rounded">Contrast 13.8:1 AAA</div>
+              </div>
+            </div>
           </div>
-          <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">Data Independence</span>
-        </div>
 
-        <!-- PostgreSQL 16 -->
-        <div class="p-3 rounded-2xl bg-blue-50/50 dark:bg-slate-950/70 border border-blue-200 dark:border-blue-500/30 space-y-1.5">
-          <div class="flex justify-between items-center">
-            <span class="font-extrabold text-blue-600 dark:text-blue-400 flex items-center gap-1.5 text-xs">
-              <i class="ph-bold ph-database"></i> PostgreSQL 16 (ACID)
-            </span>
-            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">28 Bảng (3NF)</span>
+          <!-- Semantic Indicators -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">3. Semantic Financial Status</span>
+            <div class="grid grid-cols-3 gap-1.5 text-center font-mono text-[9px]">
+              <div class="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                <div class="font-bold">#10B981</div>
+                <div class="text-[8px] font-sans">Credit / Paid</div>
+              </div>
+              <div class="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400">
+                <div class="font-bold">#EF4444</div>
+                <div class="text-[8px] font-sans">Debt / Overdue</div>
+              </div>
+              <div class="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">
+                <div class="font-bold">#F59E0B</div>
+                <div class="text-[8px] font-sans">Transit / Warn</div>
+              </div>
+            </div>
           </div>
-          <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-            Quản trị Định danh & Sổ cái tài chính chia tiền nhóm. Sử dụng <code class="text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-slate-900 px-1 py-0.5 rounded font-bold">NUMERIC(12, 2)</code> triệt tiêu sai số làm tròn số thực.
-          </p>
-          <div class="font-mono text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-slate-900/80 p-1.5 rounded-lg border border-emerald-200 dark:border-slate-800">
-            Bất biến: ∑ NetBalance(i) = 0 [Bảo toàn dòng tiền]
-          </div>
-        </div>
-
-        <!-- MongoDB Atlas 7.0 -->
-        <div class="p-3 rounded-2xl bg-emerald-50/50 dark:bg-slate-950/70 border border-emerald-200 dark:border-emerald-500/30 space-y-1.5">
-          <div class="flex justify-between items-center">
-            <span class="font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 text-xs">
-              <i class="ph-bold ph-tree-structure"></i> MongoDB Atlas 7.0
-            </span>
-            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">&lt; 15ms Query</span>
-          </div>
-          <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-            Lịch trình động đa ngày, nhúng 1:Few (<code class="text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-slate-900 px-1 py-0.5 rounded font-bold">days[].items[]</code>), mảng cộng tác viên Squad và chỉ mục không gian GeoJSON 2dsphere.
-          </p>
-        </div>
-
-        <!-- Redis 7.0 -->
-        <div class="p-3 rounded-2xl bg-red-50/50 dark:bg-slate-950/70 border border-red-200 dark:border-red-500/30 space-y-1.5">
-          <div class="flex justify-between items-center">
-            <span class="font-extrabold text-red-600 dark:text-red-400 flex items-center gap-1.5 text-xs">
-              <i class="ph-bold ph-lightning"></i> Redis 7.0 (Cache-Aside)
-            </span>
-            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">&lt; 50ms RAM</span>
-          </div>
-          <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-            Bộ nhớ đệm chuyến bay (TTL 1800s), khách sạn (TTL 3600s), chống nghẽn và Rate Limiter chống lạm dụng API (100 req/min).
-          </p>
         </div>
       </div>
 
-      <!-- Card 1.3: TDD Quality & Test Suite Metrics -->
+      <!-- Card 1.2: Typography Scale & Specimen Hierarchy -->
       <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-black">3</span>
-            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Chỉ Số TDD (Test-Driven Dev)</h2>
+            <span class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-black">2</span>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Hệ Thống Typography</h2>
           </div>
-          <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">100% Passed</span>
+          <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-400/10 px-2 py-0.5 rounded-full border border-indigo-400/20">Plus Jakarta Sans</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 text-center font-mono">
-          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-            <span class="text-[10px] text-slate-400 block">TEST SUITES</span>
-            <span class="text-base font-black text-slate-900 dark:text-white">59 Suites</span>
-            <span class="text-[9px] text-emerald-600 dark:text-emerald-400 block">All 59 Passed</span>
+        <!-- Typography Specimens -->
+        <div class="space-y-2 text-slate-800 dark:text-slate-200">
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70">
+            <div class="text-[10px] text-slate-400 font-mono mb-0.5">DISPLAY (24px - Bold 800)</div>
+            <div class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Khám Phá Chuyến Đi</div>
           </div>
-          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-            <span class="text-[10px] text-slate-400 block">TOTAL TESTS</span>
-            <span class="text-base font-black text-emerald-600 dark:text-emerald-400">255 / 255</span>
-            <span class="text-[9px] text-slate-500 dark:text-slate-400 block">0 Failures</span>
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70">
+            <div class="text-[10px] text-slate-400 font-mono mb-0.5">TITLE & HEADINGS (16px - Semi-bold 700)</div>
+            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">Đà Nẵng — Hội An 4N3Đ</div>
           </div>
-        </div>
-
-        <!-- Coverage Bars -->
-        <div class="space-y-2 pt-1 font-mono text-[10px]">
-          <div>
-            <div class="flex justify-between text-slate-500 dark:text-slate-400 mb-1">
-              <span>Statements (Câu lệnh)</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-bold">95.1% &gt; 80%</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div class="w-[95.1%] h-full bg-emerald-500 rounded-full"></div>
-            </div>
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70">
+            <div class="text-[10px] text-slate-400 font-mono mb-0.5">BODY TEXT (13px - Regular 500)</div>
+            <div class="text-xs text-slate-600 dark:text-slate-300">Tính năng chia tiền và lập kế hoạch nhóm thông minh.</div>
           </div>
-          <div>
-            <div class="flex justify-between text-slate-500 dark:text-slate-400 mb-1">
-              <span>Branch Coverage (Nhánh)</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-bold">81.8% &gt; 80%</span>
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70 flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-slate-400 font-mono">MONOSPACE ENGINE (13px)</div>
+              <div class="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">1.326.780₫ • HAN ⇄ SGN</div>
             </div>
-            <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div class="w-[81.8%] h-full bg-emerald-500 rounded-full"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-slate-500 dark:text-slate-400 mb-1">
-              <span>Functions (Hàm xử lý)</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-bold">92.2% &gt; 80%</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div class="w-[92.2%] h-full bg-emerald-500 rounded-full"></div>
-            </div>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">JetBrains Mono</span>
           </div>
         </div>
       </div>
 
-      <!-- Card 1.4: Dual-Token Security & RBAC -->
+      <!-- Card 1.3: Spatial Scale, Corner Radius & Touch Targets -->
       <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-2.5">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
           <span class="font-extrabold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
-            <i class="ph-bold ph-shield-check text-cyan-600 dark:text-cyan-400"></i> Bảo Mật & RBAC 4 Cấp Độ
+            <i class="ph-bold ph-frame-corners text-purple-600 dark:text-purple-400"></i> Bo Góc & Lưới Không Gian (Spacing)
           </span>
-          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Dual-JWT</span>
+          <span class="text-[10px] text-slate-400 font-mono">8pt Grid</span>
         </div>
-        <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-          Access Token 15 phút + Refresh Token băm SHA-256 lưu DB. Mật khẩu mã hoá Bcrypt 12 rounds so sánh constant-time chống Timing Attack.
-        </p>
+        <div class="grid grid-cols-4 gap-1.5 text-center font-mono text-[9px]">
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">12px</div>
+            <div class="text-slate-400">Input/Btn</div>
+          </div>
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">16px</div>
+            <div class="text-slate-400">Card Base</div>
+          </div>
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">24px</div>
+            <div class="text-slate-400">Modal Sheet</div>
+          </div>
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">9999px</div>
+            <div class="text-slate-400">Pill/Chip</div>
+          </div>
+        </div>
       </div>
 
     </aside>
@@ -758,142 +746,108 @@
     </div>
 
     <!-- ======================================================================= -->
-    <!-- COLUMN 3: RIGHT SIDEBAR (LIVE APIS & ALGORITHM SPOTLIGHT) -->
+    <!-- COLUMN 3: RIGHT SIDEBAR (ATOMIC COMPONENTS & UX ERGONOMICS) -->
     <!-- ======================================================================= -->
     <aside class="space-y-4 text-xs">
 
-      <!-- Card 3.1: Live Travel API Integrations -->
+      <!-- Card 3.1: Atomic UI Component Library -->
       <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xs font-black">4</span>
-            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Tích Hợp API Du Lịch Thật</h2>
+            <span class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xs font-black">3</span>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Thành Phần Nguyên Tử (Atoms)</h2>
           </div>
-          <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">Production-Ready</span>
+          <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">Component Spec</span>
         </div>
 
         <div class="space-y-2.5">
-          <!-- Duffel Live NDC API -->
-          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-1">
-            <div class="flex justify-between items-center">
-              <span class="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5 text-xs">
-                <i class="ph-bold ph-airplane text-ios-blue"></i> Duffel Live NDC API
-              </span>
-              <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">87 Chuyến Thật</span>
+          <!-- Button Variants -->
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+              <span>Interactive Buttons</span>
+              <span class="font-mono text-cyan-600 dark:text-cyan-400">active:scale-95</span>
             </div>
-            <p class="text-[11px] text-slate-600 dark:text-slate-300">
-              Tra cứu trực tiếp IATA/ICAO, tính toán CO₂ phát thải, giữ chỗ thời gian thực và sinh mã PNR chính xác 100%.
-            </p>
+            <div class="flex flex-wrap items-center gap-2">
+              <button class="px-3 py-1.5 rounded-xl bg-ios-blue text-white text-[11px] font-bold shadow-sm active:scale-95 transition-all">Primary Filled</button>
+              <button class="px-3 py-1.5 rounded-xl border border-ios-blue text-ios-blue text-[11px] font-bold active:scale-95 transition-all">Outline</button>
+              <button class="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/20 flex items-center gap-1">
+                <i class="ph-bold ph-check"></i> Settle Up
+              </button>
+            </div>
           </div>
 
-          <!-- Google Places New Text Search -->
-          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-1">
-            <div class="flex justify-between items-center">
-              <span class="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5 text-xs">
-                <i class="ph-bold ph-map-pin text-emerald-600 dark:text-emerald-400"></i> Google Places API (New)
-              </span>
-              <span class="text-[10px] font-mono text-cyan-600 dark:text-cyan-400">TextSearch v1</span>
+          <!-- Form Inputs -->
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+              <span>Input Field Spec</span>
+              <span class="font-mono text-purple-600 dark:text-purple-400">44pt Target</span>
             </div>
-            <p class="text-[11px] text-slate-600 dark:text-slate-300">
-              Tìm kiếm khách sạn và địa điểm văn hoá theo từ khoá, toạ độ GeoJSON thực tế và hình ảnh độ phân giải cao.
-            </p>
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Điểm đến (IATA / City)</label>
+              <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs">
+                <i class="ph-bold ph-magnifying-glass text-slate-400"></i>
+                <span class="text-slate-800 dark:text-slate-200 font-semibold">Đà Nẵng (DAD)</span>
+              </div>
+            </div>
           </div>
 
-          <!-- Cloudinary Asset Storage -->
-          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-1">
-            <div class="flex justify-between items-center">
-              <span class="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5 text-xs">
-                <i class="ph-bold ph-cloud-arrow-up text-amber-600 dark:text-amber-400"></i> Cloudinary Pipeline
-              </span>
-              <span class="text-[10px] font-mono text-slate-400">WebP Compression</span>
+          <!-- Badge & Status Indicators -->
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-1.5">
+            <div class="text-[10px] font-bold text-slate-400 uppercase">Status & Tag Tokens</div>
+            <div class="flex flex-wrap items-center gap-1.5 text-[10px] font-semibold">
+              <span class="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">Bay thẳng (Direct)</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">🔄 Chuyển tự động</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">⚠️ Chuyển thủ công</span>
             </div>
-            <p class="text-[11px] text-slate-600 dark:text-slate-300">
-              Nén hoá đơn chia tiền dưới 1MB ở client, tự động chuyển đổi định dạng WebP phân vùng theo <code class="text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-slate-900 px-1 py-0.5 rounded font-bold">/nomadix/receipts/{tripId}/</code>.
-            </p>
           </div>
         </div>
       </div>
 
-      <!-- Card 3.2: Algorithm Spotlight: Greedy Minimum Cash-Flow Reduction -->
+      <!-- Card 3.2: Mobile Ergonomics & Thumb-Zone Mapping -->
       <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs font-black">5</span>
-            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Thuật Toán Tối Ưu Dòng Tiền</h2>
+            <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-black">4</span>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Công Thái Học Di Động</h2>
           </div>
-          <span class="text-[10px] font-mono text-amber-600 dark:text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">O(N log N)</span>
+          <span class="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full border border-cyan-400/20">Thumb-Zone</span>
         </div>
 
-        <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-          <b>Greedy Minimum Cash-Flow Reduction</b>: Sử dụng 2 Priority Queue (Con nợ lớn nhất & Chủ nợ lớn nhất), biến đồ thị nợ chéo phức tạp <code class="text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-slate-950 px-1 rounded font-bold">N(N-1)/2</code> thành tối đa <b>N - 1 giao dịch</b> trực tiếp.
+        <!-- Thumb Zone Diagram -->
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-2 text-[11px]">
+          <div class="p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 flex justify-between items-center">
+            <span class="font-bold">Khó Chạm (Top 25%)</span>
+            <span class="text-[10px] font-mono">Tiêu đề, Nút quay lại</span>
+          </div>
+          <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex justify-between items-center">
+            <span class="font-bold">Vươn Tay (Mid 35%)</span>
+            <span class="text-[10px] font-mono">Thẻ chuyến bay, Bản đồ</span>
+          </div>
+          <div class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex justify-between items-center font-bold">
+            <span>Dễ Chạm (Dưới 40%)</span>
+            <span class="text-[10px] font-mono">Bottom Tabs, Nút Đặt Vé ★</span>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+          Mọi điểm chạm (Touch Target) đều đạt chuẩn Apple HIG $\ge 44 \times 44\text{pt}$ giúp thao tác bằng một tay dễ dàng khi đang di chuyển.
         </p>
-
-        <!-- Visual Comparison: Tangled vs Optimized -->
-        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-2">
-          <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
-            <span>Đồ thị Nợ Chéo (6 GD)</span>
-            <span class="text-emerald-600 dark:text-emerald-400">Sau Tối Ưu (2 GD)</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
-            <div class="p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-300 space-y-1">
-              <div>A → B: 100k</div>
-              <div>B → C: 150k</div>
-              <div>C → A: 50k</div>
-              <div>D → B: 80k ...</div>
-            </div>
-            <div class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 space-y-1 font-bold">
-              <div>✓ Lan → Đức: 450k</div>
-              <div>✓ Nam → Đức: 320k</div>
-              <div class="text-[9px] text-emerald-600 dark:text-emerald-400/80 font-normal">Giảm 67% giao dịch!</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-950/80 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
-          Công thức: NetBalance[i] = ∑ Received - ∑ Paid
-        </div>
       </div>
 
-      <!-- Card 3.3: Transit & Baggage Classification Rules -->
-      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-2.5">
-        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+      <!-- Card 3.3: Interactive Prototypes & Blueprint Links -->
+      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
           <span class="font-extrabold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
-            <i class="ph-bold ph-bag text-cyan-600 dark:text-cyan-400"></i> Phân Loại Hành Lý Nối Chuyến
+            <i class="ph-bold ph-compass text-ios-blue"></i> Trải Nghiệm Mẫu Bản Đồ
           </span>
-          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Phase 10 UX</span>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Interactive</span>
         </div>
-        <div class="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-300">
-          <div class="flex items-start gap-1.5">
-            <span class="text-emerald-600 dark:text-emerald-400 font-bold">🔄 Chuyển tự động:</span>
-            <span>Áp dụng cùng liên minh hàng không (SkyTeam, Star Alliance) hoặc cùng hãng bay trên một mã đặt chỗ.</span>
-          </div>
-          <div class="flex items-start gap-1.5">
-            <span class="text-amber-600 dark:text-amber-400 font-bold">⚠️ Tự chuyển thủ công:</span>
-            <span>Áp dụng khi kết hợp các hãng giá rẻ độc lập; hành khách cần lấy hành lý tại băng chuyền để check-in lại.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 3.4: Live System Vitals & Diagnostic Deck -->
-      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-2">
-        <div class="flex justify-between items-center text-xs font-bold text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800 pb-1.5">
-          <span>Hệ Thống Runtime Vitals</span>
-          <span class="text-emerald-600 dark:text-emerald-400 font-mono">HEALTHY</span>
-        </div>
-        <div class="grid grid-cols-3 gap-1.5 text-center font-mono text-[10px]">
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-            <span class="text-slate-400 block">HTTP STATUS</span>
-            <span class="text-emerald-600 dark:text-emerald-400 font-bold">200 OK</span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-            <span class="text-slate-400 block">LATENCY</span>
-            <span class="text-cyan-600 dark:text-cyan-400 font-bold">~12 ms</span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-            <span class="text-slate-400 block">RAM HEAP</span>
-            <span class="text-purple-600 dark:text-purple-400 font-bold">42.8 MB</span>
-          </div>
-        </div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-300">
+          Mở bản mẫu không gian tương tác Mapbox GL JS v3 với thanh tìm kiếm nổi và luồng AI phân cụm địa lý:
+        </p>
+        <a href="plan-map-preview.html" class="w-full py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95">
+          <i class="ph-bold ph-map-trifold text-base"></i> Mở Bản Mẫu Bản Đồ & Kế Hoạch →
+        </a>
       </div>
 
     </aside>
