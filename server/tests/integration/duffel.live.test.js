@@ -36,5 +36,5 @@ describe('Integration Test: Duffel Live Sandbox API', () => {
     expect(first.price).toBeDefined();
     expect(first.price.currency).toBe('VND');
     expect(first.price.amount).toBeGreaterThan(0);
-  }, 15000); // 15s timeout for live network call
+  }, 35000); // 35s timeout for live network call
 });

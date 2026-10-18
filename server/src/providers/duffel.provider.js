@@ -17,7 +17,7 @@ class DuffelProvider {
     }
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 30000);
 
     try {
       const passengerList = Array.from({ length: passengers }, () => ({ type: 'adult' }));
