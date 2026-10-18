@@ -49,20 +49,20 @@ describe('Component Test: PlanScreen Add Stop Flow', () => {
   test('RED-FE-PLAN-STOP-01: opens Add Stop modal, fills input, and triggers addStop', () => {
     const { getByText, getByPlaceholderText } = render(<PlanScreen />);
 
-    // Click "+ Thêm điểm dừng"
-    const addStopBtn = getByText('+ Thêm điểm dừng');
+    // Click "+ Add Stop"
+    const addStopBtn = getByText('+ Add Stop');
     fireEvent.press(addStopBtn);
 
     // Modal should be visible
-    expect(getByText('Thêm điểm dừng mới')).toBeTruthy();
+    expect(getByText('Add New Stop')).toBeTruthy();
 
     // Fill form
-    fireEvent.changeText(getByPlaceholderText('Tên địa điểm (VD: Thác Datanla)'), 'Thác Datanla');
-    fireEvent.changeText(getByPlaceholderText('Giờ đến (VD: 10:30)'), '10:30');
-    fireEvent.changeText(getByPlaceholderText('Thời lượng phút (VD: 120)'), '120');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*Ba Na Hills/i), 'Thác Datanla');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*10:30/i), '10:30');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*90 mins/i), '120');
 
     // Submit
-    fireEvent.press(getByText('Lưu điểm dừng'));
+    fireEvent.press(getByText('Save Stop'));
 
     expect(mockAddStop).toHaveBeenCalledWith('trip-101', {
       dayIndex: 1,

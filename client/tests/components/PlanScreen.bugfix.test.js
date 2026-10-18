@@ -43,9 +43,18 @@ describe('BugFix Tests: PlanScreen Critical Runtime Fixes', () => {
 
   // BUGFIX-01: createTrip payload must use destinationCity (not destination) to match backend Joi schema
   it('BUGFIX-01: createTrip payload uses destinationCity field matching backend Joi schema', async () => {
+    const existingTrip = {
+      id: 'existing-01',
+      title: 'Current Trip',
+      destinationCity: 'Đà Nẵng',
+      startDate: '2026-10-15',
+      endDate: '2026-10-17',
+      collaborators: [{ userId: 'u-1', fullName: 'Đức', role: 'OWNER' }],
+      days: [{ dayNumber: 1, date: '2026-10-15', items: [] }],
+    };
     useItineraryStore.mockReturnValue({
-      currentTrip: null,
-      trips: [],
+      currentTrip: existingTrip,
+      trips: [existingTrip],
       createTrip: mockCreateTrip,
       applyAiPlan: mockApplyAiPlan,
       addStop: jest.fn(),
@@ -56,15 +65,15 @@ describe('BugFix Tests: PlanScreen Critical Runtime Fixes', () => {
 
     const { getByText, getByPlaceholderText } = render(<PlanScreen />);
 
-    // Open create trip modal from empty state
-    fireEvent.press(getByText('+ Tạo kế hoạch mới'));
+    // Open create trip modal from header (+ New Trip)
+    fireEvent.press(getByText('+ New Trip'));
 
     // Fill in trip details
-    fireEvent.changeText(getByPlaceholderText(/Tên chuyến đi/), 'Hành trình Đà Lạt');
-    fireEvent.changeText(getByPlaceholderText(/Điểm đến/), 'Đà Lạt');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*Da Nang/i), 'Hành trình Đà Lạt');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*Destination/i), 'Đà Lạt');
 
     // Submit
-    fireEvent.press(getByText('Tạo chuyến đi'));
+    fireEvent.press(getByText('Create Trip'));
 
     await waitFor(() => {
       expect(mockCreateTrip).toHaveBeenCalledTimes(1);
@@ -103,9 +112,9 @@ describe('BugFix Tests: PlanScreen Critical Runtime Fixes', () => {
     const { getByText } = render(<PlanScreen />);
 
     // Day chips should display correct numbers even when backend returns dayNumber
-    expect(getByText('Ngày 1')).toBeTruthy();
-    expect(getByText('Ngày 2')).toBeTruthy();
-    expect(getByText('Ngày 3')).toBeTruthy();
+    expect(getByText('Day 1')).toBeTruthy();
+    expect(getByText('Day 2')).toBeTruthy();
+    expect(getByText('Day 3')).toBeTruthy();
   });
 
   // BUGFIX-04b: selecting a day with dayNumber should show its items
@@ -166,10 +175,10 @@ describe('BugFix Tests: PlanScreen Critical Runtime Fixes', () => {
     const { getByText } = render(<PlanScreen />);
 
     // Switch to Map Discovery tab
-    fireEvent.press(getByText(/Bản đồ/));
+    fireEvent.press(getByText(/Map & Places|Map/));
 
     // Trigger AI plan generation
-    fireEvent.press(getByText(/✨ AI Lên Lịch Trình/));
+    fireEvent.press(getByText(/✨ AI Itinerary Planning/));
 
     await waitFor(() => {
       expect(mockGenerateAiPlan).toHaveBeenCalledWith(

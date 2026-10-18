@@ -74,22 +74,22 @@ describe('Component Test: PlanScreen 3 Sub-Tabs Integration (Map Discovery, Itin
     });
   });
 
-  it('RED-FE-PLAN-TAB-01: renders 3 sub-tabs including "Bản đồ & Khám phá"', () => {
+  it('RED-FE-PLAN-TAB-01: renders 3 sub-tabs including "Map & Places"', () => {
     const { getByText } = render(<PlanScreen />);
 
-    expect(getByText('Bản đồ & Khám phá')).toBeTruthy();
-    expect(getByText('Lịch trình & Đội nhóm')).toBeTruthy();
-    expect(getByText('Chi tiêu & Chia tiền')).toBeTruthy();
+    expect(getByText('Map & Places')).toBeTruthy();
+    expect(getByText('Itinerary & Squad')).toBeTruthy();
+    expect(getByText('Expenses & Splits')).toBeTruthy();
   });
 
-  it('RED-FE-PLAN-TAB-02: switches to "Bản đồ & Khám phá" sub-tab and renders map discovery view', () => {
+  it('RED-FE-PLAN-TAB-02: switches to "Map & Places" sub-tab and renders map discovery view', () => {
     const { getByText, getByPlaceholderText } = render(<PlanScreen />);
 
-    const mapTabBtn = getByText(/Bản đồ & Khám phá|Bản đồ/i);
+    const mapTabBtn = getByText(/Map & Places|Map/i);
     fireEvent.press(mapTabBtn);
 
     // Search bar of map view should be present
-    expect(getByPlaceholderText(/Tìm kiếm địa điểm, quán ăn.../i)).toBeTruthy();
-    expect(getByText(/✨ AI Lên Lịch Trình/i)).toBeTruthy();
+    expect(getByPlaceholderText(/e\.g\..*Ba Na Hills|search/i)).toBeTruthy();
+    expect(getByText(/✨ AI Itinerary Planning/i)).toBeTruthy();
   });
 });

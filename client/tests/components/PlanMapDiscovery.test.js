@@ -48,17 +48,17 @@ describe('Component Test: PlanMapDiscovery (Interactive Map, Search & AI Plan Bu
     );
 
     // Floating Search bar
-    expect(getByPlaceholderText(/Tìm kiếm địa điểm, quán ăn.../i)).toBeTruthy();
+    expect(getByPlaceholderText(/e\.g\..*Ba Na Hills/i)).toBeTruthy();
 
     // City chips
     expect(getAllByText(/Đà Nẵng/i).length).toBeGreaterThan(0);
     expect(getByText(/Tokyo/i)).toBeTruthy();
 
     // Category filter tabs
-    expect(getByText('Tất cả')).toBeTruthy();
-    expect(getByText('Di tích')).toBeTruthy();
-    expect(getByText('Biển')).toBeTruthy();
-    expect(getByText('Ẩm thực')).toBeTruthy();
+    expect(getByText('All')).toBeTruthy();
+    expect(getByText('Attractions')).toBeTruthy();
+    expect(getByText('Beaches')).toBeTruthy();
+    expect(getByText('Food & Dining')).toBeTruthy();
   });
 
   it('RED-FE-MAP-02: filters places by search query and category', () => {
@@ -72,7 +72,7 @@ describe('Component Test: PlanMapDiscovery (Interactive Map, Search & AI Plan Bu
     expect(getByText('Bánh Xèo Bà Dưỡng')).toBeTruthy();
 
     // Search query filter
-    const searchInput = getByPlaceholderText(/Tìm kiếm địa điểm, quán ăn.../i);
+    const searchInput = getByPlaceholderText(/e\.g\..*Ba Na Hills/i);
     fireEvent.changeText(searchInput, 'Cầu Rồng');
 
     expect(getByText('Cầu Rồng Đà Nẵng')).toBeTruthy();
@@ -83,7 +83,7 @@ describe('Component Test: PlanMapDiscovery (Interactive Map, Search & AI Plan Bu
     fireEvent.changeText(searchInput, '');
 
     // Category filter
-    fireEvent.press(getByText('Ẩm thực'));
+    fireEvent.press(getByText('Food & Dining'));
     expect(getByText('Bánh Xèo Bà Dưỡng')).toBeTruthy();
     expect(queryByText('Cầu Rồng Đà Nẵng')).toBeNull();
   });
@@ -94,17 +94,17 @@ describe('Component Test: PlanMapDiscovery (Interactive Map, Search & AI Plan Bu
     );
 
     // Select first place
-    const selectButtons = getAllByText(/\+ Chọn|\+ Thêm/i);
+    const selectButtons = getAllByText(/\+ Select|\+ Add/i);
     fireEvent.press(selectButtons[0]);
 
-    // Counter badge should show 1 điểm
-    expect(getByText(/1 điểm đã chọn/i)).toBeTruthy();
+    // Counter badge should show 1 selected
+    expect(getByText(/1 selected/i)).toBeTruthy();
 
     // Toggle again to deselect
-    const selectedBtn = getByText(/✓ Đã chọn/i);
+    const selectedBtn = getByText(/✓ Selected/i);
     fireEvent.press(selectedBtn);
 
-    expect(getByText(/0 điểm đã chọn/i)).toBeTruthy();
+    expect(getByText(/0 selected/i)).toBeTruthy();
   });
 
   it('RED-FE-MAP-04: triggers onGenerateAiPlan callback when tapping AI button with selected places', () => {
@@ -114,12 +114,12 @@ describe('Component Test: PlanMapDiscovery (Interactive Map, Search & AI Plan Bu
     );
 
     // Select places
-    const selectButtons = getAllByText(/\+ Chọn|\+ Thêm/i);
+    const selectButtons = getAllByText(/\+ Select|\+ Add/i);
     fireEvent.press(selectButtons[0]);
     fireEvent.press(selectButtons[1]);
 
     // Press AI plan button
-    const aiBtn = getByText(/✨ AI Lên Lịch Trình/i);
+    const aiBtn = getByText(/✨ AI Itinerary Planning/i);
     fireEvent.press(aiBtn);
 
     expect(mockOnGenerate).toHaveBeenCalledWith(
@@ -129,4 +129,62 @@ describe('Component Test: PlanMapDiscovery (Interactive Map, Search & AI Plan Bu
       ])
     );
   });
+
+  it('RED-FE-MAP-05: renders Mapbox vector static map image with user token', () => {
+    const { getByTestId } = render(
+      <PlanMapDiscovery places={mockPlaces} onGenerateAiPlan={jest.fn()} />
+    );
+
+    const mapImage = getByTestId('mapbox-canvas-image');
+    expect(mapImage).toBeTruthy();
+    expect(mapImage.props.source.uri).toContain('api.mapbox.com/styles/v1/mapbox');
+    expect(mapImage.props.source.uri).toContain('access_token=');
+  });
+
+  it('RED-FE-MAP-06: should generate multi-pin Mapbox static URL containing pins for places in the list', () => {
+    const { getByTestId } = render(
+      <PlanMapDiscovery places={mockPlaces} onGenerateAiPlan={jest.fn()} />
+    );
+
+    const mapImage = getByTestId('mapbox-canvas-image');
+    expect(mapImage.props.source.uri).toMatch(/pin-[s|l]-/);
+    expect(mapImage.props.source.uri).toContain('108.2272');
+    expect(mapImage.props.source.uri).toContain('auto');
+  });
+
+  it('RED-FE-MAP-07: should render interactive place markers directly on map canvas', () => {
+    const { getAllByTestId } = render(
+      <PlanMapDiscovery places={mockPlaces} onGenerateAiPlan={jest.fn()} />
+    );
+
+    const pinMarkers = getAllByTestId(/^map-pin-marker-/);
+    expect(pinMarkers.length).toBe(mockPlaces.length);
+  });
+
+  it('RED-FE-MAP-08: should highlight active place when a map pin is tapped and sync with horizontal place carousel', () => {
+    const { getByTestId } = render(
+      <PlanMapDiscovery places={mockPlaces} onGenerateAiPlan={jest.fn()} />
+    );
+
+    const firstPin = getByTestId('map-pin-marker-dn-01');
+    fireEvent.press(firstPin);
+
+    const activeCard = getByTestId('carousel-place-card-dn-01');
+    expect(activeCard).toBeTruthy();
+  });
+
+  it('RED-FE-MAP-09: should toggle between Map Focus and List View modes', () => {
+    const { getByTestId } = render(
+      <PlanMapDiscovery places={mockPlaces} onGenerateAiPlan={jest.fn()} />
+    );
+
+    const toggleBtn = getByTestId('map-view-mode-toggle');
+    expect(toggleBtn).toBeTruthy();
+
+    expect(getByTestId('places-horizontal-carousel')).toBeTruthy();
+
+    fireEvent.press(toggleBtn);
+    expect(getByTestId('places-vertical-list')).toBeTruthy();
+  });
 });
+

@@ -15,108 +15,108 @@ import { colors } from '../../theme/colors';
 const { width } = Dimensions.get('window');
 
 const CITIES = [
-  { key: 'danang', name: 'Đà Nẵng 🇻🇳', center: '16.0610, 108.2272' },
-  { key: 'hoian', name: 'Hội An 🏮', center: '15.8770, 108.3262' },
-  { key: 'hanoi', name: 'Hà Nội 🏛️', center: '21.0285, 105.8542' },
-  { key: 'tokyo', name: 'Tokyo 🇯🇵', center: '35.6595, 139.7004' },
-  { key: 'paris', name: 'Paris 🇫🇷', center: '48.8584, 2.2945' },
-  { key: 'newyork', name: 'New York 🇺🇸', center: '40.7580, -73.9855' },
+  { key: 'danang', name: 'Da Nang 🇻🇳', center: '16.0610, 108.2272', lat: 16.0610, lng: 108.2272, zoom: 12 },
+  { key: 'hoian', name: 'Hoi An 🏮', center: '15.8770, 108.3262', lat: 15.8770, lng: 108.3262, zoom: 13 },
+  { key: 'hanoi', name: 'Hanoi 🏛️', center: '21.0285, 105.8542', lat: 21.0285, lng: 105.8542, zoom: 12 },
+  { key: 'tokyo', name: 'Tokyo 🇯🇵', center: '35.6595, 139.7004', lat: 35.6595, lng: 139.7004, zoom: 12 },
+  { key: 'paris', name: 'Paris 🇫🇷', center: '48.8584, 2.2945', lat: 48.8584, lng: 2.2945, zoom: 12 },
+  { key: 'newyork', name: 'New York 🇺🇸', center: '40.7580, -73.9855', lat: 40.7580, lng: -73.9855, zoom: 12 },
 ];
 
 const CATEGORIES = [
-  { key: 'all', label: 'Tất cả', icon: '🌟' },
-  { key: 'landmark', label: 'Di tích', icon: '🏛️' },
-  { key: 'beach', label: 'Biển', icon: '🏖️' },
-  { key: 'food', label: 'Ẩm thực', icon: '🍜' },
-  { key: 'nature', label: 'Thiên nhiên', icon: '🌿' },
+  { key: 'all', label: 'All', icon: '🌟' },
+  { key: 'landmark', label: 'Attractions', icon: '🏛️' },
+  { key: 'beach', label: 'Beaches', icon: '🏖️' },
+  { key: 'food', label: 'Food & Dining', icon: '🍜' },
+  { key: 'nature', label: 'Nature', icon: '🌿' },
 ];
 
 const DEFAULT_GLOBAL_PLACES = [
-  // Đà Nẵng
+  // Da Nang
   {
     id: 'dn-01',
-    name: 'Cầu Rồng Đà Nẵng',
-    city: 'Đà Nẵng',
+    name: 'Dragon Bridge Da Nang',
+    city: 'Da Nang',
     lat: 16.061,
     lng: 108.2272,
     category: 'landmark',
-    categoryName: 'Di tích & Biểu tượng',
+    categoryName: 'Landmarks & Icons',
     rating: 4.8,
-    address: 'Nguyễn Văn Linh, Hải Châu, Đà Nẵng',
+    address: 'Nguyen Van Linh, Hai Chau, Da Nang',
     image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=500&q=80',
   },
   {
     id: 'dn-02',
-    name: 'Bãi Biển Mỹ Khê',
-    city: 'Đà Nẵng',
+    name: 'My Khe Beach',
+    city: 'Da Nang',
     lat: 16.0595,
     lng: 108.2464,
     category: 'beach',
-    categoryName: 'Biển & Nghỉ dưỡng',
+    categoryName: 'Beach & Resort',
     rating: 4.7,
-    address: 'Võ Nguyên Giáp, Sơn Trà, Đà Nẵng',
+    address: 'Vo Nguyen Giap, Son Tra, Da Nang',
     image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80',
   },
   {
     id: 'dn-03',
-    name: 'Bánh Xèo Bà Dưỡng',
-    city: 'Đà Nẵng',
+    name: 'Ba Duong Local Pancakes',
+    city: 'Da Nang',
     lat: 16.0592,
     lng: 108.214,
     category: 'food',
-    categoryName: 'Ẩm thực địa phương',
+    categoryName: 'Local Dining',
     rating: 4.6,
-    address: 'K280/23 Hoàng Diệu, Hải Châu, Đà Nẵng',
+    address: 'K280/23 Hoang Dieu, Hai Chau, Da Nang',
     image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80',
   },
-  // Hội An
+  // Hoi An
   {
     id: 'ha-01',
-    name: 'Chùa Cầu Hội An',
-    city: 'Hội An',
+    name: 'Japanese Covered Bridge',
+    city: 'Hoi An',
     lat: 15.8771,
     lng: 108.326,
     category: 'landmark',
-    categoryName: 'Di tích Cổ',
+    categoryName: 'Ancient Heritage',
     rating: 4.9,
-    address: 'Nguyễn Thị Minh Khai, Phố Cổ Hội An',
+    address: 'Nguyen Thi Minh Khai, Hoi An Ancient Town',
     image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=500&q=80',
   },
   {
     id: 'ha-02',
-    name: 'Bánh Mì Phượng Hội An',
-    city: 'Hội An',
+    name: 'Banh Mi Phuong Hoi An',
+    city: 'Hoi An',
     lat: 15.8795,
     lng: 108.332,
     category: 'food',
-    categoryName: 'Ẩm thực Nổi tiếng',
+    categoryName: 'Famous Street Food',
     rating: 4.7,
-    address: '2B Phan Châu Trinh, Cẩm Châu, Hội An',
+    address: '2B Phan Chau Trinh, Cam Chau, Hoi An',
     image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?w=500&q=80',
   },
-  // Hà Nội
+  // Hanoi
   {
     id: 'hn-01',
-    name: 'Hồ Gươm & Tháp Rùa',
-    city: 'Hà Nội',
+    name: 'Sword Lake & Turtle Tower',
+    city: 'Hanoi',
     lat: 21.0285,
     lng: 105.8542,
     category: 'landmark',
-    categoryName: 'Di tích Lịch sử',
+    categoryName: 'Historical Heritage',
     rating: 4.8,
-    address: 'Hàng Trống, Hoàn Kiếm, Hà Nội',
+    address: 'Hang Trong, Hoan Kiem, Hanoi',
     image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80',
   },
   {
     id: 'hn-02',
-    name: 'Phở Thìn Lò Đúc',
-    city: 'Hà Nội',
+    name: 'Pho Thin Lo Duc',
+    city: 'Hanoi',
     lat: 21.0182,
     lng: 105.856,
     category: 'food',
-    categoryName: 'Ẩm thực Phố Cổ',
+    categoryName: 'Traditional Dining',
     rating: 4.6,
-    address: '13 Lò Đúc, Phạm Đình Hổ, Hai Bà Trưng, Hà Nội',
+    address: '13 Lo Duc, Pham Dinh Ho, Hai Ba Trung, Hanoi',
     image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=500&q=80',
   },
   // Tokyo
@@ -127,35 +127,35 @@ const DEFAULT_GLOBAL_PLACES = [
     lat: 35.6595,
     lng: 139.7004,
     category: 'landmark',
-    categoryName: 'Biểu tượng Tokyo',
+    categoryName: 'Tokyo Landmark',
     rating: 4.8,
-    address: 'Shibuya, Tokyo, Nhật Bản',
+    address: 'Shibuya, Tokyo, Japan',
     image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=500&q=80',
   },
   // Paris
   {
     id: 'prs-01',
-    name: 'Tháp Eiffel Paris',
+    name: 'Eiffel Tower',
     city: 'Paris',
     lat: 48.8584,
     lng: 2.2945,
     category: 'landmark',
-    categoryName: 'Kỳ quan Thế giới',
+    categoryName: 'World Wonder',
     rating: 4.9,
-    address: 'Champ de Mars, 5 Av. Anatole France, Paris, Pháp',
+    address: 'Champ de Mars, 5 Av. Anatole France, Paris, France',
     image: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=500&q=80',
   },
   // New York
   {
     id: 'ny-01',
-    name: 'Quảng trường Thời Đại (Times Square)',
+    name: 'Times Square',
     city: 'New York',
     lat: 40.758,
     lng: -73.9855,
     category: 'landmark',
-    categoryName: 'Trái tim Manhattan',
+    categoryName: 'Heart of Manhattan',
     rating: 4.8,
-    address: 'Manhattan, NY 10036, Hoa Kỳ',
+    address: 'Manhattan, NY 10036, USA',
     image: 'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=500&q=80',
   },
 ];
@@ -169,12 +169,24 @@ export default function PlanMapDiscovery({
   const { colors: themeColors } = useThemeStore();
   const styles = React.useMemo(() => getStyles(themeColors), [themeColors]);
 
+  const mapboxToken =
+    process.env.EXPO_PUBLIC_MAPBOX_TOKEN ||
+    'pk.eyJ1Ijoibm9tYWRpeCIsImEiOiJjbTFub21hZGl4ZGVtb3Rva2VuIn0.demo_token';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedCity, setSelectedCity] = useState('danang');
   const [internalSelected, setInternalSelected] = useState(new Set());
+  const [activePlaceId, setActivePlaceId] = useState(null);
+  const [viewMode, setViewMode] = useState('map'); // 'map' (Map Focus + Horizontal Carousel) | 'list' (Vertical list)
 
-  const effectiveSelectedIds = selectedPlaceIds || internalSelected;
+  const activeCityObj = CITIES.find((c) => c.key === selectedCity) || CITIES[0];
+  const mapStyle = themeColors.card === '#1E293B' ? 'dark-v11' : 'streets-v12';
+  const effectiveSelectedIds = React.useMemo(() => {
+    if (selectedPlaceIds instanceof Set) return selectedPlaceIds;
+    if (Array.isArray(selectedPlaceIds)) return new Set(selectedPlaceIds);
+    return internalSelected;
+  }, [selectedPlaceIds, internalSelected]);
 
   const handleToggle = (placeId) => {
     if (onTogglePlace) {
@@ -216,6 +228,26 @@ export default function PlanMapDiscovery({
     return matchCategory && matchSearch && matchCity;
   });
 
+  // Compile multi-pin markers for Mapbox Static API
+  const pinMarkers = filteredPlaces.map((p, index) => {
+    const pinNumber = (index + 1).toString();
+    const isSelected = effectiveSelectedIds.has(p.id);
+    const isActive = (activePlaceId || filteredPlaces[0]?.id) === p.id;
+    const pinColor = isActive ? 'EF4444' : isSelected ? '10B981' : '3B82F6';
+    const lng = Number(p.lng || activeCityObj.lng).toFixed(4);
+    const lat = Number(p.lat || activeCityObj.lat).toFixed(4);
+    return `pin-s-${pinNumber}+${pinColor}(${lng},${lat})`;
+  });
+
+  const pinsParam = pinMarkers.length > 0
+    ? pinMarkers.join(',')
+    : `pin-s-star+3B82F6(${activeCityObj.lng},${activeCityObj.lat})`;
+
+  const mapHeight = viewMode === 'map' ? 280 : 130;
+  const mapboxImageUrl = mapboxToken
+    ? `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/static/${pinsParam}/auto/${Math.min(600, Math.round(width - 32))}x${mapHeight}@2x?access_token=${mapboxToken}`
+    : null;
+
   const handleAiPlanPress = () => {
     const selectedList = placesList.filter((p) => effectiveSelectedIds.has(p.id));
     if (onGenerateAiPlan) {
@@ -230,7 +262,7 @@ export default function PlanMapDiscovery({
         <Text style={styles.searchIcon}>🔍</Text>
         <TextInput
           style={styles.searchInput}
-          placeholder="Tìm kiếm địa điểm, quán ăn..."
+          placeholder="e.g. Ba Na Hills, Eiffel Tower, Cafe..."
           placeholderTextColor={themeColors.textMuted}
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -246,6 +278,7 @@ export default function PlanMapDiscovery({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.cityChipsScroll}
         contentContainerStyle={styles.cityChipsContainer}
       >
         {CITIES.map((c) => {
@@ -254,7 +287,10 @@ export default function PlanMapDiscovery({
             <TouchableOpacity
               key={c.key}
               style={[styles.cityChip, isSelected && styles.cityChipActive]}
-              onPress={() => setSelectedCity(c.key)}
+              onPress={() => {
+                setSelectedCity(c.key);
+                setActivePlaceId(null);
+              }}
               activeOpacity={0.8}
             >
               <Text style={[styles.cityChipText, isSelected && styles.cityChipTextActive]}>
@@ -269,6 +305,7 @@ export default function PlanMapDiscovery({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.categoryChipsScroll}
         contentContainerStyle={styles.categoryChipsContainer}
       >
         {CATEGORIES.map((cat) => {
@@ -294,75 +331,225 @@ export default function PlanMapDiscovery({
         })}
       </ScrollView>
 
-      {/* 4. Interactive Visual Map Canvas Frame */}
-      <View style={styles.mapCanvasFrame}>
-        <View style={styles.mapGridOverlay}>
-          <Text style={styles.mapCanvasBadge}>
-            🗺️ Mapbox Vector Engine • {selectedCity.toUpperCase()}
-          </Text>
-          <View style={styles.mapCenterPin}>
-            <Text style={styles.mapPinDot}>📍</Text>
+      {/* 4. Interactive Visual Map Canvas Frame with Floating Marker Layer */}
+      <View style={[styles.mapCanvasFrame, viewMode === 'map' && styles.mapCanvasFrameExpanded]}>
+        {mapboxImageUrl ? (
+          <Image
+            source={{ uri: mapboxImageUrl }}
+            style={[styles.mapCanvasImage, viewMode === 'map' && styles.mapCanvasImageExpanded]}
+            resizeMode="cover"
+            testID="mapbox-canvas-image"
+          />
+        ) : null}
+
+        {/* Top Header Overlay with Badge and View Mode Toggle */}
+        <View style={styles.mapHeaderOverlay}>
+          <View style={styles.mapCanvasBadge}>
+            <Text style={styles.mapCanvasBadgeText}>
+              🗺️ Mapbox Vector Engine • {selectedCity.toUpperCase()} ({filteredPlaces.length} places)
+            </Text>
           </View>
+          <TouchableOpacity
+            testID="map-view-mode-toggle"
+            style={styles.viewModeToggleBtn}
+            onPress={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.viewModeToggleText}>
+              {viewMode === 'map' ? '📋 List View' : '🗺️ Map View'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Interactive Place Markers Layer Floating directly on Map */}
+        <View style={styles.mapPinsOverlay}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.mapPinsScrollContent}
+          >
+            {filteredPlaces.map((place, index) => {
+              const isSelected = effectiveSelectedIds.has(place.id);
+              const isActive = (activePlaceId || filteredPlaces[0]?.id) === place.id;
+              return (
+                <TouchableOpacity
+                  key={place.id}
+                  testID={`map-pin-marker-${place.id}`}
+                  style={[
+                    styles.mapPinMarker,
+                    isActive && styles.mapPinMarkerActive,
+                    isSelected && styles.mapPinMarkerSelected,
+                  ]}
+                  onPress={() => {
+                    setActivePlaceId(place.id);
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <View style={[styles.mapPinNumberBadge, isActive && styles.mapPinNumberBadgeActive]}>
+                    <Text style={styles.mapPinNumberText}>{index + 1}</Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.mapPinMarkerText,
+                      isActive && styles.mapPinMarkerTextActive,
+                    ]}
+                    numberOfLines={1}
+                  >
+                    Stop {index + 1}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
         </View>
       </View>
 
-      {/* 5. Places Cards List */}
-      <ScrollView
-        style={styles.placesList}
-        contentContainerStyle={styles.placesListContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {filteredPlaces.map((place) => {
-          const isSelected = effectiveSelectedIds.has(place.id);
-          return (
-            <View key={place.id} style={styles.placeCard}>
-              {place.image ? (
-                <Image source={{ uri: place.image }} style={styles.placeImage} />
-              ) : (
-                <View style={styles.placeImagePlaceholder}>
-                  <Text style={{ fontSize: 24 }}>📍</Text>
-                </View>
-              )}
-
-              <View style={styles.placeInfo}>
-                <View style={styles.placeHeaderRow}>
-                  <Text style={styles.placeCategory}>
-                    {place.categoryName || place.category || 'Địa điểm'}
-                  </Text>
-                  <Text style={styles.placeRating}>★ {place.rating || '4.8'}</Text>
-                </View>
-                <Text style={styles.placeName} numberOfLines={1}>
-                  {place.name}
-                </Text>
-                <Text style={styles.placeAddress} numberOfLines={1}>
-                  {place.address}
-                </Text>
-              </View>
-
-              <TouchableOpacity
-                style={[styles.selectButton, isSelected && styles.selectButtonActive]}
-                onPress={() => handleToggle(place.id)}
-                activeOpacity={0.8}
-              >
-                <Text
+      {/* 5A. Horizontal Places Carousel (Map Focus Mode) */}
+      {viewMode === 'map' && (
+        <View testID="places-horizontal-carousel" style={styles.carouselContainer}>
+          <View style={styles.carouselHeaderRow}>
+            <Text style={styles.carouselSectionTitle}>
+              📍 Recommended Places ({filteredPlaces.length})
+            </Text>
+            <Text style={styles.carouselSubtitle}>Tap pin to view details</Text>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.carouselScrollContent}
+          >
+            {filteredPlaces.map((place, index) => {
+              const isSelected = effectiveSelectedIds.has(place.id);
+              const isActive = (activePlaceId || filteredPlaces[0]?.id) === place.id;
+              return (
+                <View
+                  key={place.id}
+                  testID={`carousel-place-card-${place.id}`}
                   style={[
-                    styles.selectButtonText,
-                    isSelected && styles.selectButtonTextActive,
+                    styles.carouselCard,
+                    isActive && styles.carouselCardActive,
                   ]}
                 >
-                  {isSelected ? '✓ Đã chọn' : '+ Chọn'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
-      </ScrollView>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => setActivePlaceId(place.id)}
+                    style={styles.carouselCardTouch}
+                  >
+                    {place.image ? (
+                      <Image source={{ uri: place.image }} style={styles.carouselImage} />
+                    ) : (
+                      <View style={styles.carouselImagePlaceholder}>
+                        <Text style={{ fontSize: 28 }}>📍</Text>
+                      </View>
+                    )}
+                    <View style={styles.carouselIndexBadge}>
+                      <Text style={styles.carouselIndexText}>{index + 1}</Text>
+                    </View>
+                    <View style={styles.carouselInfo}>
+                      <View style={styles.placeHeaderRow}>
+                        <Text style={styles.placeCategory}>
+                          {place.categoryName || place.category || 'Attraction'}
+                        </Text>
+                        <Text style={styles.placeRating}>★ {place.rating || '4.8'}</Text>
+                      </View>
+                      <Text style={styles.carouselPlaceName} numberOfLines={1}>
+                        {place.name}
+                      </Text>
+                      <Text style={styles.carouselPlaceAddress} numberOfLines={1}>
+                        {place.address}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.selectButton, isSelected && styles.selectButtonActive]}
+                    onPress={() => handleToggle(place.id)}
+                    activeOpacity={0.8}
+                  >
+                    <Text
+                      style={[
+                        styles.selectButtonText,
+                        isSelected && styles.selectButtonTextActive,
+                      ]}
+                    >
+                      {isSelected ? '✓ Selected' : '+ Select'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
+
+      {/* 5B. Vertical Places List (List Focus Mode) */}
+      {viewMode === 'list' && (
+        <ScrollView
+          testID="places-vertical-list"
+          style={styles.placesList}
+          contentContainerStyle={styles.placesListContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {filteredPlaces.map((place, index) => {
+            const isSelected = effectiveSelectedIds.has(place.id);
+            const isActive = (activePlaceId || filteredPlaces[0]?.id) === place.id;
+            return (
+              <View
+                key={place.id}
+                testID={`vertical-place-card-${place.id}`}
+                style={[styles.placeCard, isActive && styles.placeCardActive]}
+              >
+                <View style={styles.placeIndexBadge}>
+                  <Text style={styles.placeIndexBadgeText}>{index + 1}</Text>
+                </View>
+                {place.image ? (
+                  <Image source={{ uri: place.image }} style={styles.placeImage} />
+                ) : (
+                  <View style={styles.placeImagePlaceholder}>
+                    <Text style={{ fontSize: 24 }}>📍</Text>
+                  </View>
+                )}
+
+                <View style={styles.placeInfo}>
+                  <View style={styles.placeHeaderRow}>
+                    <Text style={styles.placeCategory}>
+                      {place.categoryName || place.category || 'Attraction'}
+                    </Text>
+                    <Text style={styles.placeRating}>★ {place.rating || '4.8'}</Text>
+                  </View>
+                  <Text style={styles.placeName} numberOfLines={1}>
+                    {place.name}
+                  </Text>
+                  <Text style={styles.placeAddress} numberOfLines={1}>
+                    {place.address}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  style={[styles.selectButton, isSelected && styles.selectButtonActive]}
+                  onPress={() => handleToggle(place.id)}
+                  activeOpacity={0.8}
+                >
+                  <Text
+                    style={[
+                      styles.selectButtonText,
+                      isSelected && styles.selectButtonTextActive,
+                    ]}
+                  >
+                    {isSelected ? '✓ Selected' : '+ Select'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </ScrollView>
+      )}
 
       {/* 6. Bottom Floating Selection Counter & AI Trigger Bar */}
       <View style={styles.bottomBar}>
         <View style={styles.counterBadgeContainer}>
           <Text style={styles.counterBadgeText}>
-            {effectiveSelectedIds.size} điểm đã chọn
+            {effectiveSelectedIds.size} {effectiveSelectedIds.size === 1 ? 'place selected' : 'places selected'}
           </Text>
         </View>
 
@@ -374,12 +561,13 @@ export default function PlanMapDiscovery({
           onPress={handleAiPlanPress}
           activeOpacity={0.85}
         >
-          <Text style={styles.aiGenerateBtnText}>✨ AI Lên Lịch Trình</Text>
+          <Text style={styles.aiGenerateBtnText}>✨ AI Itinerary Planning</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
+
 
 const getStyles = (themeColors) =>
   StyleSheet.create({
@@ -417,18 +605,26 @@ const getStyles = (themeColors) =>
       color: themeColors.textMuted,
       fontSize: 14,
     },
+    cityChipsScroll: {
+      flexGrow: 0,
+      height: 38,
+      marginBottom: 4,
+    },
     cityChipsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: 16,
-      paddingVertical: 4,
       gap: 6,
     },
     cityChip: {
       paddingHorizontal: 12,
-      paddingVertical: 5,
+      paddingVertical: 6,
       borderRadius: 12,
       backgroundColor: themeColors.card,
       borderWidth: 1,
       borderColor: themeColors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     cityChipActive: {
       backgroundColor: colors.primary,
@@ -442,9 +638,15 @@ const getStyles = (themeColors) =>
     cityChipTextActive: {
       color: '#FFFFFF',
     },
+    categoryChipsScroll: {
+      flexGrow: 0,
+      height: 36,
+      marginBottom: 6,
+    },
     categoryChipsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: 16,
-      paddingVertical: 6,
       gap: 6,
     },
     categoryChip: {
@@ -452,7 +654,7 @@ const getStyles = (themeColors) =>
       alignItems: 'center',
       gap: 4,
       paddingHorizontal: 10,
-      paddingVertical: 4,
+      paddingVertical: 5,
       borderRadius: 10,
       backgroundColor: themeColors.card,
       borderWidth: 1,
@@ -475,7 +677,7 @@ const getStyles = (themeColors) =>
       fontWeight: '700',
     },
     mapCanvasFrame: {
-      height: 110,
+      height: 130,
       marginHorizontal: 16,
       marginVertical: 6,
       borderRadius: 14,
@@ -485,28 +687,204 @@ const getStyles = (themeColors) =>
       borderColor: themeColors.border,
       position: 'relative',
     },
-    mapGridOverlay: {
-      flex: 1,
+    mapCanvasFrameExpanded: {
+      height: 280,
+    },
+    mapCanvasImage: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: '100%',
+      height: '100%',
+    },
+    mapCanvasImageExpanded: {
+      height: '100%',
+    },
+    mapHeaderOverlay: {
+      position: 'absolute',
+      top: 8,
+      left: 8,
+      right: 8,
+      flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: 8,
-      backgroundColor: 'rgba(15, 23, 42, 0.85)',
+      alignItems: 'center',
+      zIndex: 10,
     },
     mapCanvasBadge: {
-      alignSelf: 'flex-start',
-      fontSize: 9,
+      backgroundColor: 'rgba(15, 23, 42, 0.75)',
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: 'rgba(59, 130, 246, 0.3)',
+    },
+    mapCanvasBadgeText: {
+      fontSize: 10,
       fontWeight: '800',
       color: '#60A5FA',
-      backgroundColor: 'rgba(59, 130, 246, 0.15)',
-      paddingHorizontal: 6,
-      paddingVertical: 2,
-      borderRadius: 6,
     },
-    mapCenterPin: {
-      alignSelf: 'center',
-      marginBottom: 16,
+    viewModeToggleBtn: {
+      backgroundColor: colors.primary,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 8,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 2,
     },
-    mapPinDot: {
-      fontSize: 24,
+    viewModeToggleText: {
+      fontSize: 11,
+      fontWeight: '700',
+      color: '#FFFFFF',
+    },
+    mapPinsOverlay: {
+      position: 'absolute',
+      bottom: 8,
+      left: 0,
+      right: 0,
+      zIndex: 10,
+    },
+    mapPinsScrollContent: {
+      paddingHorizontal: 8,
+      gap: 6,
+    },
+    mapPinMarker: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'rgba(15, 23, 42, 0.85)',
+      borderRadius: 20,
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+      borderWidth: 1,
+      borderColor: themeColors.border,
+      gap: 5,
+    },
+    mapPinMarkerActive: {
+      backgroundColor: '#EF4444',
+      borderColor: '#FFFFFF',
+      transform: [{ scale: 1.05 }],
+    },
+    mapPinMarkerSelected: {
+      borderColor: '#10B981',
+      borderWidth: 1.5,
+    },
+    mapPinNumberBadge: {
+      width: 18,
+      height: 18,
+      borderRadius: 9,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    mapPinNumberBadgeActive: {
+      backgroundColor: '#FFFFFF',
+    },
+    mapPinNumberText: {
+      fontSize: 10,
+      fontWeight: '900',
+      color: '#FFFFFF',
+    },
+    mapPinMarkerText: {
+      fontSize: 11,
+      fontWeight: '700',
+      color: '#F8FAFC',
+      maxWidth: 110,
+    },
+    mapPinMarkerTextActive: {
+      color: '#FFFFFF',
+      fontWeight: '800',
+    },
+    carouselContainer: {
+      flex: 1,
+      paddingTop: 4,
+    },
+    carouselHeaderRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      marginBottom: 6,
+    },
+    carouselSectionTitle: {
+      fontSize: 12,
+      fontWeight: '800',
+      color: themeColors.text,
+    },
+    carouselSubtitle: {
+      fontSize: 10,
+      color: themeColors.textMuted,
+    },
+    carouselScrollContent: {
+      paddingHorizontal: 16,
+      paddingBottom: 85,
+      gap: 10,
+    },
+    carouselCard: {
+      width: 220,
+      backgroundColor: themeColors.card,
+      borderRadius: 14,
+      padding: 10,
+      borderWidth: 1,
+      borderColor: themeColors.border,
+      position: 'relative',
+      justifyContent: 'space-between',
+    },
+    carouselCardActive: {
+      borderColor: '#EF4444',
+      borderWidth: 2,
+    },
+    carouselCardTouch: {
+      marginBottom: 8,
+    },
+    carouselImage: {
+      width: '100%',
+      height: 90,
+      borderRadius: 10,
+      marginBottom: 6,
+    },
+    carouselImagePlaceholder: {
+      width: '100%',
+      height: 90,
+      borderRadius: 10,
+      backgroundColor: 'rgba(0,0,0,0.05)',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 6,
+    },
+    carouselIndexBadge: {
+      position: 'absolute',
+      top: 6,
+      left: 6,
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      backgroundColor: 'rgba(15, 23, 42, 0.85)',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: '#FFFFFF',
+    },
+    carouselIndexText: {
+      fontSize: 11,
+      fontWeight: '900',
+      color: '#FFFFFF',
+    },
+    carouselInfo: {
+      flex: 1,
+    },
+    carouselPlaceName: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: themeColors.text,
+      marginBottom: 2,
+    },
+    carouselPlaceAddress: {
+      fontSize: 10,
+      color: themeColors.textMuted,
     },
     placesList: {
       flex: 1,
@@ -525,6 +903,23 @@ const getStyles = (themeColors) =>
       borderWidth: 1,
       borderColor: themeColors.border,
       gap: 10,
+    },
+    placeCardActive: {
+      borderColor: '#EF4444',
+      borderWidth: 1.5,
+    },
+    placeIndexBadge: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    placeIndexBadgeText: {
+      fontSize: 10,
+      fontWeight: '800',
+      color: '#FFFFFF',
     },
     placeImage: {
       width: 54,
@@ -630,3 +1025,4 @@ const getStyles = (themeColors) =>
       color: '#FFFFFF',
     },
   });
+

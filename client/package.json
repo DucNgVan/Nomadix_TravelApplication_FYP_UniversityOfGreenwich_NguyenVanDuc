@@ -17,6 +17,7 @@
     "expo": "~57.0.27",
     "react": "19.2.3",
     "react-native": "0.86.3",
+    "react-native-safe-area-context": "^5.10.1",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
@@ -25,9 +26,11 @@
     "@babel/preset-react": "^7.24.0",
     "@react-native/jest-preset": "^0.87.1",
     "@testing-library/react-native": "12.5.0",
+    "@types/react": "^19.3.0",
     "babel-jest": "^29.7.0",
     "babel-preset-expo": "~57.0.14",
     "jest": "^29.7.0",
-    "react-test-renderer": "19.2.3"
+    "react-test-renderer": "19.2.3",
+    "typescript": "^7.0.2"
   }
 }

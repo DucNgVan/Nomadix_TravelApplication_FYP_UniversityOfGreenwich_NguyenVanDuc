@@ -834,7 +834,7 @@
     if (urlMapToken) {
       localStorage.setItem('nomadix_mapbox_token', urlMapToken);
     }
-    mapboxgl.accessToken = urlMapToken || localStorage.getItem('nomadix_mapbox_token') || 'pk.demo-placeholder-token';
+    mapboxgl.accessToken = urlMapToken || localStorage.getItem('nomadix_mapbox_token') || 'pk.eyJ1Ijoibm9tYWRpeCIsImEiOiJjbTFub21hZGl4ZGVtb3Rva2VuIn0.demo_token';
     let map = null;
     let mapMarkers = [];
     let currentMapCategory = 'all';
