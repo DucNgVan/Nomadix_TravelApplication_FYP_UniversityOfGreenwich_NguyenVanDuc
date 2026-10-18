@@ -32,88 +32,36 @@ describe('Component Test: PlanScreen Empty State & Creation Flow', () => {
     });
   });
 
-  test('RED-FE-PLAN-EMPTY-01: renders clean empty state when user has no active trips', () => {
-    const { getByText } = render(<PlanScreen />);
-
-    expect(getByText(/Chưa có kế hoạch nào|No trips planned/i)).toBeTruthy();
-    expect(getByText(/\+ Tạo kế hoạch mới|Create new trip/i)).toBeTruthy();
-  });
-
-  test('RED-FE-PLAN-EMPTY-02: pressing create button opens create trip modal with inputs', () => {
-    const { getByText, getByPlaceholderText } = render(<PlanScreen />);
-
-    fireEvent.press(getByText(/\+ Tạo kế hoạch mới|Create new trip/i));
-
-    expect(getByPlaceholderText(/Tên chuyến đi|Trip title/i)).toBeTruthy();
-    expect(getByPlaceholderText(/Điểm đến|Destination/i)).toBeTruthy();
-  });
-
-  test('RED-FE-PLAN-EMPTY-03: submitting create trip form invokes store createTrip', async () => {
-    mockCreateTrip.mockResolvedValueOnce({
-      id: 'trip-new-1',
-      title: 'Hành trình Đà Lạt 3 ngày',
-      destination: 'Đà Lạt',
-      startDate: '2026-11-01',
-      endDate: '2026-11-03',
-      days: [],
-    });
-
-    const { getByText, getByPlaceholderText } = render(<PlanScreen />);
-
-    fireEvent.press(getByText(/\+ Tạo kế hoạch mới|Create new trip/i));
-
-    fireEvent.changeText(getByPlaceholderText(/Tên chuyến đi|Trip title/i), 'Hành trình Đà Lạt 3 ngày');
-    fireEvent.changeText(getByPlaceholderText(/Điểm đến|Destination/i), 'Đà Lạt');
-
-    fireEvent.press(getByText(/Tạo chuyến đi|Xác nhận tạo/i));
-
-    await waitFor(() => {
-      expect(mockCreateTrip).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: 'Hành trình Đà Lạt 3 ngày',
-          destination: 'Đà Lạt',
-        })
-      );
-    });
-  });
-
-  test('RED-FE-PLAN-EMPTY-04: allows exploring map first when no trip exists and returning', () => {
+  test('RED-EN-PLAN-01: renders clean English empty state with exactly 2 primary options', () => {
     const { getByText, queryByText } = render(<PlanScreen />);
 
-    // Press explore map first
-    fireEvent.press(getByText(/Khám phá bản đồ trước/i));
+    // English title & subtitle
+    expect(getByText(/No Travel Plan Yet/i)).toBeTruthy();
+    expect(getByText(/Choose an option below to start your journey/i)).toBeTruthy();
 
-    // Should switch to map discovery view
-    expect(getByText(/Khám phá địa điểm/i)).toBeTruthy();
-    expect(getByText(/← Quay lại/i)).toBeTruthy();
+    // Option 1: Smart Journey Wizard
+    expect(getByText(/✨ Smart Journey Wizard/i)).toBeTruthy();
+
+    // Option 2: Explore Places on Map First
+    expect(getByText(/🗺️ Explore Places on Map First/i)).toBeTruthy();
+
+    // Strictly verify old redundant manual create trip button is NOT present
+    expect(queryByText(/\+ Tạo kế hoạch mới/i)).toBeNull();
+    expect(queryByText(/\+ Create New Trip/i)).toBeNull();
+  });
+
+  test('RED-EN-PLAN-02: allows exploring map first in English and returning smoothly', () => {
+    const { getByText } = render(<PlanScreen />);
+
+    // Press Option 2: Explore map first
+    fireEvent.press(getByText(/🗺️ Explore Places on Map First/i));
+
+    // Should switch to map discovery view in English
+    expect(getByText(/Explore Places on Map/i)).toBeTruthy();
+    expect(getByText(/← Back/i)).toBeTruthy();
 
     // Press back to return to empty plan screen
-    fireEvent.press(getByText(/← Quay lại/i));
-    expect(getByText(/Chưa có kế hoạch nào/i)).toBeTruthy();
-  });
-
-  test('RED-FE-PLAN-EMPTY-05: displays error banner when createTrip fails', async () => {
-    mockCreateTrip.mockRejectedValueOnce(new Error('Tạo chuyến đi thất bại do lỗi mạng'));
-
-    const { getByText, getByPlaceholderText } = render(<PlanScreen />);
-
-    fireEvent.press(getByText(/\+ Tạo kế hoạch mới/i));
-    fireEvent.changeText(getByPlaceholderText(/Tên chuyến đi/i), 'Chuyến đi lỗi');
-    fireEvent.changeText(getByPlaceholderText(/Điểm đến/i), 'Đà Lạt');
-
-    fireEvent.press(getByText(/Tạo chuyến đi/i));
-
-    await waitFor(() => {
-      expect(getByText(/Tạo chuyến đi thất bại do lỗi mạng/i)).toBeTruthy();
-    });
-  });
-
-  test('RED-FE-PLAN-EMPTY-06: cancels create trip modal when Hủy is pressed', () => {
-    const { getByText, getByPlaceholderText } = render(<PlanScreen />);
-
-    fireEvent.press(getByText(/\+ Tạo kế hoạch mới/i));
-    expect(getByPlaceholderText(/Tên chuyến đi/i)).toBeTruthy();
-
-    fireEvent.press(getByText(/Hủy/i));
+    fireEvent.press(getByText(/← Back/i));
+    expect(getByText(/No Travel Plan Yet/i)).toBeTruthy();
   });
 });

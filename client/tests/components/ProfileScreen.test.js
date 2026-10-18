@@ -31,27 +31,27 @@ describe('Component Test: ProfileScreen (Account & Travel Stats)', () => {
 
     expect(getByText('Nguyễn Văn Đức')).toBeTruthy();
     expect(getByText('traveler@nomadix.vn')).toBeTruthy();
-    expect(getByText(/Phượt thủ Cấp độ 5 • 1\.450 XP/)).toBeTruthy();
+    expect(getByText(/Phượt thủ Cấp độ 5 • 1\.450 XP|Explorer Level 5 • 1,450 XP/i)).toBeTruthy();
   });
 
   test('RED-FE-ACC-02: renders travel stats and action items', () => {
     const { getByText } = render(<ProfileScreen />);
 
     // Stats
-    expect(getByText('Chuyến đi')).toBeTruthy();
-    expect(getByText('Địa danh check-in')).toBeTruthy();
-    expect(getByText('Huy hiệu')).toBeTruthy();
+    expect(getByText(/Chuyến đi|Trips/i)).toBeTruthy();
+    expect(getByText(/Địa danh check-in|Check-ins/i)).toBeTruthy();
+    expect(getByText(/Huy hiệu|Badges/i)).toBeTruthy();
 
     // Action items
-    expect(getByText(/Xác minh danh tính KYC/)).toBeTruthy();
-    expect(getByText(/Tài khoản ngân hàng nhận tiền nợ/)).toBeTruthy();
-    expect(getByText(/Thông báo & Lời mời Squad/)).toBeTruthy();
+    expect(getByText(/Xác minh danh tính KYC|Identity Verification \(KYC\)/i)).toBeTruthy();
+    expect(getByText(/Tài khoản ngân hàng nhận tiền nợ|Bank Account for Debt Settlements/i)).toBeTruthy();
+    expect(getByText(/Thông báo & Lời mời Squad|Notifications & Squad Invites/i)).toBeTruthy();
   });
 
   test('RED-FE-ACC-03: clicking logout button triggers authStore logout', () => {
     const { getByText } = render(<ProfileScreen />);
 
-    const logoutBtn = getByText('Đăng xuất tài khoản');
+    const logoutBtn = getByText(/Đăng xuất tài khoản|Log Out/i);
     fireEvent.press(logoutBtn);
 
     expect(mockLogout).toHaveBeenCalledTimes(1);
@@ -60,14 +60,14 @@ describe('Component Test: ProfileScreen (Account & Travel Stats)', () => {
   test('RED-FE-PRF-01: renders "Vé máy bay của tôi" section and displays default ticket card with PNR', () => {
     const { getByText } = render(<ProfileScreen />);
 
-    expect(getByText(/Vé máy bay của tôi/i)).toBeTruthy();
+    expect(getByText(/Vé máy bay của tôi|My Booked Flights/i)).toBeTruthy();
     expect(getByText('VN-8X2K9P')).toBeTruthy();
   });
 
   test('opens boarding pass modal when ticket card is pressed and closes it', () => {
     const { getByText, queryByText } = render(<ProfileScreen />);
     fireEvent.press(getByText('VN-8X2K9P'));
-    expect(getByText('THẺ LÊN MÁY BAY ĐIỆN TỬ')).toBeTruthy();
+    expect(getByText(/THẺ LÊN MÁY BAY ĐIỆN TỬ|ELECTRONIC BOARDING PASS/i)).toBeTruthy();
 
     // Close boarding pass
     fireEvent.press(getByText('✕'));

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import FlightSearchScreen from './src/screens/booking/FlightSearchScreen';
 import HotelSearchScreen from './src/screens/booking/HotelSearchScreen';
 import PlanScreen from './src/screens/plan/PlanScreen';
@@ -30,17 +31,19 @@ export default function App() {
   // Auth Guard: Require login/register before entering application
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
-        <StatusBar
-          barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
-          backgroundColor={themeColors.background}
-        />
-        {authScreen === 'register' ? (
-          <RegisterScreen navigation={authNavigation} />
-        ) : (
-          <LoginScreen navigation={authNavigation} />
-        )}
-      </SafeAreaView>
+      <SafeAreaProvider>
+        <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
+          <StatusBar
+            barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
+            backgroundColor={themeColors.background}
+          />
+          {authScreen === 'register' ? (
+            <RegisterScreen navigation={authNavigation} />
+          ) : (
+            <LoginScreen navigation={authNavigation} />
+          )}
+        </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
@@ -59,89 +62,99 @@ export default function App() {
     }
   };
 
+  const getScreenTitle = () => {
+    switch (activeTab) {
+      case 'flights':
+        return 'Search Flights';
+      case 'hotels':
+        return 'Hotels & Resorts';
+      case 'plan':
+        return 'Trip Planner';
+      case 'account':
+        return 'My Profile';
+      default:
+        return 'NOMADIX';
+    }
+  };
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
-      <StatusBar
-        barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
-        backgroundColor={themeColors.background}
-      />
+    <SafeAreaProvider>
+      <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
+        <StatusBar
+          barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
+          backgroundColor={themeColors.background}
+        />
 
-      {/* Top Header with Theme Switcher */}
-      <View style={[styles.topBar, { backgroundColor: themeColors.background, borderBottomColor: themeColors.border }]}>
-        <View style={styles.brandRow}>
-          <Text style={[styles.brandDot, { color: themeColors.primary }]}>●</Text>
-          <Text style={[styles.brandTitle, { color: themeColors.text }]}>NOMADIX</Text>
+        {/* Top Header: Screen Title on Left & Small NOMADIX on Right */}
+        <View style={[styles.topBar, { backgroundColor: themeColors.background, borderBottomColor: themeColors.border }]}>
+          <Text style={[styles.screenTitleTop, { color: themeColors.text }]}>
+            {getScreenTitle()}
+          </Text>
+          <View style={[styles.brandBadgeRight, { backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,122,255,0.08)' }]}>
+            <Text style={[styles.brandDotSmall, { color: themeColors.primary }]}>●</Text>
+            <Text style={[styles.brandTitleSmall, { color: themeColors.primary }]}>NOMADIX</Text>
+          </View>
         </View>
-        <TouchableOpacity
-          style={[styles.themePill, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}
-          onPress={toggleTheme}
-          activeOpacity={0.8}
-          testID="app-theme-toggle"
-        >
-          <Text style={[styles.themePillText, { color: themeColors.text }]}>
-            {mode === 'light' ? '☀️ Sáng' : '🌙 Tối'}
-          </Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Main Screen Content */}
-      <View style={styles.screenContainer}>{renderActiveScreen()}</View>
+        {/* Main Screen Content */}
+        <View style={styles.screenContainer}>{renderActiveScreen()}</View>
 
-      {/* Bottom Navigation Bar: Exactly 4 Tabs with Monochrome Icons */}
-      <View style={[styles.bottomBar, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'flights' && styles.tabButtonActive]}
-          onPress={() => setActiveTab('flights')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabGlyph, activeTab === 'flights' && styles.tabGlyphActive]}>
-            ✈
-          </Text>
-          <Text style={[styles.tabLabel, activeTab === 'flights' && styles.tabLabelActive]}>
-            Chuyến bay
-          </Text>
-        </TouchableOpacity>
+        {/* Bottom Navigation Bar: Exactly 4 Tabs with Monochrome Icons */}
+        <View style={[styles.bottomBar, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
+          <TouchableOpacity
+            style={[styles.tabButton, activeTab === 'flights' && styles.tabButtonActive]}
+            onPress={() => setActiveTab('flights')}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.tabGlyph, activeTab === 'flights' && styles.tabGlyphActive]}>
+              ✈
+            </Text>
+            <Text style={[styles.tabLabel, activeTab === 'flights' && styles.tabLabelActive]}>
+              Flights
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'hotels' && styles.tabButtonActive]}
-          onPress={() => setActiveTab('hotels')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabGlyph, activeTab === 'hotels' && styles.tabGlyphActive]}>
-            ⌂
-          </Text>
-          <Text style={[styles.tabLabel, activeTab === 'hotels' && styles.tabLabelActive]}>
-            Khách sạn
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tabButton, activeTab === 'hotels' && styles.tabButtonActive]}
+            onPress={() => setActiveTab('hotels')}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.tabGlyph, activeTab === 'hotels' && styles.tabGlyphActive]}>
+              ⌂
+            </Text>
+            <Text style={[styles.tabLabel, activeTab === 'hotels' && styles.tabLabelActive]}>
+              Hotels
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'plan' && styles.tabButtonActive]}
-          onPress={() => setActiveTab('plan')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabGlyph, activeTab === 'plan' && styles.tabGlyphActive]}>
-            ⊞
-          </Text>
-          <Text style={[styles.tabLabel, activeTab === 'plan' && styles.tabLabelActive]}>
-            Kế hoạch
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tabButton, activeTab === 'plan' && styles.tabButtonActive]}
+            onPress={() => setActiveTab('plan')}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.tabGlyph, activeTab === 'plan' && styles.tabGlyphActive]}>
+              ⊞
+            </Text>
+            <Text style={[styles.tabLabel, activeTab === 'plan' && styles.tabLabelActive]}>
+              Plan
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'account' && styles.tabButtonActive]}
-          onPress={() => setActiveTab('account')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabGlyph, activeTab === 'account' && styles.tabGlyphActive]}>
-            ⊙
-          </Text>
-          <Text style={[styles.tabLabel, activeTab === 'account' && styles.tabLabelActive]}>
-            Tài khoản
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          <TouchableOpacity
+            style={[styles.tabButton, activeTab === 'account' && styles.tabButtonActive]}
+            onPress={() => setActiveTab('account')}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.tabGlyph, activeTab === 'account' && styles.tabGlyphActive]}>
+              ⊙
+            </Text>
+            <Text style={[styles.tabLabel, activeTab === 'account' && styles.tabLabelActive]}>
+              Profile
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -154,32 +167,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  brandRow: {
+  screenTitleTop: {
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: -0.3,
+  },
+  brandBadgeRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-  },
-  brandDot: {
-    fontSize: 14,
-  },
-  brandTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    letterSpacing: 1.5,
-  },
-  themePill: {
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 14,
-    borderWidth: 1,
+    borderRadius: 12,
+    gap: 4,
   },
-  themePillText: {
-    fontSize: 12,
-    fontWeight: '700',
+  brandDotSmall: {
+    fontSize: 8,
+  },
+  brandTitleSmall: {
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 1.2,
   },
   screenContainer: {
     flex: 1,

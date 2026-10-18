@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../../stores/auth.store';
 import { useBookingStore } from '../../stores/booking.store';
 import { useThemeStore } from '../../stores/theme.store';
@@ -13,9 +14,9 @@ export default function ProfileScreen() {
   const bookedTickets = useBookingStore((state) => state.bookedTickets) || [];
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  const fullName = user?.fullName || 'Nguyễn Văn Đức';
+  const fullName = user?.fullName || 'John Doe';
   const email = user?.email || 'traveler@nomadix.vn';
-  const initial = (fullName.charAt(0) || 'N').toUpperCase();
+  const initial = (fullName.charAt(0) || 'J').toUpperCase();
 
   // If no tickets booked yet in current session, display pre-seeded realistic confirmed ticket
   const defaultTicket = {
@@ -32,7 +33,7 @@ export default function ProfileScreen() {
     durationMinutes: 130,
     stops: 0,
     aircraft: 'Airbus A350-900',
-    cabinClass: 'Phổ thông',
+    cabinClass: 'Economy',
     totalPrice: 2073060,
     passenger: { fullName, email },
     status: 'CONFIRMED',
@@ -43,10 +44,9 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: themeColors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Header */}
+        {/* Header Subtitle */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: themeColors.text }]}>Tài khoản cá nhân</Text>
-          <Text style={[styles.subtitle, { color: themeColors.textMuted }]}>Hồ sơ du lịch, cấp độ & thiết lập thanh toán</Text>
+          <Text style={[styles.subtitle, { color: themeColors.textMuted }]}>Travel profile, explorer rank & account settings</Text>
         </View>
 
         {/* Profile Card with Avatar & Stats */}
@@ -62,7 +62,7 @@ export default function ProfileScreen() {
 
           <View style={styles.levelBadge}>
             <Text style={styles.levelBadgeText}>
-              ◈ Phượt thủ Cấp độ 5 • 1.450 XP
+              ◈ Explorer Level 5 • 1,450 XP
             </Text>
           </View>
 
@@ -70,17 +70,17 @@ export default function ProfileScreen() {
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: themeColors.text }]}>4</Text>
-              <Text style={[styles.statLabel, { color: themeColors.textMuted }]}>Chuyến đi</Text>
+              <Text style={[styles.statLabel, { color: themeColors.textMuted }]}>Trips</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: '#30D158' }]}>12</Text>
-              <Text style={[styles.statLabel, { color: themeColors.textMuted }]}>Địa danh check-in</Text>
+              <Text style={[styles.statLabel, { color: themeColors.textMuted }]}>Check-ins</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: themeColors.primary }]}>6</Text>
-              <Text style={[styles.statLabel, { color: themeColors.textMuted }]}>Huy hiệu</Text>
+              <Text style={[styles.statLabel, { color: themeColors.textMuted }]}>Badges</Text>
             </View>
           </View>
         </View>
@@ -88,9 +88,9 @@ export default function ProfileScreen() {
         {/* Booked Flights Section */}
         <View style={styles.bookedSection}>
           <View style={styles.sectionHeaderRow}>
-            <Text style={[styles.sectionHeaderTitle, { color: themeColors.textMuted }]}>✈ Vé máy bay của tôi</Text>
+            <Text style={[styles.sectionHeaderTitle, { color: themeColors.textMuted }]}>✈ My Booked Flights</Text>
             <View style={styles.ticketCountBadge}>
-              <Text style={styles.ticketCountText}>{ticketsToDisplay.length} vé đã lưu</Text>
+              <Text style={styles.ticketCountText}>{ticketsToDisplay.length} {ticketsToDisplay.length === 1 ? 'ticket' : 'tickets'} saved</Text>
             </View>
           </View>
 
@@ -116,7 +116,7 @@ export default function ProfileScreen() {
                   <Text style={[styles.ticketAirlineText, { color: themeColors.text }]}>{ticket.airlineName} • {ticket.flightNumber}</Text>
                 </View>
                 <View style={styles.confirmedBadge}>
-                  <Text style={styles.confirmedBadgeText}>Đã xác nhận</Text>
+                  <Text style={styles.confirmedBadgeText}>Confirmed</Text>
                 </View>
               </View>
 
@@ -128,17 +128,74 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={styles.pnrCodeLabel}>MÃ PNR</Text>
+                  <Text style={styles.pnrCodeLabel}>PNR CODE</Text>
                   <Text style={[styles.pnrCodeValue, { color: themeColors.text }]}>{ticket.pnr || 'VN-8X2K9P'}</Text>
                 </View>
               </View>
 
               <View style={styles.ticketFooter}>
-                <Text style={styles.boardingPassLink}>🎫 Thẻ lên máy bay (Boarding Pass)</Text>
-                <Text style={styles.ticketPriceText}>{Number(ticket.totalPrice || 2073060).toLocaleString('vi-VN')}₫</Text>
+                <Text style={styles.boardingPassLink}>🎫 View Boarding Pass</Text>
+                <Text style={styles.ticketPriceText}>{Number(ticket.totalPrice || 2073060).toLocaleString('en-US')} VND</Text>
               </View>
             </TouchableOpacity>
           ))}
+        </View>
+
+        {/* Dedicated Appearance & Theme Switcher Card */}
+        <View style={[styles.themeCard, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
+          <View style={styles.themeHeader}>
+            <Text style={[styles.themeCardTitle, { color: themeColors.text }]}>Appearance & Theme</Text>
+            <Text style={[styles.themeCardSub, { color: themeColors.textMuted }]}>
+              Customize visual mode ({mode === 'light' ? 'Light' : 'Dark'})
+            </Text>
+          </View>
+          <View style={styles.themePillsRow}>
+            <TouchableOpacity
+              testID="app-theme-toggle"
+              style={[
+                styles.themePillBtn,
+                mode === 'light' && styles.themePillBtnActive,
+                {
+                  borderColor: mode === 'light' ? themeColors.primary : themeColors.border,
+                  backgroundColor: mode === 'light' ? themeColors.primaryLight : 'transparent',
+                },
+              ]}
+              onPress={() => mode !== 'light' && toggleTheme()}
+              activeOpacity={0.8}
+            >
+              <Text
+                style={[
+                  styles.themePillBtnText,
+                  { color: mode === 'light' ? themeColors.primary : themeColors.textMuted },
+                ]}
+              >
+                ☀️ Light Mode
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              testID="theme-toggle-row"
+              style={[
+                styles.themePillBtn,
+                mode === 'dark' && styles.themePillBtnActive,
+                {
+                  borderColor: mode === 'dark' ? themeColors.primary : themeColors.border,
+                  backgroundColor: mode === 'dark' ? (mode === 'dark' ? '#273549' : themeColors.primaryLight) : 'transparent',
+                },
+              ]}
+              onPress={() => mode !== 'dark' && toggleTheme()}
+              activeOpacity={0.8}
+            >
+              <Text
+                style={[
+                  styles.themePillBtnText,
+                  { color: mode === 'dark' ? '#38BDF8' : themeColors.textMuted },
+                ]}
+              >
+                🌙 Dark Mode
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Action Items List */}
@@ -146,7 +203,7 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.actionRow} activeOpacity={0.7}>
             <View style={styles.actionLeft}>
               <Text style={styles.actionIcon}>✓</Text>
-              <Text style={[styles.actionText, { color: themeColors.text }]}>Xác minh danh tính KYC</Text>
+              <Text style={[styles.actionText, { color: themeColors.text }]}>Identity Verification (KYC)</Text>
             </View>
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
@@ -154,7 +211,7 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.actionRow} activeOpacity={0.7}>
             <View style={styles.actionLeft}>
               <Text style={styles.actionIcon}>⊞</Text>
-              <Text style={[styles.actionText, { color: themeColors.text }]}>Tài khoản ngân hàng nhận tiền nợ</Text>
+              <Text style={[styles.actionText, { color: themeColors.text }]}>Bank Account for Debt Settlements</Text>
             </View>
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
@@ -162,24 +219,9 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.actionRow} activeOpacity={0.7}>
             <View style={styles.actionLeft}>
               <Text style={styles.actionIcon}>◬</Text>
-              <Text style={[styles.actionText, { color: themeColors.text }]}>Thông báo & Lời mời Squad</Text>
+              <Text style={[styles.actionText, { color: themeColors.text }]}>Notifications & Squad Invites</Text>
             </View>
             <Text style={styles.actionArrow}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionRow}
-            activeOpacity={0.7}
-            onPress={toggleTheme}
-            testID="theme-toggle-row"
-          >
-            <View style={styles.actionLeft}>
-              <Text style={styles.actionIcon}>{mode === 'light' ? '☀️' : '🌙'}</Text>
-              <Text style={[styles.actionText, { color: themeColors.text }]}>
-                Giao diện: {mode === 'light' ? 'Sáng (Xanh & Trắng)' : 'Tối (Dark Mode)'}
-              </Text>
-            </View>
-            <Text style={styles.actionArrow}>Đổi ›</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -189,7 +231,7 @@ export default function ProfileScreen() {
           >
             <View style={styles.actionLeft}>
               <Text style={[styles.actionIcon, styles.logoutIcon]}>⎋</Text>
-              <Text style={[styles.actionText, styles.logoutText]}>Đăng xuất tài khoản</Text>
+              <Text style={[styles.actionText, styles.logoutText]}>Log Out</Text>
             </View>
             <Text style={[styles.actionArrow, styles.logoutIcon]}>›</Text>
           </TouchableOpacity>
@@ -486,5 +528,54 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     color: '#495057',
+  },
+  themeCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  themeHeader: {
+    marginBottom: 12,
+  },
+  themeCardTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  themeCardSub: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  themePillsRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  themePillBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    elevation: 0,
+    shadowOpacity: 0,
+    overflow: 'hidden',
+  },
+  themePillBtnActive: {
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  themePillBtnText: {
+    fontSize: 13,
+    fontWeight: '800',
+    backgroundColor: 'transparent',
+    includeFontPadding: false,
+    textAlign: 'center',
   },
 });

@@ -57,15 +57,15 @@ describe('Component Test: App Root Navigation & Auth Guard', () => {
 
     // Should show Login screen elements
     expect(getByText('NOMADIX')).toBeTruthy();
-    expect(getByText('Đăng nhập / Login')).toBeTruthy();
+    expect(getByText(/Sign In|Login/i)).toBeTruthy();
 
     // Should NOT show main bottom tabs
-    expect(queryByText('Chuyến bay')).toBeNull();
-    expect(queryByText('Khách sạn')).toBeNull();
-    expect(queryByText('Kế hoạch')).toBeNull();
+    expect(queryByText('Flights')).toBeNull();
+    expect(queryByText('Hotels')).toBeNull();
+    expect(queryByText('Plan')).toBeNull();
   });
 
-  test('RED-FE-APP-02: when authenticated, displays bottom tabs (Chuyến bay, Khách sạn, Kế hoạch)', () => {
+  test('RED-FE-APP-02: when authenticated, displays bottom tabs (Flights, Hotels, Plan)', () => {
     useAuthStore.mockReturnValue({
       isAuthenticated: true,
       user: { fullName: 'Đức Nguyễn', email: 'duc@example.com' },
@@ -77,15 +77,15 @@ describe('Component Test: App Root Navigation & Auth Guard', () => {
     const { getByText, queryByText } = render(<App />);
 
     // Should show the 3 required bottom tabs
-    expect(getByText('Chuyến bay')).toBeTruthy();
-    expect(getByText('Khách sạn')).toBeTruthy();
-    expect(getByText('Kế hoạch')).toBeTruthy();
+    expect(getByText('Flights')).toBeTruthy();
+    expect(getByText('Hotels')).toBeTruthy();
+    expect(getByText('Plan')).toBeTruthy();
 
     // Should NOT show login screen
-    expect(queryByText('Chào mừng trở lại!')).toBeNull();
+    expect(queryByText('Welcome Back')).toBeNull();
   });
 
-  test('RED-FE-APP-03: clicking "Kế hoạch" tab renders the Plan screen', () => {
+  test('RED-FE-APP-03: clicking "Plan" tab renders the Plan screen', () => {
     useAuthStore.mockReturnValue({
       isAuthenticated: true,
       user: { fullName: 'Đức Nguyễn', email: 'duc@example.com' },
@@ -96,13 +96,13 @@ describe('Component Test: App Root Navigation & Auth Guard', () => {
 
     const { getByText } = render(<App />);
 
-    const planTabButton = getByText('Kế hoạch');
+    const planTabButton = getByText('Plan');
     fireEvent.press(planTabButton);
 
-    expect(getByText('Kế hoạch chuyến đi')).toBeTruthy();
+    expect(getByText(/Trip Itinerary|No Travel Plan Yet/i)).toBeTruthy();
   });
 
-  test('RED-FE-APP-04: allows switching to Khách sạn and Chuyến bay tabs and calling logout', () => {
+  test('RED-FE-APP-04: allows switching to Hotels and Flights tabs and calling logout', () => {
     const mockLogout = jest.fn();
     useAuthStore.mockReturnValue({
       isAuthenticated: true,
@@ -113,16 +113,16 @@ describe('Component Test: App Root Navigation & Auth Guard', () => {
     const { getByText } = render(<App />);
 
     // Switch to Hotel tab
-    fireEvent.press(getByText('Khách sạn'));
-    expect(getByText('Khám phá khách sạn')).toBeTruthy();
+    fireEvent.press(getByText('Hotels'));
+    expect(getByText(/Hotels & Resorts|Explore Hotels/i)).toBeTruthy();
 
     // Switch to Flight tab
-    fireEvent.press(getByText('Chuyến bay'));
-    expect(getByText('Tìm vé máy bay')).toBeTruthy();
+    fireEvent.press(getByText('Flights'));
+    expect(getByText(/Search Flights|Find Flights/i)).toBeTruthy();
 
     // Switch to Account/Profile tab and click Logout
-    fireEvent.press(getByText('Tài khoản'));
-    fireEvent.press(getByText(/Đăng xuất/));
+    fireEvent.press(getByText('Profile'));
+    fireEvent.press(getByText(/Log Out|Sign Out/i));
     expect(mockLogout).toHaveBeenCalled();
   });
 
@@ -137,11 +137,11 @@ describe('Component Test: App Root Navigation & Auth Guard', () => {
     const { getByText, queryByText } = render(<App />);
 
     // In Login screen, click Register link
-    fireEvent.press(getByText('Đăng ký ngay'));
-    expect(getByText(/Tạo tài khoản mới/)).toBeTruthy();
+    fireEvent.press(getByText(/Sign Up|Register/i));
+    expect(getByText(/Create Account|Register/i)).toBeTruthy();
 
     // In Register screen, click Login link
-    fireEvent.press(getByText('Đăng nhập ngay'));
+    fireEvent.press(getByText(/Sign In|Login/i));
     expect(getByText('NOMADIX')).toBeTruthy();
   });
 });

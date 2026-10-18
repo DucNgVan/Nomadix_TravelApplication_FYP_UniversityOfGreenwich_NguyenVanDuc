@@ -5,16 +5,18 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   Modal,
   TextInput,
   Alert,
+  Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useItineraryStore } from '../../stores/itinerary.store';
 import { useExpenseStore } from '../../stores/expense.store';
 import { usePlacesStore } from '../../stores/places.store';
 import { useThemeStore } from '../../stores/theme.store';
 import PlanMapDiscovery from '../../components/plan/PlanMapDiscovery';
+import MultiCityPlanWizard from '../../components/plan/MultiCityPlanWizard';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
@@ -23,6 +25,7 @@ export default function PlanScreen() {
   const styles = React.useMemo(() => getStyles(themeColors), [themeColors]);
   const [activeSubTab, setActiveSubTab] = useState('itinerary'); // 'map' | 'itinerary' | 'expense'
   const [selectedDayIndex, setSelectedDayIndex] = useState(1);
+  const [showWizard, setShowWizard] = useState(false);
 
   // Invite Companion Modal State
   const [inviteModalVisible, setInviteModalVisible] = useState(false);
@@ -96,9 +99,48 @@ export default function PlanScreen() {
     }
   };
 
+  const handleWizardComplete = async (planData) => {
+    try {
+      const cities = planData?.cities || ['Da Nang'];
+      const totalDays = planData?.totalDays || 3;
+      const selectedPlaces = planData?.selectedPlaces || planData?.places || [];
+
+      const startDateObj = new Date();
+      startDateObj.setDate(startDateObj.getDate() + 1);
+      const endDateObj = new Date(startDateObj);
+      endDateObj.setDate(startDateObj.getDate() + Math.max(0, totalDays - 1));
+
+      const startDateStr = startDateObj.toISOString().split('T')[0];
+      const endDateStr = endDateObj.toISOString().split('T')[0];
+      const tripTitle = planData?.title || `Journey: ${cities.join(' - ')}`;
+      const destStr = cities.join(' - ');
+
+      const newTrip = await createTrip?.({
+        title: tripTitle,
+        destination: destStr,
+        destinationCity: cities[0] || destStr,
+        startDate: startDateStr,
+        endDate: endDateStr,
+      });
+
+      const tripId = newTrip?.id || newTrip?.itinerary?.id || (trip && trip.id);
+      if (selectedPlaces.length > 0) {
+        const aiPlan = await placesStore.generateAiPlan?.(totalDays, selectedPlaces);
+        if (aiPlan?.days && tripId) {
+          applyAiPlan?.(tripId, aiPlan.days);
+        }
+      }
+      setShowWizard(false);
+      setActiveSubTab('itinerary');
+    } catch {
+      setShowWizard(false);
+      setActiveSubTab('itinerary');
+    }
+  };
+
   const handleCreateTrip = async () => {
     if (!newTripTitle.trim() || !newTripDest.trim()) {
-      setCreateTripError('Vui lòng nhập tên chuyến đi và điểm đến');
+      setCreateTripError('Please enter trip title and destination');
       return;
     }
     setCreateTripError('');
@@ -115,7 +157,7 @@ export default function PlanScreen() {
       setCreateTripError('');
       setCreateTripModalVisible(false);
     } catch (err) {
-      setCreateTripError(err?.message || 'Lỗi khi tạo chuyến đi');
+      setCreateTripError(err?.message || 'Error creating trip');
     }
   };
 
@@ -169,7 +211,7 @@ export default function PlanScreen() {
 
   const formatVND = (amount) => {
     const num = Number(amount) || 0;
-    return num.toLocaleString('vi-VN') + ' đ';
+    return num.toLocaleString('en-US') + ' ₫';
   };
 
   const renderCreateTripModal = () => (
@@ -181,32 +223,32 @@ export default function PlanScreen() {
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Tạo kế hoạch chuyến đi</Text>
-          <Text style={styles.modalSubtitle}>Nhập thông tin hành trình của bạn</Text>
+          <Text style={styles.modalTitle}>Create New Trip</Text>
+          <Text style={styles.modalSubtitle}>Enter journey details below</Text>
           <TextInput
             style={styles.modalInput}
-            placeholder="Tên chuyến đi (VD: Hành trình Đà Lạt 3 ngày)"
+            placeholder="e.g. Da Nang 3-Day Adventure"
             placeholderTextColor={themeColors.textMuted}
             value={newTripTitle}
             onChangeText={setNewTripTitle}
           />
           <TextInput
             style={styles.modalInput}
-            placeholder="Điểm đến (VD: Đà Lạt)"
+            placeholder="e.g. Da Nang"
             placeholderTextColor={themeColors.textMuted}
             value={newTripDest}
             onChangeText={setNewTripDest}
           />
           <TextInput
             style={styles.modalInput}
-            placeholder="Ngày bắt đầu (YYYY-MM-DD)"
+            placeholder="e.g. 2026-11-01"
             placeholderTextColor={themeColors.textMuted}
             value={newTripStartDate}
             onChangeText={setNewTripStartDate}
           />
           <TextInput
             style={styles.modalInput}
-            placeholder="Ngày kết thúc (YYYY-MM-DD)"
+            placeholder="e.g. 2026-11-03"
             placeholderTextColor={themeColors.textMuted}
             value={newTripEndDate}
             onChangeText={setNewTripEndDate}
@@ -221,13 +263,13 @@ export default function PlanScreen() {
               style={styles.modalCancelButton}
               onPress={() => setCreateTripModalVisible(false)}
             >
-              <Text style={styles.modalCancelText}>Hủy</Text>
+              <Text style={styles.modalCancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.modalSubmitButton}
               onPress={handleCreateTrip}
             >
-              <Text style={styles.modalSubmitText}>Tạo chuyến đi</Text>
+              <Text style={styles.modalSubmitText}>Create Trip</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -235,31 +277,50 @@ export default function PlanScreen() {
     </Modal>
   );
 
+  if (showWizard) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <MultiCityPlanWizard
+          places={placesStore.places}
+          onCancel={() => setShowWizard(false)}
+          onCompletePlan={handleWizardComplete}
+        />
+      </SafeAreaView>
+    );
+  }
+
   if (!trip) {
     if (activeSubTab === 'map') {
       return (
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.container}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <View style={styles.mapDiscoveryHeaderRow}>
               <TouchableOpacity
                 onPress={() => setActiveSubTab('itinerary')}
-                style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, backgroundColor: themeColors.card }}
+                style={[styles.mapHeaderBackBtn, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}
+                activeOpacity={0.7}
               >
-                <Text style={{ color: themeColors.primary, fontWeight: 'bold' }}>← Quay lại</Text>
+                <Text style={{ color: themeColors.primary, fontWeight: '700', fontSize: 13 }}>← Back</Text>
               </TouchableOpacity>
-              <Text style={styles.title}>Khám phá địa điểm</Text>
-              <View style={{ width: 60 }} />
+              <Text style={[styles.mapHeaderTitle, { color: themeColors.text }]} numberOfLines={1}>
+                Explore Places on Map
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowWizard(true)}
+                style={styles.mapHeaderWizardBtn}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.mapHeaderWizardBtnText}>✨ Wizard</Text>
+              </TouchableOpacity>
             </View>
             <PlanMapDiscovery
               places={placesStore.places}
               selectedPlaceIds={placesStore.selectedPlaceIds}
               onTogglePlace={placesStore.togglePlaceSelection}
               onGenerateAiPlan={(selectedList) => {
-                setCreateTripError('');
-                setCreateTripModalVisible(true);
+                setShowWizard(true);
               }}
             />
-            {renderCreateTripModal()}
           </View>
         </SafeAreaView>
       );
@@ -269,45 +330,36 @@ export default function PlanScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>Kế hoạch chuyến đi</Text>
-            <Text style={styles.subtitle}>Lên lịch trình & quản lý chi tiêu nhóm thông minh</Text>
+            <Text style={styles.subtitle}>Collaborative travel planning & smart expense splitting</Text>
           </View>
           <View style={styles.emptyPlanContainer}>
             <Text style={styles.emptyPlanIcon}>🗺️</Text>
-            <Text style={styles.emptyPlanTitle}>Chưa có kế hoạch nào</Text>
+            <Text style={styles.emptyPlanTitle}>No Travel Plan Yet</Text>
             <Text style={styles.emptyPlanSubtitle}>
-              Bắt đầu tạo kế hoạch chuyến đi đầu tiên của bạn để lập lịch trình và chia sẻ chi phí cùng bạn bè.
+              Choose an option below to start your journey:
             </Text>
+
+            {/* Exactly 2 Primary Options */}
             <TouchableOpacity
-              style={styles.createTripBtn}
-              onPress={() => {
-                setCreateTripError('');
-                setCreateTripModalVisible(true);
-              }}
+              style={styles.wizardPrimaryBtn}
+              onPress={() => setShowWizard(true)}
               activeOpacity={0.8}
             >
-              <Text style={styles.createTripBtnText}>+ Tạo kế hoạch mới</Text>
+              <Text style={styles.wizardPrimaryBtnText}>
+                ✨ Smart Journey Wizard
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.createTripBtn,
-                {
-                  backgroundColor: 'transparent',
-                  borderWidth: 1,
-                  borderColor: themeColors.primary,
-                  marginTop: 12,
-                },
-              ]}
+              style={[styles.exploreMapOutlineBtn, { borderColor: themeColors.primary }]}
               onPress={() => setActiveSubTab('map')}
               activeOpacity={0.8}
             >
-              <Text style={[styles.createTripBtnText, { color: themeColors.primary }]}>
-                🗺️ Khám phá bản đồ trước
+              <Text style={[styles.exploreMapOutlineBtnText, { color: themeColors.primary }]}>
+                🗺️ Explore Places on Map First
               </Text>
             </TouchableOpacity>
           </View>
-          {renderCreateTripModal()}
         </View>
       </SafeAreaView>
     );
@@ -320,9 +372,9 @@ export default function PlanScreen() {
         <View style={styles.header}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View>
-              <Text style={styles.title}>Kế hoạch chuyến đi</Text>
+              <Text style={styles.title}>Trip Itinerary</Text>
               <Text style={styles.subtitle}>
-                {(trip.destinationCity || trip.destination || 'Chưa đặt tên')} • {trip.startDate} - {trip.endDate}
+                {(trip.destinationCity || trip.destination || 'Untitled Trip')} • {trip.startDate} - {trip.endDate}
               </Text>
             </View>
             <TouchableOpacity
@@ -330,7 +382,7 @@ export default function PlanScreen() {
               onPress={() => setCreateTripModalVisible(true)}
               activeOpacity={0.8}
             >
-              <Text style={styles.headerNewTripText}>+ Tạo mới</Text>
+              <Text style={styles.headerNewTripText}>+ New Trip</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -351,7 +403,7 @@ export default function PlanScreen() {
                 activeSubTab === 'map' && styles.subTabLabelActive,
               ]}
             >
-              Bản đồ & Khám phá
+              Map & Places
             </Text>
           </TouchableOpacity>
 
@@ -369,7 +421,7 @@ export default function PlanScreen() {
                 activeSubTab === 'itinerary' && styles.subTabLabelActive,
               ]}
             >
-              Lịch trình & Đội nhóm
+              Itinerary & Squad
             </Text>
           </TouchableOpacity>
 
@@ -387,19 +439,30 @@ export default function PlanScreen() {
                 activeSubTab === 'expense' && styles.subTabLabelActive,
               ]}
             >
-              Chi tiêu & Chia tiền
+              Expenses & Splits
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Sub-Tab 0: Map Discovery */}
         {activeSubTab === 'map' && (
-          <PlanMapDiscovery
-            places={placesStore.places}
-            selectedPlaceIds={placesStore.selectedPlaceIds}
-            onTogglePlace={placesStore.togglePlaceSelection}
-            onGenerateAiPlan={handleGenerateAiPlan}
-          />
+          <View style={{ flex: 1 }}>
+            <TouchableOpacity
+              style={styles.wizardQuickBar}
+              onPress={() => setShowWizard(true)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.wizardQuickBarText}>
+                ✨ Smart Wizard (Plan Multi-City Journey A → B → C)
+              </Text>
+            </TouchableOpacity>
+            <PlanMapDiscovery
+              places={placesStore.places}
+              selectedPlaceIds={placesStore.selectedPlaceIds}
+              onTogglePlace={placesStore.togglePlaceSelection}
+              onGenerateAiPlan={handleGenerateAiPlan}
+            />
+          </View>
         )}
 
         {/* Sub-Tab 1: Itinerary & Squad */}
@@ -412,13 +475,13 @@ export default function PlanScreen() {
             {/* Squad Members Section */}
             <View style={styles.sectionCard}>
               <View style={styles.sectionHeaderRow}>
-                <Text style={styles.sectionTitle}>Bạn đồng hành ({trip.collaborators?.length || 0})</Text>
+                <Text style={styles.sectionTitle}>Squad Members ({trip.collaborators?.length || 0})</Text>
                 <TouchableOpacity
                   style={styles.inviteButton}
                   onPress={() => setInviteModalVisible(true)}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.inviteButtonText}>+ Mời bạn</Text>
+                  <Text style={styles.inviteButtonText}>+ Invite Friend</Text>
                 </TouchableOpacity>
               </View>
 
@@ -467,34 +530,91 @@ export default function PlanScreen() {
                         selectedDayIndex === dayNum && styles.dayChipTextActive,
                       ]}
                     >
-                      Ngày {dayNum}
+                      Day {dayNum}
                     </Text>
                   </TouchableOpacity>
                 );
               })}
             </View>
 
+            {/* Day Route Map Visualizer Banner */}
+            {currentDay.items?.length > 0 && (
+              <View testID="itinerary-day-route-map" style={styles.dayRouteMapBanner}>
+                <View style={styles.dayRouteHeader}>
+                  <Text style={styles.dayRouteTitle}>
+                    🗺️ Day {selectedDayIndex} Route ({currentDay.items.length} stops)
+                  </Text>
+                  <View style={styles.dayRouteDistanceBadge}>
+                    <Text style={styles.dayRouteDistanceText}>
+                      ~{currentDay.items
+                        .reduce((acc, it) => acc + (it.transitToNext?.distanceKm || 0), 0)
+                        .toFixed(1)}km route
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Mapbox Route Preview */}
+                <View style={styles.dayRouteMapCanvas}>
+                  <Image
+                    source={{
+                      uri: `https://api.mapbox.com/styles/v1/mapbox/${mode === 'dark' ? 'dark-v11' : 'streets-v12'}/static/${currentDay.items
+                        .map((it, i) => {
+                          const lng = Number(it.lng || 108.2272 + i * 0.015).toFixed(4);
+                          const lat = Number(it.lat || 16.061 + i * 0.015).toFixed(4);
+                          return `pin-s-${i + 1}+3B82F6(${lng},${lat})`;
+                        })
+                        .join(',')}/auto/600x120@2x?access_token=${
+                        process.env.EXPO_PUBLIC_MAPBOX_TOKEN ||
+                        'pk.eyJ1Ijoibm9tYWRpeCIsImEiOiJjbTFub21hZGl4ZGVtb3Rva2VuIn0.demo_token'
+                      }`,
+                    }}
+                    style={styles.dayRouteMapImage}
+                    resizeMode="cover"
+                  />
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.dayRouteStopsRow}
+                  >
+                    {currentDay.items.map((it, i) => (
+                      <View key={it.id || i} style={styles.dayRouteStopChip}>
+                        <View style={styles.dayRouteStopNum}>
+                          <Text style={styles.dayRouteStopNumText}>{i + 1}</Text>
+                        </View>
+                        <Text style={styles.dayRouteStopName} numberOfLines={1}>
+                          Stop {i + 1}: {it.name}
+                        </Text>
+                        {i < currentDay.items.length - 1 && (
+                          <Text style={styles.dayRouteArrow}>→</Text>
+                        )}
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+            )}
+
             {/* Timeline Stops */}
             <View style={styles.timelineSection}>
               <View style={styles.timelineHeaderRow}>
-                <Text style={styles.sectionTitle}>Lịch trình chi tiết (Ngày {selectedDayIndex})</Text>
+                <Text style={styles.sectionTitle}>Detailed Schedule (Day {selectedDayIndex})</Text>
                 <TouchableOpacity
                   style={styles.addStopSmallBtn}
                   onPress={() => setAddStopModalVisible(true)}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.addStopSmallBtnText}>+ Thêm điểm dừng</Text>
+                  <Text style={styles.addStopSmallBtnText}>+ Add Stop</Text>
                 </TouchableOpacity>
               </View>
 
               {currentDay.items?.length === 0 ? (
                 <View style={styles.emptyStopsBox}>
-                  <Text style={styles.emptyText}>Chưa có điểm dừng nào cho ngày này.</Text>
+                  <Text style={styles.emptyText}>No stops scheduled for this day.</Text>
                   <TouchableOpacity
                     style={styles.addFirstStopBtn}
                     onPress={() => setAddStopModalVisible(true)}
                   >
-                    <Text style={styles.addFirstStopText}>+ Thêm điểm dừng đầu tiên</Text>
+                    <Text style={styles.addFirstStopText}>+ Add First Stop</Text>
                   </TouchableOpacity>
                 </View>
               ) : (
@@ -510,8 +630,8 @@ export default function PlanScreen() {
                       {item.transitToNext && (
                         <View style={styles.transitRow}>
                           <Text style={styles.transitText}>
-                            Di chuyển tiếp theo: {item.transitToNext.distanceKm} km (
-                            {item.transitToNext.durationMinutes} phút)
+                            Next transit: {item.transitToNext.distanceKm} km (
+                            {item.transitToNext.durationMinutes} mins)
                           </Text>
                         </View>
                       )}
@@ -532,21 +652,21 @@ export default function PlanScreen() {
           >
             {/* Total Expense Hero Card */}
             <View style={styles.heroExpenseCard}>
-              <Text style={styles.heroExpenseLabel}>Tổng chi tiêu chuyến đi</Text>
+              <Text style={styles.heroExpenseLabel}>Total Trip Expenses</Text>
               <Text style={styles.heroExpenseValue}>
                 {formatVND(debtSummary?.totalExpense || 3600000)}
               </Text>
               <Text style={styles.heroExpenseDesc}>
-                Tự động cân bằng chi tiêu & giải quyết công nợ
+                Automated debt simplification & cash flow optimization
               </Text>
             </View>
 
             {/* Member Balances Section */}
             <View style={styles.sectionCard}>
-              <Text style={styles.sectionTitle}>Bảng cân đối công nợ</Text>
+              <Text style={styles.sectionTitle}>Member Balance Sheet</Text>
               {(debtSummary?.memberBalances || []).map((mb, idx) => (
                 <View key={mb.userId || idx} style={styles.balanceRow}>
-                  <Text style={styles.balanceMemberName}>{mb.fullName || 'Thành viên'}</Text>
+                  <Text style={styles.balanceMemberName}>{mb.fullName || 'Member'}</Text>
                   <Text
                     style={[
                       styles.balanceAmount,
@@ -562,16 +682,16 @@ export default function PlanScreen() {
 
             {/* Greedy Simplified Debt Settlements */}
             <View style={styles.sectionCard}>
-              <Text style={styles.sectionTitle}>Lộ trình thanh toán tối ưu (Greedy)</Text>
+              <Text style={styles.sectionTitle}>Optimal Settlement Plan (Greedy)</Text>
               <Text style={styles.sectionSubDesc}>
-                Thuật toán tối thiểu hóa số giao dịch cần chuyển
+                Minimum cash-flow algorithm reduces tangled debts to fewest transactions
               </Text>
 
               {(debtSummary?.simplifiedSettlements || []).map((st, idx) => (
                 <View key={idx} style={styles.settlementCard}>
                   <View style={styles.settlementTextCol}>
                     <Text style={styles.settlementRoute}>
-                      {st.fromUserName || 'Hoàng Nam'} chuyển {st.toUserName || 'Đức Nguyễn'}
+                      {st.fromUserName || 'Member'} pays {st.toUserName || 'Member'}
                     </Text>
                     <Text style={styles.settlementAmount}>{formatVND(st.amount)}</Text>
                   </View>
@@ -580,7 +700,7 @@ export default function PlanScreen() {
                     onPress={() => handleSettle(st)}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.settleButtonText}>Thanh toán nợ</Text>
+                    <Text style={styles.settleButtonText}>Settle Up</Text>
                   </TouchableOpacity>
                 </View>
               ))}
@@ -597,14 +717,14 @@ export default function PlanScreen() {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Mời bạn đồng hành</Text>
+              <Text style={styles.modalTitle}>Invite Squad Member</Text>
               <Text style={styles.modalSubtitle}>
-                Nhập email của bạn bè để cùng lên kế hoạch & chia tiền
+                Enter your friend's email to collaborate on itineraries and split expenses
               </Text>
 
               <TextInput
                 style={styles.modalInput}
-                placeholder="email@example.com"
+                placeholder="e.g. friend@example.com"
                 placeholderTextColor={themeColors.textMuted}
                 value={inviteEmail}
                 onChangeText={setInviteEmail}
@@ -653,14 +773,14 @@ export default function PlanScreen() {
                   style={styles.modalCancelButton}
                   onPress={() => setInviteModalVisible(false)}
                 >
-                  <Text style={styles.modalCancelText}>Hủy</Text>
+                  <Text style={styles.modalCancelText}>Cancel</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.modalSubmitButton}
                   onPress={handleInvite}
                 >
-                  <Text style={styles.modalSubmitText}>Gửi lời mời</Text>
+                  <Text style={styles.modalSubmitText}>Send Invite</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -676,14 +796,14 @@ export default function PlanScreen() {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Thêm điểm dừng mới</Text>
+              <Text style={styles.modalTitle}>Add New Stop</Text>
               <Text style={styles.modalSubtitle}>
-                Nhập thông tin điểm tham quan cho Ngày {selectedDayIndex}
+                Enter stop details for Day {selectedDayIndex}
               </Text>
 
               <TextInput
                 style={styles.modalInput}
-                placeholder="Tên địa điểm (VD: Thác Datanla)"
+                placeholder="e.g. Datanla Waterfall, Eiffel Tower"
                 placeholderTextColor={themeColors.textMuted}
                 value={stopName}
                 onChangeText={setStopName}
@@ -692,14 +812,14 @@ export default function PlanScreen() {
               <View style={styles.modalTwoInputsRow}>
                 <TextInput
                   style={[styles.modalInput, styles.halfInput]}
-                  placeholder="Giờ đến (VD: 10:30)"
+                  placeholder="e.g. 10:30 AM"
                   placeholderTextColor={themeColors.textMuted}
                   value={stopTime}
                   onChangeText={setStopTime}
                 />
                 <TextInput
                   style={[styles.modalInput, styles.halfInput]}
-                  placeholder="Thời lượng phút (VD: 120)"
+                  placeholder="e.g. 90 mins"
                   placeholderTextColor={themeColors.textMuted}
                   value={stopDuration}
                   onChangeText={setStopDuration}
@@ -712,14 +832,14 @@ export default function PlanScreen() {
                   style={styles.modalCancelButton}
                   onPress={() => setAddStopModalVisible(false)}
                 >
-                  <Text style={styles.modalCancelText}>Hủy</Text>
+                  <Text style={styles.modalCancelText}>Cancel</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.modalSubmitButton}
                   onPress={handleSaveStop}
                 >
-                  <Text style={styles.modalSubmitText}>Lưu điểm dừng</Text>
+                  <Text style={styles.modalSubmitText}>Save Stop</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1209,4 +1329,170 @@ const getStyles = (colors) => StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
+  mapDiscoveryHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    gap: 8,
+  },
+  mapHeaderBackBtn: {
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  mapHeaderTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  mapHeaderWizardBtn: {
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: '#6366F1',
+  },
+  mapHeaderWizardBtnText: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    fontSize: 12,
+  },
+  wizardPrimaryBtn: {
+    width: '100%',
+    backgroundColor: '#6366F1',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    shadowColor: '#6366F1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  wizardPrimaryBtnText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  exploreMapOutlineBtn: {
+    width: '100%',
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  exploreMapOutlineBtnText: {
+    fontSize: 15,
+    fontWeight: '700',
+    backgroundColor: 'transparent',
+  },
+  dayRouteMapBanner: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  dayRouteHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  dayRouteTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.text,
+  },
+  dayRouteDistanceBadge: {
+    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  dayRouteDistanceText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#3B82F6',
+  },
+  dayRouteMapCanvas: {
+    height: 120,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#0F172A',
+    position: 'relative',
+    justifyContent: 'flex-end',
+  },
+  dayRouteMapImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  dayRouteStopsRow: {
+    padding: 8,
+    gap: 6,
+    backgroundColor: 'rgba(15, 23, 42, 0.75)',
+  },
+  dayRouteStopChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  dayRouteStopNum: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayRouteStopNumText: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#FFFFFF',
+  },
+  dayRouteStopName: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    maxWidth: 100,
+  },
+  dayRouteArrow: {
+    fontSize: 12,
+    color: '#94A3B8',
+    marginLeft: 2,
+  },
+  wizardQuickBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.card === '#1E293B' ? '#1E1B4B' : '#EEF2FF',
+    borderWidth: 1,
+    borderColor: colors.card === '#1E293B' ? '#4F46E5' : '#C7D2FE',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginBottom: 10,
+  },
+  wizardQuickBarText: {
+    color: colors.card === '#1E293B' ? '#A5B4FC' : '#4F46E5',
+    fontWeight: '700',
+    fontSize: 13,
+  },
 });
+

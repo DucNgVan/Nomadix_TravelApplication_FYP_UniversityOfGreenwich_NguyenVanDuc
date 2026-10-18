@@ -42,19 +42,19 @@ describe('Component Test: App 4-Tab Navigation (Flight, Hotel, Plan, Account)', 
     });
   });
 
-  test('RED-FE-NAV-4TAB-01: renders 4 bottom tabs including Tài khoản', () => {
+  test('RED-FE-NAV-4TAB-01: renders 4 bottom tabs including Profile', () => {
     const { getByText } = render(<App />);
 
-    expect(getByText('Chuyến bay')).toBeTruthy();
-    expect(getByText('Khách sạn')).toBeTruthy();
-    expect(getByText('Kế hoạch')).toBeTruthy();
-    expect(getByText('Tài khoản')).toBeTruthy();
+    expect(getByText('Flights')).toBeTruthy();
+    expect(getByText('Hotels')).toBeTruthy();
+    expect(getByText('Plan')).toBeTruthy();
+    expect(getByText('Profile')).toBeTruthy();
   });
 
-  test('RED-FE-NAV-4TAB-02: clicking "Tài khoản" switches to ProfileScreen', () => {
+  test('RED-FE-NAV-4TAB-02: clicking "Profile" switches to ProfileScreen', () => {
     const { getByText } = render(<App />);
 
-    const accountTab = getByText('Tài khoản');
+    const accountTab = getByText('Profile');
     fireEvent.press(accountTab);
 
     // ProfileScreen content should appear

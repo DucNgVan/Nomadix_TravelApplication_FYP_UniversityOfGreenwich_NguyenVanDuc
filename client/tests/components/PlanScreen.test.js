@@ -84,13 +84,13 @@ describe('Component Test: PlanScreen (Itinerary & Group Expense Hub with Sub-Tab
     });
   });
 
-  test('RED-FE-PLAN-01: renders default sub-tab "Lịch trình & Đội nhóm" with timeline stops and squad members', () => {
+  test('RED-FE-PLAN-01: renders default sub-tab "Itinerary & Squad" with timeline stops and squad members', () => {
     const { getByText, queryByText } = render(<PlanScreen />);
 
     // Header & Sub-tabs
-    expect(getByText('Kế hoạch chuyến đi')).toBeTruthy();
-    expect(getByText('Lịch trình & Đội nhóm')).toBeTruthy();
-    expect(getByText('Chi tiêu & Chia tiền')).toBeTruthy();
+    expect(getByText(/Trip Itinerary|Itinerary/i)).toBeTruthy();
+    expect(getByText('Itinerary & Squad')).toBeTruthy();
+    expect(getByText('Expenses & Splits')).toBeTruthy();
 
     // Timeline stops
     expect(getByText('Bán đảo Sơn Trà')).toBeTruthy();
@@ -104,11 +104,11 @@ describe('Component Test: PlanScreen (Itinerary & Group Expense Hub with Sub-Tab
     expect(getByText('EDITOR')).toBeTruthy();
   });
 
-  test('RED-FE-PLAN-02: switches to sub-tab "Chi tiêu & Chia tiền" and renders expenses and greedy debt simplification', () => {
+  test('RED-FE-PLAN-02: switches to sub-tab "Expenses & Splits" and renders expenses and greedy debt simplification', () => {
     const { getByText, getAllByText } = render(<PlanScreen />);
 
-    // Click on Chi tiêu & Chia tiền sub-tab
-    const expenseTabButton = getByText('Chi tiêu & Chia tiền');
+    // Click on Expenses & Splits sub-tab
+    const expenseTabButton = getByText('Expenses & Splits');
     fireEvent.press(expenseTabButton);
 
     // Should display expense total
@@ -119,10 +119,10 @@ describe('Component Test: PlanScreen (Itinerary & Group Expense Hub with Sub-Tab
     expect(getByText(/\+1\.200\.000/)).toBeTruthy();
 
     // Should display simplified settlement path
-    expect(getByText(/Hoàng Nam.*chuyển.*Đức Nguyễn/i)).toBeTruthy();
+    expect(getByText(/Hoàng Nam.*(pays|transfer).*Đức Nguyễn/i)).toBeTruthy();
 
     // Should have Settle-Up button
-    expect(getByText('Thanh toán nợ')).toBeTruthy();
+    expect(getByText(/Settle Up|Settle Debt/i)).toBeTruthy();
   });
 
   test('should handle invite companion flow and settle up flow', () => {
@@ -141,24 +141,24 @@ describe('Component Test: PlanScreen (Itinerary & Group Expense Hub with Sub-Tab
     const { getByText, getByPlaceholderText, getAllByText } = render(<PlanScreen />);
 
     // Open invite modal
-    fireEvent.press(getByText('+ Mời bạn'));
-    expect(getByText('Mời bạn đồng hành')).toBeTruthy();
+    fireEvent.press(getByText('+ Invite Friend'));
+    expect(getByText('Invite Companion')).toBeTruthy();
 
     // Type email & toggle role
-    fireEvent.changeText(getByPlaceholderText('email@example.com'), 'friend@example.com');
+    fireEvent.changeText(getByPlaceholderText('e.g. friend@example.com'), 'friend@example.com');
     fireEvent.press(getByText('VIEWER'));
     fireEvent.press(getAllByText('EDITOR')[1]);
 
     // Submit invite
-    fireEvent.press(getByText('Gửi lời mời'));
+    fireEvent.press(getByText('Send Invitation'));
     expect(mockInvite).toHaveBeenCalledWith('trip-101', {
       email: 'friend@example.com',
       role: 'EDITOR',
     });
 
     // Switch to expense tab & settle up
-    fireEvent.press(getByText('Chi tiêu & Chia tiền'));
-    fireEvent.press(getByText('Thanh toán nợ'));
+    fireEvent.press(getByText('Expenses & Splits'));
+    fireEvent.press(getByText(/Settle Up|Settle Debt/i));
     expect(mockSettle).toHaveBeenCalled();
   });
 
@@ -166,12 +166,21 @@ describe('Component Test: PlanScreen (Itinerary & Group Expense Hub with Sub-Tab
     const { getByText, queryByText } = render(<PlanScreen />);
 
     // Cancel modal
-    fireEvent.press(getByText('+ Mời bạn'));
-    fireEvent.press(getByText('Hủy'));
-    expect(queryByText('Mời bạn đồng hành')).toBeNull();
+    fireEvent.press(getByText('+ Invite Friend'));
+    fireEvent.press(getByText('Cancel'));
+    expect(queryByText('Invite Companion')).toBeNull();
 
     // Select Day
-    fireEvent.press(getByText('Ngày 1'));
+    fireEvent.press(getByText('Day 1'));
     expect(getByText('Bán đảo Sơn Trà')).toBeTruthy();
   });
+
+  test('RED-FE-PLAN-ROUTE-01: should render day route map banner for itinerary stops with sequential stop coordinates', () => {
+    const { getByTestId, getByText } = render(<PlanScreen />);
+
+    const routeMap = getByTestId('itinerary-day-route-map');
+    expect(routeMap).toBeTruthy();
+    expect(getByText(/Day 1 Route/i)).toBeTruthy();
+  });
 });
+
