@@ -5,10 +5,10 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import FlightCard from '../../components/booking/FlightCard';
@@ -27,6 +27,57 @@ const QUICK_ROUTES = [
   { label: 'HAN → DAD', origin: 'HAN', dest: 'DAD' },
   { label: 'SGN → DAD', origin: 'SGN', dest: 'DAD' },
   { label: 'HAN → PQC', origin: 'HAN', dest: 'PQC' },
+];
+
+const TRENDING_DEALS = [
+  {
+    id: 'deal-1',
+    city: 'Da Nang',
+    route: 'SGN → DAD',
+    origin: 'SGN',
+    destination: 'DAD',
+    duration: '1h 20m',
+    price: '₫690,000',
+    tag: '-25%',
+    tagColor: '#30D158',
+    emoji: '🏖️',
+  },
+  {
+    id: 'deal-2',
+    city: 'Bangkok',
+    route: 'SGN → BKK',
+    origin: 'SGN',
+    destination: 'BKK',
+    duration: '1h 35m',
+    price: '₫1,250,000',
+    tag: 'Hot Deal',
+    tagColor: '#007AFF',
+    emoji: '🛕',
+  },
+  {
+    id: 'deal-3',
+    city: 'Phu Quoc',
+    route: 'HAN → PQC',
+    origin: 'HAN',
+    destination: 'PQC',
+    duration: '2h 10m',
+    price: '₫890,000',
+    tag: 'Island',
+    tagColor: '#FF9500',
+    emoji: '🏝️',
+  },
+  {
+    id: 'deal-4',
+    city: 'Tokyo',
+    route: 'SGN → NRT',
+    origin: 'SGN',
+    destination: 'NRT',
+    duration: '5h 45m',
+    price: '₫3,420,000',
+    tag: 'Japan',
+    tagColor: '#AF52DE',
+    emoji: '⛩️',
+  },
 ];
 
 export default function FlightSearchScreen({ navigation }) {
@@ -70,17 +121,17 @@ export default function FlightSearchScreen({ navigation }) {
     const cleanDate = departureDate.trim();
 
     if (!origin.trim() || !destination.trim() || !cleanDate) {
-      setValidationError('Vui lòng nhập đầy đủ điểm đi, điểm đến và ngày khởi hành');
+      setValidationError('Please enter origin, destination, and departure date');
       return;
     }
 
     if (cleanOrigin === cleanDest) {
-      setValidationError('Điểm đi và điểm đến không được trùng nhau');
+      setValidationError('Origin and destination cannot be identical');
       return;
     }
 
     if (tripType === 'round_trip' && !returnDate.trim()) {
-      setValidationError('Vui lòng chọn ngày về cho hành trình khứ hồi');
+      setValidationError('Please select a return date');
       return;
     }
 
@@ -106,13 +157,22 @@ export default function FlightSearchScreen({ navigation }) {
     }
   };
 
+  const handleSelectTrendingDeal = (deal) => {
+    setOrigin(deal.origin);
+    setDestination(deal.destination);
+    if (!departureDate) {
+      setDepartureDate('2026-11-15');
+    }
+    setValidationError('');
+  };
+
   // Filter and sort flights
   const filteredFlights = (flights || []).filter((flight) => {
     // Search form preferences
     if (!prefDirect && flight.stops === 0) return false;
     if (!prefTransit && flight.stops > 0) return false;
     const hasCheckedBag = (flight.baggages && flight.baggages.some((b) => b.type === 'checked')) ||
-      (flight.baggageSummary && flight.baggageSummary.toLowerCase().includes('ký gửi'));
+      (flight.baggageSummary && (flight.baggageSummary.toLowerCase().includes('checked') || flight.baggageSummary.toLowerCase().includes('ký gửi')));
     if (prefBaggage && !hasCheckedBag) return false;
 
     // Quick filter bar logic
@@ -155,10 +215,9 @@ export default function FlightSearchScreen({ navigation }) {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: themeColors.background }]}>
       <View testID="flight-search-container" style={[styles.container, { backgroundColor: themeColors.background }]}>
-        {/* Header */}
+        {/* Header Subtitle */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: themeColors.text }]}>Tìm vé máy bay</Text>
-          <Text style={[styles.subtitle, { color: themeColors.textMuted }]}>So sánh giá vé thông minh khắp Việt Nam</Text>
+          <Text style={[styles.subtitle, { color: themeColors.textMuted }]}>Smart flight search & best deal comparison</Text>
         </View>
 
         {/* Collapsible Search Panel */}
@@ -173,16 +232,16 @@ export default function FlightSearchScreen({ navigation }) {
                 ✈ {origin} → {destination}
               </Text>
               <Text style={[styles.collapsedDates, { color: themeColors.textMuted }]}>
-                {departureDate} {returnDate ? `• Về ${returnDate}` : ''} • {tripType === 'round_trip' ? 'Khứ hồi' : 'Một chiều'} • 1 khách
+                {departureDate} {returnDate ? `• Ret ${returnDate}` : ''} • {tripType === 'round_trip' ? 'Round-trip' : 'One-way'} • 1 passenger
               </Text>
             </View>
             <View style={styles.editBadge}>
-              <Text style={styles.editText}>Thay đổi</Text>
+              <Text style={styles.editText}>Edit</Text>
             </View>
           </TouchableOpacity>
         ) : (
           <View style={[styles.searchBox, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
-            {/* Trip Type Selector: Một chiều / Khứ hồi */}
+            {/* Trip Type Selector: One-way / Round-trip */}
             <View style={[styles.tripTypeRow, { backgroundColor: mode === 'light' ? '#EBF5FF' : 'rgba(255, 255, 255, 0.06)' }]}>
               <TouchableOpacity
                 style={[styles.tripTypeBtn, tripType === 'one_way' && styles.tripTypeBtnActive]}
@@ -190,7 +249,7 @@ export default function FlightSearchScreen({ navigation }) {
                 activeOpacity={0.8}
               >
                 <Text style={[styles.tripTypeText, { color: mode === 'light' ? '#64748B' : '#94A3B8' }, tripType === 'one_way' && styles.tripTypeTextActive]}>
-                  Một chiều
+                  One-way
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -199,7 +258,7 @@ export default function FlightSearchScreen({ navigation }) {
                 activeOpacity={0.8}
               >
                 <Text style={[styles.tripTypeText, { color: mode === 'light' ? '#64748B' : '#94A3B8' }, tripType === 'round_trip' && styles.tripTypeTextActive]}>
-                  Khứ hồi
+                  Round-trip
                 </Text>
               </TouchableOpacity>
             </View>
@@ -241,8 +300,8 @@ export default function FlightSearchScreen({ navigation }) {
             <View style={styles.airportsRow}>
               <View style={styles.airportCol}>
                 <Input
-                  label="Điểm đi (Mã IATA)"
-                  placeholder="Điểm đi (VD: SGN)"
+                  label="Origin (IATA or City)"
+                  placeholder="e.g. SGN or Ho Chi Minh"
                   value={origin}
                   onChangeText={(text) => {
                     setOrigin(text);
@@ -253,8 +312,8 @@ export default function FlightSearchScreen({ navigation }) {
               </View>
               <View style={styles.airportCol}>
                 <Input
-                  label="Điểm đến (Mã IATA)"
-                  placeholder="Điểm đến (VD: HAN)"
+                  label="Destination (IATA or City)"
+                  placeholder="e.g. HAN or Hanoi"
                   value={destination}
                   onChangeText={(text) => {
                     setDestination(text);
@@ -274,8 +333,8 @@ export default function FlightSearchScreen({ navigation }) {
                   activeOpacity={0.8}
                 >
                   <Input
-                    label="Ngày khởi hành"
-                    placeholder="Ngày đi (YYYY-MM-DD)"
+                    label="Departure Date"
+                    placeholder="e.g. 2026-11-01 (YYYY-MM-DD)"
                     value={departureDate}
                     onChangeText={(text) => {
                       setDepartureDate(text);
@@ -293,8 +352,8 @@ export default function FlightSearchScreen({ navigation }) {
                     activeOpacity={0.8}
                   >
                     <Input
-                      label="Ngày về"
-                      placeholder="Ngày về (YYYY-MM-DD)"
+                      label="Return Date"
+                      placeholder="e.g. Return Date (YYYY-MM-DD)"
                       value={returnDate}
                       onChangeText={(text) => {
                         setReturnDate(text);
@@ -306,7 +365,7 @@ export default function FlightSearchScreen({ navigation }) {
               )}
             </View>
 
-            {/* Search Preferences Toggles (Bay thẳng, Nối chuyến, Có hành lý) */}
+            {/* Search Preferences Toggles (Direct, Transit, Baggage) */}
             <View style={styles.preferencesRow}>
               <TouchableOpacity
                 testID="pref-checkbox-direct"
@@ -321,7 +380,7 @@ export default function FlightSearchScreen({ navigation }) {
                 <Text style={[styles.prefCheck, prefDirect && styles.prefCheckActive]}>
                   {prefDirect ? '✓' : ''}
                 </Text>
-                <Text style={[styles.prefText, { color: themeColors.text }]}>Bay thẳng</Text>
+                <Text style={[styles.prefText, { color: themeColors.text }]}>Direct Flights</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -337,7 +396,7 @@ export default function FlightSearchScreen({ navigation }) {
                 <Text style={[styles.prefCheck, prefTransit && styles.prefCheckActive]}>
                   {prefTransit ? '✓' : ''}
                 </Text>
-                <Text style={[styles.prefText, { color: themeColors.text }]}>Nối chuyến</Text>
+                <Text style={[styles.prefText, { color: themeColors.text }]}>Connecting</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -353,7 +412,7 @@ export default function FlightSearchScreen({ navigation }) {
                 <Text style={[styles.prefCheck, prefBaggage && styles.prefCheckActive]}>
                   {prefBaggage ? '✓' : ''}
                 </Text>
-                <Text style={[styles.prefText, { color: themeColors.text }]}>Có hành lý</Text>
+                <Text style={[styles.prefText, { color: themeColors.text }]}>With Baggage</Text>
               </TouchableOpacity>
             </View>
 
@@ -366,7 +425,7 @@ export default function FlightSearchScreen({ navigation }) {
             ) : null}
 
             <Button
-              title="Tìm chuyến bay"
+              title="Search Flights"
               onPress={handleSearch}
               loading={isLoadingFlights}
               style={styles.searchButton}
@@ -394,7 +453,7 @@ export default function FlightSearchScreen({ navigation }) {
                     activeQuickFilter === 'all' && styles.quickFilterTextActive,
                   ]}
                 >
-                  Tất cả ({flights.length})
+                  All ({flights.length})
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -413,7 +472,7 @@ export default function FlightSearchScreen({ navigation }) {
                     activeQuickFilter === 'direct' && styles.quickFilterTextActive,
                   ]}
                 >
-                  Bay thẳng
+                  Direct
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -432,7 +491,7 @@ export default function FlightSearchScreen({ navigation }) {
                     activeQuickFilter === 'transit' && styles.quickFilterTextActive,
                   ]}
                 >
-                  Nối chuyến
+                  Connecting
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -451,7 +510,7 @@ export default function FlightSearchScreen({ navigation }) {
                     activeQuickFilter === 'baggage' && styles.quickFilterTextActive,
                   ]}
                 >
-                  🧳 Hành lý nhiều
+                  🧳 With Baggage
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -470,7 +529,7 @@ export default function FlightSearchScreen({ navigation }) {
                     activeQuickFilter === 'cheap' && styles.quickFilterTextActive,
                   ]}
                 >
-                  🏷 Giá rẻ
+                  🏷 Cheapest
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -489,7 +548,7 @@ export default function FlightSearchScreen({ navigation }) {
                     activeQuickFilter === 'early' && styles.quickFilterTextActive,
                   ]}
                 >
-                  🌅 Bay sớm
+                  🌅 Early Flight
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -508,7 +567,7 @@ export default function FlightSearchScreen({ navigation }) {
                     activeQuickFilter === 'late' && styles.quickFilterTextActive,
                   ]}
                 >
-                  🌙 Bay muộn
+                  🌙 Late Flight
                 </Text>
               </TouchableOpacity>
             </ScrollView>
@@ -520,7 +579,7 @@ export default function FlightSearchScreen({ navigation }) {
               onPress={() => setIsFilterVisible(true)}
               testID="open-flight-filter-btn"
             >
-              <Text style={[styles.filterModalButtonText, { color: themeColors.text }]}>Bộ lọc ⚙</Text>
+              <Text style={[styles.filterModalButtonText, { color: themeColors.text }]}>Filters ⚙</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -529,7 +588,7 @@ export default function FlightSearchScreen({ navigation }) {
         {isLoadingFlights ? (
           <View style={styles.centerContainer}>
             <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={styles.loadingText}>Đang tìm chuyến bay tốt nhất...</Text>
+            <Text style={styles.loadingText}>Searching for the best flight offers...</Text>
           </View>
         ) : (
           <FlatList
@@ -546,13 +605,116 @@ export default function FlightSearchScreen({ navigation }) {
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
               filteredFlights.length === 0 && !isLoadingFlights ? (
-                <View style={styles.emptyContainer}>
-                  <Text style={styles.emptyText}>
-                    {flights.length > 0
-                      ? 'Không tìm thấy chuyến bay phù hợp với bộ lọc đã chọn'
-                      : 'Nhập hành trình để khám phá giá vé ưu đãi'}
-                  </Text>
-                </View>
+                flights.length > 0 ? (
+                  <View style={styles.emptyContainer}>
+                    <Text style={[styles.emptyText, { color: themeColors.textMuted }]}>
+                      No flights matching your filter criteria
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.enrichedEmptyContainer}>
+                    <Text style={[styles.emptyPromptText, { color: themeColors.textMuted }]}>
+                      Enter your route to search for best flight deals, or tap a trending route below:
+                    </Text>
+
+                    {/* Trending Flight Deals Section */}
+                    <View style={styles.trendingSection}>
+                      <View style={styles.trendingHeaderRow}>
+                        <View style={styles.trendingTitleGroup}>
+                          <Text style={styles.trendingFireIcon}>🔥</Text>
+                          <Text style={[styles.trendingTitle, { color: themeColors.text }]}>
+                            Trending Flight Deals
+                          </Text>
+                        </View>
+                        <Text style={[styles.trendingExploreLink, { color: themeColors.primary }]}>
+                          Explore All ›
+                        </Text>
+                      </View>
+
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.trendingScroll}
+                        contentContainerStyle={styles.trendingScrollContent}
+                      >
+                        {TRENDING_DEALS.map((deal) => (
+                          <TouchableOpacity
+                            key={deal.id}
+                            style={[
+                              styles.trendingCard,
+                              {
+                                backgroundColor: themeColors.card,
+                                borderColor: themeColors.border,
+                              },
+                            ]}
+                            activeOpacity={0.8}
+                            onPress={() => handleSelectTrendingDeal(deal)}
+                          >
+                            <View style={styles.trendingCardTop}>
+                              <Text style={[styles.trendingCity, { color: themeColors.text }]}>
+                                {deal.emoji} {deal.city}
+                              </Text>
+                              <View style={[styles.dealTag, { backgroundColor: `${deal.tagColor}20` }]}>
+                                <Text style={[styles.dealTagText, { color: deal.tagColor }]}>
+                                  {deal.tag}
+                                </Text>
+                              </View>
+                            </View>
+
+                            <Text style={[styles.trendingRoute, { color: themeColors.textMuted }]}>
+                              {deal.route} • {deal.duration}
+                            </Text>
+
+                            <View style={[styles.trendingCardFooter, { borderTopColor: themeColors.border }]}>
+                              <Text style={[styles.trendingPriceLabel, { color: themeColors.textMuted }]}>From</Text>
+                              <Text style={[styles.trendingPriceValue, { color: themeColors.primary }]}>
+                                {deal.price}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    </View>
+
+                    {/* Nomadix Travel Guarantee Banner */}
+                    <View
+                      style={[
+                        styles.guaranteeCard,
+                        {
+                          backgroundColor: mode === 'light' ? '#EBF5FF' : '#1A233A',
+                          borderColor: mode === 'light' ? '#DCE8F6' : '#2A3B5C',
+                        },
+                      ]}
+                    >
+                      <View style={styles.guaranteeHeader}>
+                        <Text style={styles.guaranteeIcon}>🛡️</Text>
+                        <View style={styles.guaranteeTextGroup}>
+                          <Text style={[styles.guaranteeTitle, { color: themeColors.text }]}>
+                            Nomadix Flight Guarantee
+                          </Text>
+                          <Text style={[styles.guaranteeSub, { color: themeColors.textMuted }]}>
+                            Live Duffel Global GDS pricing with zero hidden fees
+                          </Text>
+                        </View>
+                      </View>
+
+                      <View style={[styles.guaranteePillarsRow, { borderTopColor: mode === 'light' ? '#DCE8F6' : '#2A3B5C' }]}>
+                        <View style={[styles.pillarBox, { backgroundColor: mode === 'light' ? '#FFFFFF' : '#131C2E' }]}>
+                          <Text style={styles.pillarNumber}>⚡ 100%</Text>
+                          <Text style={[styles.pillarLabel, { color: themeColors.textMuted }]}>Real-time GDS</Text>
+                        </View>
+                        <View style={[styles.pillarBox, { backgroundColor: mode === 'light' ? '#FFFFFF' : '#131C2E' }]}>
+                          <Text style={styles.pillarNumber}>🛡️ Free 24h</Text>
+                          <Text style={[styles.pillarLabel, { color: themeColors.textMuted }]}>Hold & Review</Text>
+                        </View>
+                        <View style={[styles.pillarBox, { backgroundColor: mode === 'light' ? '#FFFFFF' : '#131C2E' }]}>
+                          <Text style={styles.pillarNumber}>🧳 20kg</Text>
+                          <Text style={[styles.pillarLabel, { color: themeColors.textMuted }]}>Bag Compare</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                )
               ) : null
             }
           />
@@ -567,7 +729,7 @@ export default function FlightSearchScreen({ navigation }) {
             setValidationError('');
           }}
           onClose={() => setIsDeparturePickerVisible(false)}
-          title="Chọn ngày khởi hành"
+          title="Select Departure Date"
           minDate={new Date().toISOString().split('T')[0]}
         />
 
@@ -579,7 +741,7 @@ export default function FlightSearchScreen({ navigation }) {
             setValidationError('');
           }}
           onClose={() => setIsReturnPickerVisible(false)}
-          title="Chọn ngày về"
+          title="Select Return Date"
           minDate={departureDate}
         />
 
@@ -875,5 +1037,150 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.textMuted,
     textAlign: 'center',
+  },
+  enrichedEmptyContainer: {
+    paddingTop: 8,
+    paddingBottom: 20,
+  },
+  emptyPromptText: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  trendingSection: {
+    marginBottom: 20,
+  },
+  trendingHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  trendingTitleGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  trendingFireIcon: {
+    fontSize: 14,
+  },
+  trendingTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  trendingExploreLink: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  trendingScroll: {
+    marginHorizontal: -16,
+    paddingHorizontal: 16,
+  },
+  trendingScrollContent: {
+    paddingRight: 16,
+    gap: 10,
+  },
+  trendingCard: {
+    width: 175,
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 12,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  trendingCardTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  trendingCity: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  dealTag: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  dealTagText: {
+    fontSize: 9,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  trendingRoute: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  trendingCardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    paddingTop: 6,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  trendingPriceLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  trendingPriceValue: {
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  guaranteeCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 14,
+    marginTop: 4,
+  },
+  guaranteeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 12,
+  },
+  guaranteeIcon: {
+    fontSize: 22,
+  },
+  guaranteeTextGroup: {
+    flex: 1,
+  },
+  guaranteeTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  guaranteeSub: {
+    fontSize: 11,
+    marginTop: 1,
+  },
+  guaranteePillarsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingTop: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  pillarBox: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  pillarNumber: {
+    fontSize: 11,
+    fontWeight: '900',
+    color: '#0A84FF',
+  },
+  pillarLabel: {
+    fontSize: 9,
+    fontWeight: '600',
+    marginTop: 2,
   },
 });

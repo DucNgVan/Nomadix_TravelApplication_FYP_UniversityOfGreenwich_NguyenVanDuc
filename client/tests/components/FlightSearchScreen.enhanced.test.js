@@ -66,15 +66,15 @@ describe('Component Test: FlightSearchScreen Enhanced Features (City Resolver, C
     const { getByText, queryByText } = render(<FlightSearchScreen />);
 
     // Default is One-way
-    expect(getByText('Một chiều')).toBeTruthy();
-    expect(getByText('Khứ hồi')).toBeTruthy();
+    expect(getByText('One-way')).toBeTruthy();
+    expect(getByText('Round-trip')).toBeTruthy();
 
     // In One-way, Return date is not visible
-    expect(queryByText(/Ngày về/i)).toBeNull();
+    expect(queryByText(/Return Date/i)).toBeNull();
 
     // Switch to Round-trip
-    fireEvent.press(getByText('Khứ hồi'));
-    expect(getByText(/Ngày về/i)).toBeTruthy();
+    fireEvent.press(getByText('Round-trip'));
+    expect(getByText(/Return Date/i)).toBeTruthy();
   });
 
   test('RED-FE-FLIGHT-ENHANCED-02: pressing date opens CalendarPickerModal', () => {
@@ -84,17 +84,17 @@ describe('Component Test: FlightSearchScreen Enhanced Features (City Resolver, C
     fireEvent.press(getByTestId('date-picker-trigger-departure'));
 
     // Calendar modal title should appear
-    expect(getByText(/Chọn ngày khởi hành/i)).toBeTruthy();
+    expect(getByText(/Select Departure Date|Select Date/i)).toBeTruthy();
   });
 
   test('RED-FE-FLIGHT-ENHANCED-03: typing Vietnamese city names resolves to IATA codes when searching', async () => {
     const { getByPlaceholderText, getByText } = render(<FlightSearchScreen />);
 
-    fireEvent.changeText(getByPlaceholderText(/Điểm đi/i), 'Hà Nội');
-    fireEvent.changeText(getByPlaceholderText(/Điểm đến/i), 'Sài Gòn');
-    fireEvent.changeText(getByPlaceholderText(/Ngày đi/i), '2026-10-15');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*SGN|Departure/i), 'Hà Nội');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*HAN|Destination/i), 'Sài Gòn');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*2026|Departure Date/i), '2026-10-15');
 
-    fireEvent.press(getByText('Tìm chuyến bay'));
+    fireEvent.press(getByText('Search Flights'));
 
     await waitFor(() => {
       expect(mockSearchFlights).toHaveBeenCalledWith(
@@ -150,14 +150,14 @@ describe('Component Test: FlightSearchScreen Enhanced Features (City Resolver, C
   test('should validate return date when round trip is selected without return date', async () => {
     const { getByText, getByPlaceholderText, findByText } = render(<FlightSearchScreen />);
 
-    fireEvent.press(getByText('Khứ hồi'));
-    fireEvent.changeText(getByPlaceholderText(/Điểm đi/i), 'SGN');
-    fireEvent.changeText(getByPlaceholderText(/Điểm đến/i), 'HAN');
-    fireEvent.changeText(getByPlaceholderText(/Ngày đi/i), '2026-10-15');
+    fireEvent.press(getByText('Round-trip'));
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*SGN|Departure/i), 'SGN');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*HAN|Destination/i), 'HAN');
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*2026|Departure Date/i), '2026-10-15');
 
-    fireEvent.press(getByText('Tìm chuyến bay'));
+    fireEvent.press(getByText('Search Flights'));
 
-    const err = await findByText(/Vui lòng chọn ngày về/i);
+    const err = await findByText(/Please select a return date/i);
     expect(err).toBeTruthy();
   });
 
@@ -172,8 +172,8 @@ describe('Component Test: FlightSearchScreen Enhanced Features (City Resolver, C
     // Detail modal close button appears
     expect(getByTestId('close-flight-detail-btn')).toBeTruthy();
 
-    // Tap "Đặt Vé Sandbox" inside detail modal
-    fireEvent.press(getByText(/Đặt Vé Sandbox/i));
+    // Tap "Book Sandbox Ticket" inside detail modal
+    fireEvent.press(getByText(/Book Sandbox Ticket|Đặt Vé Sandbox/i));
 
     // Sandbox booking modal appears
     expect(getByText(/Duffel API Sandbox Payment/i)).toBeTruthy();
@@ -186,10 +186,10 @@ describe('Component Test: FlightSearchScreen Enhanced Features (City Resolver, C
     const { getByTestId, getByText } = render(<FlightSearchScreen />);
 
     fireEvent.press(getByTestId('open-flight-filter-btn'));
-    expect(getByText(/Bộ Lọc Chuyến Bay/i)).toBeTruthy();
+    expect(getByText(/Flight Filters|Bộ Lọc Chuyến Bay/i)).toBeTruthy();
 
-    fireEvent.press(getByText(/Đặt lại/i));
-    fireEvent.press(getByText(/Áp dụng bộ lọc/i));
+    fireEvent.press(getByText(/Reset|Đặt lại/i));
+    fireEvent.press(getByText(/Apply Filters|Áp dụng/i));
   });
 
   test('handles opening and closing departure and return calendar pickers', () => {
@@ -197,14 +197,14 @@ describe('Component Test: FlightSearchScreen Enhanced Features (City Resolver, C
 
     // Open departure calendar and select day 20
     fireEvent.press(getByTestId('date-picker-trigger-departure'));
-    expect(getByText(/Chọn ngày khởi hành/i)).toBeTruthy();
+    expect(getByText(/Select Departure Date|Select Date/i)).toBeTruthy();
     fireEvent.press(getByText('20'));
 
     // Switch to round-trip and open return calendar and select day 25
-    fireEvent.press(getByText('Khứ hồi'));
-    fireEvent.changeText(getByPlaceholderText('Ngày về (YYYY-MM-DD)'), '2026-10-25');
+    fireEvent.press(getByText('Round-trip'));
+    fireEvent.changeText(getByPlaceholderText(/e\.g\..*Return Date|e\.g\..*2026-10-25/i), '2026-10-25');
     fireEvent.press(getByTestId('date-picker-trigger-return'));
-    expect(getByText(/Chọn ngày về/i)).toBeTruthy();
+    expect(getByText(/Select Return Date|Select Date/i)).toBeTruthy();
     fireEvent.press(getByText('25'));
   });
 
@@ -243,14 +243,15 @@ describe('Component Test: FlightSearchScreen Enhanced Features (City Resolver, C
   });
 
   test('applies modal filters with sortBy duration and departure', () => {
-    const { getByTestId, getByText } = render(<FlightSearchScreen />);
+    const { getByTestId, getByText, getAllByText } = render(<FlightSearchScreen />);
     fireEvent.press(getByTestId('open-flight-filter-btn'));
 
-    fireEvent.press(getByText('Bay nhanh'));
-    fireEvent.press(getByText('Áp dụng bộ lọc'));
+    fireEvent.press(getByText(/Fastest|Bay nhanh/i));
+    fireEvent.press(getByText(/Apply Filters|Áp dụng/i));
 
     fireEvent.press(getByTestId('open-flight-filter-btn'));
-    fireEvent.press(getByText('Bay sớm'));
-    fireEvent.press(getByText('Áp dụng bộ lọc'));
+    const earlyButtons = getAllByText(/Early Flight|Bay sớm/i);
+    fireEvent.press(earlyButtons[earlyButtons.length - 1]);
+    fireEvent.press(getByText(/Apply Filters|Áp dụng/i));
   });
 });

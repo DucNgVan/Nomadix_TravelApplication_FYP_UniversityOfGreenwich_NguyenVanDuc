@@ -5,10 +5,10 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import HotelCard from '../../components/booking/HotelCard';
@@ -17,7 +17,36 @@ import { useThemeStore } from '../../stores/theme.store';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
-const QUICK_CITIES = ['Đà Lạt', 'Đà Nẵng', 'Hà Nội', 'TP. Hồ Chí Minh', 'Phú Quốc'];
+const QUICK_CITIES = ['Da Nang', 'Hoi An', 'Hanoi', 'Ho Chi Minh', 'Tokyo', 'Paris'];
+
+const STAY_VIBES = [
+  { id: 'vibe-1', label: '🏝️ Beachfront', destination: 'Da Nang' },
+  { id: 'vibe-2', label: '🏔️ Mountain Escape', destination: 'Sapa' },
+  { id: 'vibe-3', label: '💎 5-Star Luxury', destination: 'Tokyo' },
+  { id: 'vibe-4', label: '🏮 Heritage Villa', destination: 'Hoi An' },
+  { id: 'vibe-5', label: '🌿 Eco Glamping', destination: 'Da Lat' },
+];
+
+const FEATURED_STAYS = [
+  {
+    id: 'featured-1',
+    name: 'Vinpearl Resort & Spa',
+    location: 'Da Nang Bay • Oceanfront',
+    rating: '★ 4.9',
+    price: '1,850,000 ₫',
+    destination: 'Da Nang',
+    emoji: '🌊',
+  },
+  {
+    id: 'featured-2',
+    name: 'Anantara Resort & Spa',
+    location: 'Hoi An Ancient River',
+    rating: '★ 4.8',
+    price: '2,400,000 ₫',
+    destination: 'Hoi An',
+    emoji: '🏮',
+  },
+];
 
 export default function HotelSearchScreen({ navigation }) {
   const { mode, colors: themeColors } = useThemeStore();
@@ -28,6 +57,20 @@ export default function HotelSearchScreen({ navigation }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const { hotels, isLoadingHotels, hotelError, searchHotels, selectHotel } = useBookingStore();
+
+  const handleSelectVibe = (vibe) => {
+    setDestination(vibe.destination);
+    if (!checkIn) setCheckIn('2026-11-01');
+    if (!checkOut) setCheckOut('2026-11-04');
+    setValidationError('');
+  };
+
+  const handleSelectFeaturedStay = (stay) => {
+    setDestination(stay.destination);
+    if (!checkIn) setCheckIn('2026-11-01');
+    if (!checkOut) setCheckOut('2026-11-04');
+    setValidationError('');
+  };
 
   const normalizeDateInput = (str) => {
     if (!str) return '';
@@ -48,7 +91,7 @@ export default function HotelSearchScreen({ navigation }) {
     const cleanCheckOut = normalizeDateInput(checkOut);
 
     if (!cleanDest || !cleanCheckIn || !cleanCheckOut) {
-      setValidationError('Vui lòng nhập đầy đủ thành phố, ngày nhận phòng và ngày trả phòng');
+      setValidationError('Please enter all required fields');
       return;
     }
 
@@ -56,12 +99,12 @@ export default function HotelSearchScreen({ navigation }) {
     const checkOutDate = new Date(cleanCheckOut);
 
     if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
-      setValidationError('Định dạng ngày không hợp lệ (YYYY-MM-DD)');
+      setValidationError('Invalid date format (YYYY-MM-DD)');
       return;
     }
 
     if (checkOutDate <= checkInDate) {
-      setValidationError('Ngày trả phòng phải sau ngày nhận phòng');
+      setValidationError('Check-out must be after check-in');
       return;
     }
 
@@ -89,10 +132,9 @@ export default function HotelSearchScreen({ navigation }) {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: themeColors.background }]}>
       <View style={[styles.container, { backgroundColor: themeColors.background }]}>
-        {/* Header */}
+        {/* Header Subtitle */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: themeColors.text }]}>Khám phá khách sạn</Text>
-          <Text style={[styles.subtitle, { color: themeColors.textMuted }]}>Resort, khách sạn & homestay tốt nhất theo giá phòng</Text>
+          <Text style={[styles.subtitle, { color: themeColors.textMuted }]}>Compare luxury stays, boutique hotels & resorts worldwide</Text>
         </View>
 
         {/* Collapsible Search Panel */}
@@ -109,13 +151,13 @@ export default function HotelSearchScreen({ navigation }) {
             activeOpacity={0.8}
           >
             <View style={styles.collapsedInfo}>
-              <Text style={[styles.collapsedCity, { color: themeColors.text }]}>⌂ {destination || 'Đà Lạt'}</Text>
+              <Text style={[styles.collapsedCity, { color: themeColors.text }]}>⌂ {destination || 'Da Nang'}</Text>
               <Text style={[styles.collapsedDates, { color: themeColors.textMuted }]}>
-                {checkIn} → {checkOut} • 2 khách
+                {checkIn} → {checkOut} • 2 guests
               </Text>
             </View>
             <View style={styles.editBadge}>
-              <Text style={styles.editText}>Thay đổi</Text>
+              <Text style={styles.editText}>Edit</Text>
             </View>
           </TouchableOpacity>
         ) : (
@@ -143,8 +185,6 @@ export default function HotelSearchScreen({ navigation }) {
                   ]}
                   onPress={() => {
                     setDestination(city);
-                    if (!checkIn) setCheckIn('2026-10-15');
-                    if (!checkOut) setCheckOut('2026-10-18');
                     setValidationError('');
                   }}
                 >
@@ -162,8 +202,8 @@ export default function HotelSearchScreen({ navigation }) {
             </ScrollView>
 
             <Input
-              label="Thành phố / Điểm đến"
-              placeholder="Thành phố / Điểm đến"
+              label="Destination City"
+              placeholder="e.g. Da Nang, Tokyo (Destination city)"
               value={destination}
               onChangeText={(text) => {
                 setDestination(text);
@@ -174,8 +214,8 @@ export default function HotelSearchScreen({ navigation }) {
             <View style={styles.dateInputsRow}>
               <View style={styles.dateCol}>
                 <Input
-                  label="Nhận phòng"
-                  placeholder="Ngày nhận phòng (check-in)"
+                  label="Check-in Date"
+                  placeholder="e.g. 2026-11-01 (Check-in date)"
                   value={checkIn}
                   onChangeText={(text) => {
                     setCheckIn(text);
@@ -185,8 +225,8 @@ export default function HotelSearchScreen({ navigation }) {
               </View>
               <View style={styles.dateCol}>
                 <Input
-                  label="Trả phòng"
-                  placeholder="Ngày trả phòng (check-out)"
+                  label="Check-out Date"
+                  placeholder="e.g. 2026-11-04 (Check-out date)"
                   value={checkOut}
                   onChangeText={(text) => {
                     setCheckOut(text);
@@ -205,7 +245,7 @@ export default function HotelSearchScreen({ navigation }) {
             ) : null}
 
             <Button
-              title="Tìm khách sạn"
+              title="Search Hotels"
               onPress={handleSearch}
               loading={isLoadingHotels}
               style={styles.searchButton}
@@ -217,7 +257,7 @@ export default function HotelSearchScreen({ navigation }) {
         {isLoadingHotels ? (
           <View style={styles.centerContainer}>
             <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={styles.loadingText}>Đang tìm kiếm khách sạn phù hợp...</Text>
+            <Text style={styles.loadingText}>Searching for the best hotel deals...</Text>
           </View>
         ) : (
           <FlatList
@@ -234,8 +274,128 @@ export default function HotelSearchScreen({ navigation }) {
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
               hotels.length === 0 && !isLoadingHotels ? (
-                <View style={styles.emptyContainer}>
-                  <Text style={styles.emptyText}>Nhập địa điểm để khám phá nơi lưu trú lý tưởng</Text>
+                <View style={styles.enrichedEmptyContainer}>
+                  <Text style={[styles.emptyPromptText, { color: themeColors.textMuted }]}>
+                    Enter a destination above to explore ideal stays & resorts, or browse by vibe:
+                  </Text>
+
+                  {/* Explore by Vibe */}
+                  <View style={styles.vibeSection}>
+                    <Text style={[styles.sectionTitle, { color: themeColors.text }]}>
+                      Explore By Vibe
+                    </Text>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={styles.vibeScroll}
+                      contentContainerStyle={styles.vibeScrollContent}
+                    >
+                      {STAY_VIBES.map((vibe) => (
+                        <TouchableOpacity
+                          key={vibe.id}
+                          style={[
+                            styles.vibeChip,
+                            {
+                              backgroundColor: destination === vibe.destination ? (mode === 'light' ? '#EBF5FF' : '#1E293B') : themeColors.card,
+                              borderColor: destination === vibe.destination ? themeColors.primary : themeColors.border,
+                            },
+                          ]}
+                          activeOpacity={0.8}
+                          onPress={() => handleSelectVibe(vibe)}
+                        >
+                          <Text
+                            style={[
+                              styles.vibeChipText,
+                              {
+                                color: destination === vibe.destination ? themeColors.primary : themeColors.text,
+                              },
+                            ]}
+                          >
+                            {vibe.label}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+
+                  {/* Featured Curated Stays Spotlight */}
+                  <View style={styles.featuredSection}>
+                    <View style={styles.featuredHeaderRow}>
+                      <Text style={[styles.sectionTitle, { color: themeColors.text }]}>
+                        Featured Curated Stays
+                      </Text>
+                      <Text style={[styles.exploreLink, { color: themeColors.primary }]}>
+                        All 240+ ›
+                      </Text>
+                    </View>
+
+                    <View style={styles.featuredGrid}>
+                      {FEATURED_STAYS.map((stay) => (
+                        <TouchableOpacity
+                          key={stay.id}
+                          style={[
+                            styles.featuredCard,
+                            {
+                              backgroundColor: themeColors.card,
+                              borderColor: themeColors.border,
+                            },
+                          ]}
+                          activeOpacity={0.8}
+                          onPress={() => handleSelectFeaturedStay(stay)}
+                        >
+                          <View
+                            style={[
+                              styles.featuredBanner,
+                              {
+                                backgroundColor: stay.id === 'featured-1' ? (mode === 'light' ? '#EBF5FF' : '#1A2E44') : (mode === 'light' ? '#F3E8FF' : '#2D1B4E'),
+                              },
+                            ]}
+                          >
+                            <View style={styles.featuredBadge}>
+                              <Text style={styles.featuredBadgeText}>{stay.rating}</Text>
+                            </View>
+                            <Text style={styles.featuredEmoji}>{stay.emoji}</Text>
+                          </View>
+
+                          <View style={styles.featuredBody}>
+                            <Text
+                              style={[styles.featuredName, { color: themeColors.text }]}
+                              numberOfLines={1}
+                            >
+                              {stay.name}
+                            </Text>
+                            <Text style={[styles.featuredLoc, { color: themeColors.textMuted }]}>
+                              {stay.location}
+                            </Text>
+                            <Text style={[styles.featuredPrice, { color: themeColors.primary }]}>
+                              {stay.price} <Text style={[styles.perNight, { color: themeColors.textMuted }]}>/ night</Text>
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Nomadix Squad Stay Perks Banner */}
+                  <View
+                    style={[
+                      styles.squadBanner,
+                      {
+                        backgroundColor: mode === 'light' ? '#F0FDF4' : '#142E25',
+                        borderColor: mode === 'light' ? '#DCFCE7' : '#1E4638',
+                      },
+                    ]}
+                  >
+                    <Text style={styles.squadIcon}>👥</Text>
+                    <View style={styles.squadTextGroup}>
+                      <Text style={[styles.squadTitle, { color: mode === 'light' ? '#166534' : '#4ADE80' }]}>
+                        Nomadix Squad Stay Perks
+                      </Text>
+                      <Text style={[styles.squadSub, { color: mode === 'light' ? '#15803D' : '#86EFAC' }]}>
+                        Book for 3+ squad travelers and unlock free late checkout & automated bill splitting.
+                      </Text>
+                    </View>
+                  </View>
                 </View>
               ) : null
             }
@@ -377,5 +537,136 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.textMuted,
     textAlign: 'center',
+  },
+  enrichedEmptyContainer: {
+    paddingTop: 8,
+    paddingBottom: 24,
+  },
+  emptyPromptText: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  vibeSection: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 10,
+  },
+  vibeScroll: {
+    marginHorizontal: -16,
+    paddingHorizontal: 16,
+  },
+  vibeScrollContent: {
+    paddingRight: 16,
+    gap: 8,
+  },
+  vibeChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  vibeChipText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  featuredSection: {
+    marginBottom: 20,
+  },
+  featuredHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  exploreLink: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  featuredGrid: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  featuredCard: {
+    flex: 1,
+    borderRadius: 18,
+    borderWidth: 1,
+    overflow: 'hidden',
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  featuredBanner: {
+    height: 80,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  featuredBadge: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  featuredBadgeText: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#FFD60A',
+  },
+  featuredEmoji: {
+    fontSize: 20,
+  },
+  featuredBody: {
+    padding: 10,
+  },
+  featuredName: {
+    fontSize: 12,
+    fontWeight: '800',
+    marginBottom: 2,
+  },
+  featuredLoc: {
+    fontSize: 10,
+    fontWeight: '500',
+    marginBottom: 6,
+  },
+  featuredPrice: {
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  perNight: {
+    fontSize: 9,
+    fontWeight: '400',
+  },
+  squadBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 14,
+    borderRadius: 18,
+    borderWidth: 1,
+  },
+  squadIcon: {
+    fontSize: 24,
+  },
+  squadTextGroup: {
+    flex: 1,
+  },
+  squadTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    marginBottom: 2,
+  },
+  squadSub: {
+    fontSize: 11,
+    lineHeight: 15,
   },
 });

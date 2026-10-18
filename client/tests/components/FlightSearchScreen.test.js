@@ -91,7 +91,7 @@ describe('Component Test: FlightSearchScreen', () => {
     const { getByText, findByText } = render(<FlightSearchScreen />);
     fireEvent.press(getByText(/tìm chuyến bay|search flights/i));
 
-    const err = await findByText(/vui lòng nhập đầy đủ/i);
+    const err = await findByText(/vui lòng nhập đầy đủ|please enter origin/i);
     expect(err).toBeTruthy();
     expect(mockSearchFlights).not.toHaveBeenCalled();
   });

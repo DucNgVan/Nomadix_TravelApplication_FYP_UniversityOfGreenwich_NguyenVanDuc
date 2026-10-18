@@ -89,7 +89,7 @@ describe('Component Test: HotelSearchScreen', () => {
     const { getByText, findByText } = render(<HotelSearchScreen />);
     fireEvent.press(getByText(/tìm khách sạn|search hotels/i));
 
-    const err = await findByText(/vui lòng nhập đầy đủ/i);
+    const err = await findByText(/vui lòng nhập đầy đủ|please enter all required fields/i);
     expect(err).toBeTruthy();
     expect(mockSearchHotels).not.toHaveBeenCalled();
   });
@@ -103,7 +103,7 @@ describe('Component Test: HotelSearchScreen', () => {
 
     fireEvent.press(getByText(/tìm khách sạn|search hotels/i));
 
-    const err = await findByText(/định dạng ngày không hợp lệ/i);
+    const err = await findByText(/định dạng ngày không hợp lệ|invalid date format/i);
     expect(err).toBeTruthy();
     expect(mockSearchHotels).not.toHaveBeenCalled();
   });
