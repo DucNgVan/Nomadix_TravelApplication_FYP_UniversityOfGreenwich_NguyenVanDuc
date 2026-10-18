@@ -21,12 +21,12 @@ const FlightDetailModal = ({ visible, flight, onClose, onBookSandbox, onBook }) 
   const priceAmount = flight.price?.amount || 0;
   const formattedPrice = Number(priceAmount).toLocaleString('vi-VN') + '₫';
   const aircraft = flight.aircraft || (flight.flightNumber?.includes('VN-0240') ? 'Airbus A350-900' : 'Airbus A321');
-  const cabinClass = flight.cabinMarketingName || flight.cabinClass || 'Phổ thông';
+  const cabinClass = flight.cabinMarketingName || flight.cabinClass || 'Economy';
   const carrierCode = (flight.airlineCode || flight.flightNumber?.slice(0, 2) || 'VN').toUpperCase();
   const logoUri = flight.airlineLogo || `https://images.kiwi.com/airlines/64x64/${carrierCode}.png`;
-  const originAirport = flight.originAirportName || `${flight.origin} - Sân bay Quốc tế`;
-  const destAirport = flight.destinationAirportName || `${flight.destination} - Sân bay Quốc tế`;
-  const baggageSummary = flight.baggageSummary || (carrierCode === 'VN' ? '1 kiện ký gửi (23kg) • 1 kiện xách tay (12kg)' : '1 kiện xách tay (7kg)');
+  const originAirport = flight.originAirportName || `${flight.origin} - International Airport`;
+  const destAirport = flight.destinationAirportName || `${flight.destination} - International Airport`;
+  const baggageSummary = flight.baggageSummary || (carrierCode === 'VN' ? '1 checked bag (23kg) • 1 carry-on (12kg)' : '1 carry-on (7kg)');
 
   // Format times
   const depTime = flight.departureTime ? flight.departureTime.slice(11, 16) : '07:00';
@@ -59,7 +59,7 @@ const FlightDetailModal = ({ visible, flight, onClose, onBookSandbox, onBook }) 
               <View style={{ flex: 1 }}>
                 <View style={[styles.typeBadge, isDirect ? styles.directBadge : styles.transitBadge]}>
                   <Text style={[styles.typeBadgeText, isDirect ? styles.directText : styles.transitText]}>
-                    {isDirect ? 'Bay thẳng' : `${flight.stops} điểm dừng (Nối chuyến)`}
+                    {isDirect ? 'Direct' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''} (Connecting)`}
                   </Text>
                 </View>
                 <Text style={styles.airlineTitle}>{flight.airlineName} • {flight.flightNumber}</Text>
@@ -92,9 +92,9 @@ const FlightDetailModal = ({ visible, flight, onClose, onBookSandbox, onBook }) 
               {/* Transit alert if stops > 0 */}
               {!isDirect && (
                 <View style={styles.transitBox}>
-                  <Text style={styles.transitTitle}>⚠️ Quá cảnh {flight.stops} điểm dừng ({flight.durationMinutes || 275}m)</Text>
+                  <Text style={styles.transitTitle}>⚠️ Layover {flight.stops} stop{flight.stops > 1 ? 's' : ''} ({flight.durationMinutes || 275}m)</Text>
                   <Text style={styles.transitSub}>
-                    {flight.baggageTransfer || (flight.baggageTransferType === 'manual' ? '⚠️ Hành khách tự chuyển hành lý tại trạm dừng' : '🔄 Hành lý ký gửi được chuyển tiếp tự động')}
+                    {flight.baggageTransfer || (flight.baggageTransferType === 'manual' ? '⚠️ Passengers must self-transfer baggage at layover' : '🔄 Checked baggage transferred automatically')}
                   </Text>
                 </View>
               )}
@@ -104,7 +104,7 @@ const FlightDetailModal = ({ visible, flight, onClose, onBookSandbox, onBook }) 
                 <View style={styles.timelineInfo}>
                   <View style={styles.timeRow}>
                     <Text style={styles.timeMain}>{arrTime}</Text>
-                    <Text style={styles.dateSub}>15 Th10, 2026</Text>
+                    <Text style={styles.dateSub}>15 Oct, 2026</Text>
                   </View>
                   <Text style={styles.airportName}>{destAirport} ({flight.destination})</Text>
                 </View>
@@ -113,10 +113,10 @@ const FlightDetailModal = ({ visible, flight, onClose, onBookSandbox, onBook }) 
 
             {/* Rich Metadata: Baggage allowance and CO2 emissions */}
             <View style={styles.metaCard}>
-              <Text style={styles.metaCardTitle}>Hành lý & Dịch vụ đi kèm</Text>
+              <Text style={styles.metaCardTitle}>Baggage & Included Services</Text>
               <Text style={styles.metaCardSub}>🧳 {baggageSummary}</Text>
               {flight.emissionsKg && (
-                <Text style={styles.emissionsText}>🌱 Lượng phát thải ước tính: {flight.emissionsKg} kg CO₂ / khách</Text>
+                <Text style={styles.emissionsText}>🌱 Estimated emissions: {flight.emissionsKg} kg CO₂ / passenger</Text>
               )}
             </View>
           </ScrollView>
@@ -124,7 +124,7 @@ const FlightDetailModal = ({ visible, flight, onClose, onBookSandbox, onBook }) 
           {/* Footer with Price and Book Button */}
           <View style={styles.footer}>
             <View>
-              <Text style={styles.priceLabel}>Giá vé Sandbox</Text>
+              <Text style={styles.priceLabel}>Sandbox Fare</Text>
               <Text style={styles.priceValue}>{formattedPrice}</Text>
             </View>
             <TouchableOpacity
@@ -132,7 +132,7 @@ const FlightDetailModal = ({ visible, flight, onClose, onBookSandbox, onBook }) 
               activeOpacity={0.8}
               onPress={() => (onBookSandbox || onBook)?.(flight)}
             >
-              <Text style={styles.bookBtnText}>Đặt Vé Sandbox</Text>
+              <Text style={styles.bookBtnText}>Book Sandbox Ticket</Text>
             </TouchableOpacity>
           </View>
         </View>

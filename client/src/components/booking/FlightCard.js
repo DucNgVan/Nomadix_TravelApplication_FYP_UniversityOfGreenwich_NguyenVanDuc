@@ -12,8 +12,8 @@ const formatDuration = (minutes) => {
 };
 
 const formatCurrency = (amount) => {
-  if (typeof amount !== 'number') return '0 đ';
-  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' đ';
+  if (typeof amount !== 'number') return '0 ₫';
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫';
 };
 
 export default function FlightCard({ flight, onSelect, testID }) {
@@ -22,14 +22,14 @@ export default function FlightCard({ flight, onSelect, testID }) {
   const [imageError, setImageError] = useState(false);
 
   const isDirect = flight.stops === 0;
-  const stopsText = isDirect ? 'Bay thẳng' : `${flight.stops} điểm dừng`;
+  const stopsText = isDirect ? 'Direct' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`;
   const priceAmount = flight.price?.amount ?? 0;
 
   const carrierCode = (flight.airlineCode || (flight.flightNumber ? flight.flightNumber.slice(0, 2) : 'VN')).toUpperCase();
   const badgeColor = carrierCode === 'VJ' ? '#E11B22' : carrierCode === 'SQ' ? '#D97706' : '#007AFF';
   const aircraft = flight.aircraft || (flight.flightNumber?.includes('VN-0240') ? 'Airbus A350-900' : 'Airbus A321');
   const logoUri = flight.airlineLogo || `https://images.kiwi.com/airlines/64x64/${carrierCode}.png`;
-  const baggageText = flight.baggageSummary || '1 kiện ký gửi (20kg) • 1 kiện xách tay (7kg)';
+  const baggageText = flight.baggageSummary || '1 checked bag (20kg) • 1 carry-on (7kg)';
 
   // Format departure / arrival times
   const depTime = flight.departureTime
@@ -45,7 +45,7 @@ export default function FlightCard({ flight, onSelect, testID }) {
     : '09:10';
 
   const baggageTransferText = !isDirect
-    ? flight.baggageTransfer || (flight.baggageTransferType === 'manual' ? '⚠️ Tự chuyển hành lý' : '🔄 Chuyển hành lý tự động')
+    ? flight.baggageTransfer || (flight.baggageTransferType === 'manual' ? '⚠️ Self-transfer baggage' : '🔄 Auto baggage transfer')
     : null;
 
   return (
@@ -133,7 +133,7 @@ export default function FlightCard({ flight, onSelect, testID }) {
             )}
           </View>
           <Text style={[styles.transitNote, isDirect ? styles.directNote : styles.transitNoteText]}>
-            {isDirect ? 'Không dừng' : 'Nối chuyến'}
+            {isDirect ? 'Non-stop' : 'Connecting'}
           </Text>
         </View>
 
@@ -153,7 +153,7 @@ export default function FlightCard({ flight, onSelect, testID }) {
 
       {/* Footer Row: CTA Hint & Localized Price */}
       <View style={styles.footerRow}>
-        <Text style={[styles.actionHint, { color: themeColors.primary }]}>Ấn để xem chi tiết & đặt Sandbox →</Text>
+        <Text style={[styles.actionHint, { color: themeColors.primary }]}>Tap to view details & sandbox book →</Text>
         <Text style={styles.priceAmount}>{formatCurrency(priceAmount)}</Text>
       </View>
     </TouchableOpacity>

@@ -48,9 +48,9 @@ export const useBookingStore = create((set, get) => ({
       totalPrice: flight.price?.amount || 0,
       currency: flight.price?.currency || 'VND',
       passenger: {
-        fullName: passengerDetails.fullName || 'Nguyễn Văn Đức',
+        fullName: passengerDetails.fullName || 'John Doe',
         documentId: passengerDetails.documentId || 'C01928491',
-        email: passengerDetails.email || 'ducnva.wk@gmail.com',
+        email: passengerDetails.email || 'traveler@example.com',
       },
       status: 'CONFIRMED',
       bookedAt: new Date().toISOString(),
@@ -86,7 +86,7 @@ export const useBookingStore = create((set, get) => ({
       set({ flights: flightsList, isLoadingFlights: false });
       return response;
     } catch (error) {
-      const message = error.message || 'Lỗi khi tìm kiếm chuyến bay';
+      const message = error.message || 'Failed to search flights';
       set({ flightError: message, isLoadingFlights: false, flights: [] });
       throw error;
     }
@@ -102,7 +102,7 @@ export const useBookingStore = create((set, get) => ({
       set({ hotels: hotelsList, isLoadingHotels: false });
       return response;
     } catch (error) {
-      const message = error.message || 'Lỗi khi tìm kiếm khách sạn';
+      const message = error.message || 'Failed to search hotels';
       set({ hotelError: message, isLoadingHotels: false, hotels: [] });
       throw error;
     }

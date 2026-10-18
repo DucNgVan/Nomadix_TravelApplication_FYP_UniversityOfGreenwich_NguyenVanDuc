@@ -5,20 +5,25 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 import { useThemeStore } from '../../stores/theme.store';
 
-const DAYS_OF_WEEK = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 
 export default function CalendarPickerModal({
   visible = false,
   selectedDate = '2026-10-15',
   onSelectDate,
   onClose,
-  title = 'Chọn ngày khởi hành',
+  title = 'Select Departure Date',
   minDate,
 }) {
   const { colors: themeColors } = useThemeStore();
@@ -110,7 +115,7 @@ export default function CalendarPickerModal({
               <Text style={styles.navText}>‹</Text>
             </TouchableOpacity>
             <Text style={styles.monthTitle}>
-              Tháng {currentMonth + 1}, {currentYear}
+              {MONTH_NAMES[currentMonth]} {currentYear}
             </Text>
             <TouchableOpacity
               onPress={handleNextMonth}

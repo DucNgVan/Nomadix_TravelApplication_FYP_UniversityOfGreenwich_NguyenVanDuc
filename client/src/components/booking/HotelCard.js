@@ -5,8 +5,8 @@ import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
 const formatCurrency = (amount) => {
-  if (typeof amount !== 'number') return '0 đ';
-  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' đ';
+  if (typeof amount !== 'number') return '0 ₫';
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫';
 };
 
 export default function HotelCard({ hotel, onSelect, testID }) {
@@ -32,29 +32,31 @@ export default function HotelCard({ hotel, onSelect, testID }) {
           <Text style={[styles.addressText, { color: themeColors.textMuted }]} numberOfLines={1}>{hotel.address}</Text>
         </View>
         <View style={styles.ratingBadge}>
-          <Text style={styles.ratingText}>{hotel.starRating} sao ★</Text>
+          <Text style={styles.ratingText}>{hotel.starRating} Stars ★</Text>
         </View>
       </View>
 
       <View style={styles.infoRow}>
         {hotel.reviewScore ? (
           <View style={styles.scoreBadge}>
-            <Text style={styles.scoreText}>{hotel.reviewScore.toFixed(1)} Tuyệt vời</Text>
+            <Text style={styles.scoreText}>{hotel.reviewScore.toFixed(1)} Excellent</Text>
           </View>
         ) : null}
         {hotel.nights ? (
-          <Text style={[styles.nightsText, { color: themeColors.textMuted }]}>{hotel.nights} đêm</Text>
+          <Text style={[styles.nightsText, { color: themeColors.textMuted }]}>
+            {hotel.nights} {hotel.nights > 1 ? 'nights' : 'night'}
+          </Text>
         ) : null}
       </View>
 
       <View style={[styles.footerRow, { borderTopColor: themeColors.border }]}>
         <View>
           <Text style={[styles.pricePerNightText, { color: themeColors.textMuted }]}>
-            {formatCurrency(hotel.pricePerNight)} / đêm
+            {formatCurrency(hotel.pricePerNight)} / night
           </Text>
         </View>
         <View style={styles.totalBlock}>
-          <Text style={[styles.totalLabel, { color: themeColors.textMuted }]}>Tổng cộng:</Text>
+          <Text style={[styles.totalLabel, { color: themeColors.textMuted }]}>Total stay:</Text>
           <Text style={styles.totalPriceText}>
             {formatCurrency(hotel.totalPrice || hotel.pricePerNight)}
           </Text>

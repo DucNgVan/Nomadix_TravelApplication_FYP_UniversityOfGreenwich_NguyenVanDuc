@@ -29,9 +29,9 @@ const SandboxBookingModal = ({ visible, flight, onClose, onBookingSuccess }) => 
 
     const completeBooking = () => {
       const passenger = {
-        fullName: 'Nguyễn Văn Đức',
+        fullName: 'John Doe',
         documentId: 'C01928491',
-        email: 'ducnva.wk@gmail.com',
+        email: 'traveler@example.com',
       };
 
       const result = useBookingStore.getState().bookFlightSandbox(flight, passenger);
@@ -75,7 +75,7 @@ const SandboxBookingModal = ({ visible, flight, onClose, onBookingSuccess }) => 
               </View>
               <View>
                 <Text style={styles.headerTitle}>Duffel API Sandbox Payment</Text>
-                <Text style={styles.headerSub}>Tự động lưu vé thật vào tài khoản</Text>
+                <Text style={styles.headerSub}>Automatically saved to your account</Text>
               </View>
             </View>
             <TouchableOpacity style={styles.closeBtn} onPress={handleClose}>
@@ -99,28 +99,28 @@ const SandboxBookingModal = ({ visible, flight, onClose, onBookingSuccess }) => 
 
               {/* Passenger Confirmation Card */}
               <View style={styles.passengerCard}>
-                <Text style={styles.cardLabel}>HÀNH KHÁCH XÁC NHẬN</Text>
+                <Text style={styles.cardLabel}>CONFIRMED PASSENGER</Text>
                 <View style={styles.passengerRow}>
-                  <Text style={styles.passengerName}>Nguyễn Văn Đức (Mr)</Text>
+                  <Text style={styles.passengerName}>John Doe (Mr)</Text>
                   <Text style={styles.passengerDob}>15/10/2002</Text>
                 </View>
-                <Text style={styles.passengerSub}>CCCD: C01928491 • Email: ducnva.wk@gmail.com</Text>
+                <Text style={styles.passengerSub}>ID: C01928491 • Email: traveler@example.com</Text>
               </View>
 
               {/* Duffel Balance Indicator */}
               <View style={styles.balanceCard}>
                 <View style={styles.balanceHeader}>
-                  <Text style={styles.balanceTitle}>Số dư Duffel Sandbox Test</Text>
+                  <Text style={styles.balanceTitle}>Duffel Sandbox Test Balance</Text>
                   <View style={styles.readyBadge}>
-                    <Text style={styles.readyBadgeText}>Sẵn sàng</Text>
+                    <Text style={styles.readyBadgeText}>Ready</Text>
                   </View>
                 </View>
-                <Text style={styles.balanceAmount}>Hạn mức khả dụng: 50.000.000₫ (Miễn phí 100%)</Text>
+                <Text style={styles.balanceAmount}>Available balance: 50,000,000₫ (100% Free Sandbox)</Text>
               </View>
 
               {/* Price summary */}
               <View style={styles.priceRow}>
-                <Text style={styles.priceLabel}>Số tiền thanh toán:</Text>
+                <Text style={styles.priceLabel}>Total payment amount:</Text>
                 <Text style={styles.priceTotal}>{formattedPrice}</Text>
               </View>
 
@@ -133,7 +133,7 @@ const SandboxBookingModal = ({ visible, flight, onClose, onBookingSuccess }) => 
                 {isProcessing ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.payBtnText}>Xác nhận Đặt Vé & Lưu Vào Tài Khoản</Text>
+                  <Text style={styles.payBtnText}>Confirm Booking & Save to Account</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -143,36 +143,36 @@ const SandboxBookingModal = ({ visible, flight, onClose, onBookingSuccess }) => 
               <View style={styles.successCheckCircle}>
                 <Text style={styles.successCheckIcon}>✓</Text>
               </View>
-              <Text style={styles.successHeading}>Đặt Vé Thật Thành Công!</Text>
+              <Text style={styles.successHeading}>Booking Confirmed Successfully!</Text>
               <Text style={styles.successSub}>
-                Vé đã được lưu trực tiếp vào mục <Text style={{ fontWeight: '800' }}>Tài khoản</Text> của bạn
+                Ticket has been saved directly to your <Text style={{ fontWeight: '800' }}>Profile</Text>
               </Text>
 
               <View style={styles.ticketResultCard}>
                 <View style={styles.ticketResultHeader}>
                   <View>
-                    <Text style={styles.pnrLabel}>MÃ ĐẶT CHỖ (PNR)</Text>
+                    <Text style={styles.pnrLabel}>BOOKING REFERENCE (PNR)</Text>
                     <Text style={styles.pnrValue}>{successResult.pnr}</Text>
                   </View>
                   <View style={styles.savedBadge}>
-                    <Text style={styles.savedBadgeText}>Đã lưu tài khoản</Text>
+                    <Text style={styles.savedBadgeText}>Saved to Profile</Text>
                   </View>
                 </View>
 
                 <View style={styles.ticketResultBody}>
                   <View style={styles.ticketRow}>
-                    <Text style={styles.ticketSubLabel}>Số vé điện tử:</Text>
+                    <Text style={styles.ticketSubLabel}>E-Ticket Number:</Text>
                     <Text style={styles.ticketSubValue}>{successResult.ticketNumber}</Text>
                   </View>
                   <View style={styles.ticketRow}>
-                    <Text style={styles.ticketSubLabel}>Chuyến bay:</Text>
+                    <Text style={styles.ticketSubLabel}>Flight:</Text>
                     <Text style={styles.ticketSubValue}>{flight.airlineName} ({flight.flightNumber})</Text>
                   </View>
                 </View>
               </View>
 
               <TouchableOpacity style={styles.doneBtn} onPress={handleClose}>
-                <Text style={styles.doneBtnText}>Hoàn tất</Text>
+                <Text style={styles.doneBtnText}>Done</Text>
               </TouchableOpacity>
             </View>
           )}

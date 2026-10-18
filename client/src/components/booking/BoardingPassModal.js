@@ -35,7 +35,7 @@ const BoardingPassModal = ({ visible, ticket, onClose }) => {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Image source={{ uri: logoUri }} style={styles.headerLogo} resizeMode="contain" />
               <View>
-                <Text style={styles.headerSubtitle}>THẺ LÊN MÁY BAY ĐIỆN TỬ</Text>
+                <Text style={styles.headerSubtitle}>ELECTRONIC BOARDING PASS</Text>
                 <Text style={styles.airlineName}>{ticket.airlineName || 'Vietnam Airlines'}</Text>
               </View>
             </View>
@@ -48,7 +48,7 @@ const BoardingPassModal = ({ visible, ticket, onClose }) => {
           <View style={styles.routeSection}>
             <View style={styles.airportCol}>
               <Text style={styles.cityCode}>{ticket.origin || 'SGN'}</Text>
-              <Text style={styles.cityName}>TP. Hồ Chí Minh</Text>
+              <Text style={styles.cityName}>Ho Chi Minh City</Text>
               <Text style={styles.flightTime}>{depTime}</Text>
             </View>
 
@@ -62,7 +62,7 @@ const BoardingPassModal = ({ visible, ticket, onClose }) => {
 
             <View style={[styles.airportCol, { alignItems: 'flex-end' }]}>
               <Text style={styles.cityCode}>{ticket.destination || 'HAN'}</Text>
-              <Text style={styles.cityName}>Hà Nội</Text>
+              <Text style={styles.cityName}>Hanoi</Text>
               <Text style={styles.flightTime}>{arrTime}</Text>
             </View>
           </View>
@@ -70,20 +70,20 @@ const BoardingPassModal = ({ visible, ticket, onClose }) => {
           {/* Passenger Details Grid */}
           <View style={styles.detailsGrid}>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>HÀNH KHÁCH</Text>
-              <Text style={styles.detailValue}>{ticket.passenger?.fullName || 'Nguyễn Văn Đức'}</Text>
+              <Text style={styles.detailLabel}>PASSENGER</Text>
+              <Text style={styles.detailValue}>{ticket.passenger?.fullName || 'John Doe'}</Text>
             </View>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>HẠNG VÉ</Text>
-              <Text style={styles.detailValue}>{ticket.cabinClass || 'Phổ thông'}</Text>
+              <Text style={styles.detailLabel}>CABIN CLASS</Text>
+              <Text style={styles.detailValue}>{ticket.cabinClass || 'Economy'}</Text>
             </View>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>MÃ ĐẶT CHỖ (PNR)</Text>
+              <Text style={styles.detailLabel}>BOOKING CODE (PNR)</Text>
               <Text style={[styles.detailValue, styles.pnrHighlight]}>{ticket.pnr || 'VN-8X2K9P'}</Text>
             </View>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>CỬA / CỔNG</Text>
-              <Text style={styles.detailValue}>Ga T1 • Cổng 04</Text>
+              <Text style={styles.detailLabel}>GATE</Text>
+              <Text style={styles.detailValue}>Terminal 1 • Gate 04</Text>
             </View>
           </View>
 
@@ -110,12 +110,12 @@ const BoardingPassModal = ({ visible, ticket, onClose }) => {
                 />
               ))}
             </View>
-            <Text style={styles.eTicketText}>SỐ VÉ ĐIỆN TỬ: {ticket.ticketNumber || '738-2491048291'}</Text>
+            <Text style={styles.eTicketText}>E-TICKET NUMBER: {ticket.ticketNumber || '738-2491048291'}</Text>
           </View>
 
           {/* Close Action */}
           <TouchableOpacity style={styles.doneBtn} onPress={onClose}>
-            <Text style={styles.doneBtnText}>Đóng thẻ</Text>
+            <Text style={styles.doneBtnText}>Close Boarding Pass</Text>
           </TouchableOpacity>
         </View>
       </View>

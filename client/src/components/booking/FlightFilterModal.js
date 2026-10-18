@@ -62,9 +62,9 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={handleReset}>
-              <Text style={styles.resetBtnText}>Đặt lại</Text>
+              <Text style={styles.resetBtnText}>Reset</Text>
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Bộ Lọc Chuyến Bay</Text>
+            <Text style={styles.headerTitle}>Flight Filters</Text>
             <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
               <Text style={styles.closeBtnText}>✕</Text>
             </TouchableOpacity>
@@ -73,14 +73,14 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Sort Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>SẮP XẾP THEO</Text>
+              <Text style={styles.sectionTitle}>SORT BY</Text>
               <View style={styles.sortGrid}>
                 <TouchableOpacity
                   style={[styles.sortBtn, sortBy === 'price' && styles.sortBtnActive]}
                   onPress={() => setSortBy('price')}
                 >
                   <Text style={[styles.sortBtnText, sortBy === 'price' && styles.sortBtnTextActive]}>
-                    Giá rẻ nhất
+                    Cheapest
                   </Text>
                 </TouchableOpacity>
 
@@ -89,7 +89,7 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
                   onPress={() => setSortBy('departure_early')}
                 >
                   <Text style={[styles.sortBtnText, (sortBy === 'departure_early' || sortBy === 'time') && styles.sortBtnTextActive]}>
-                    Bay sớm
+                    Early Flight
                   </Text>
                 </TouchableOpacity>
 
@@ -98,7 +98,7 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
                   onPress={() => setSortBy('departure_late')}
                 >
                   <Text style={[styles.sortBtnText, sortBy === 'departure_late' && styles.sortBtnTextActive]}>
-                    Bay muộn
+                    Late Flight
                   </Text>
                 </TouchableOpacity>
 
@@ -107,7 +107,7 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
                   onPress={() => setSortBy('duration')}
                 >
                   <Text style={[styles.sortBtnText, sortBy === 'duration' && styles.sortBtnTextActive]}>
-                    Bay nhanh
+                    Fastest (Shortest)
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -115,7 +115,7 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
 
             {/* Flight Type Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>LOẠI CHUYẾN BAY</Text>
+              <Text style={styles.sectionTitle}>FLIGHT TYPE</Text>
               <View style={styles.toggleRow}>
                 <TouchableOpacity
                   style={[styles.typeOption, showDirect && styles.typeOptionActive]}
@@ -124,7 +124,7 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
                   <Text style={[styles.checkbox, showDirect && styles.checkboxActive]}>
                     {showDirect ? '✓' : ''}
                   </Text>
-                  <Text style={styles.optionLabel}>Bay thẳng</Text>
+                  <Text style={styles.optionLabel}>Direct</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -134,14 +134,14 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
                   <Text style={[styles.checkbox, showTransit && styles.checkboxActive]}>
                     {showTransit ? '✓' : ''}
                   </Text>
-                  <Text style={styles.optionLabel}>Nối chuyến</Text>
+                  <Text style={styles.optionLabel}>Connecting</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Baggage Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>HÀNH LÝ & TIỆN ÍCH</Text>
+              <Text style={styles.sectionTitle}>BAGGAGE & AMENITIES</Text>
               <TouchableOpacity
                 style={[styles.baggageOption, hasBaggage && styles.baggageOptionActive]}
                 onPress={() => setHasBaggage(!hasBaggage)}
@@ -149,8 +149,8 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
                 <View style={styles.baggageOptionLeft}>
                   <Text style={styles.baggageIcon}>🧳</Text>
                   <View>
-                    <Text style={styles.optionLabel}>Hành lý nhiều / Có hành lý ký gửi</Text>
-                    <Text style={styles.optionSub}>Chỉ hiện chuyến bay bao gồm từ 20kg ký gửi trở lên</Text>
+                    <Text style={styles.optionLabel}>Includes Checked Baggage</Text>
+                    <Text style={styles.optionSub}>Only show flights with 20kg+ checked baggage</Text>
                   </View>
                 </View>
                 <Text style={[styles.checkbox, hasBaggage && styles.checkboxActive]}>
@@ -163,7 +163,7 @@ const FlightFilterModal = ({ visible, filters = {}, onClose, onApply, onReset })
           {/* Footer Submit */}
           <View style={styles.footer}>
             <TouchableOpacity style={styles.applyBtn} activeOpacity={0.8} onPress={handleApply}>
-              <Text style={styles.applyBtnText}>Áp dụng bộ lọc</Text>
+              <Text style={styles.applyBtnText}>Apply Filters</Text>
             </TouchableOpacity>
           </View>
         </View>

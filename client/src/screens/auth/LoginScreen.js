@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 import Input from '../../components/common/Input';
@@ -22,14 +23,14 @@ export default function LoginScreen({ navigation }) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email.trim())) {
-      setEmailError('Vui lòng nhập email hợp lệ');
+      setEmailError('Please enter a valid email address');
       isValid = false;
     } else {
       setEmailError('');
     }
 
     if (!password) {
-      setPasswordError('Vui lòng nhập mật khẩu');
+      setPasswordError('Please enter your password');
       isValid = false;
     } else {
       setPasswordError('');
@@ -63,7 +64,7 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.inner}>
         <View style={styles.header}>
           <Text style={styles.logo}>NOMADIX</Text>
-          <Text style={styles.subtitle}>Khám phá & Lập kế hoạch du lịch nhóm thông minh</Text>
+          <Text style={styles.subtitle}>Smart Collaborative Travel & Group Expense Sharing</Text>
         </View>
 
         <View style={styles.card}>
@@ -73,12 +74,12 @@ export default function LoginScreen({ navigation }) {
             onPress={handleQuickDemoLogin}
             activeOpacity={0.8}
           >
-            <Text style={styles.demoLoginText}>⚡ 1-Tap: Vào ngay Demo (abc@gmail.com / 123)</Text>
+            <Text style={styles.demoLoginText}>⚡ 1-Tap Demo Login (abc@gmail.com / 123)</Text>
           </TouchableOpacity>
 
           <Input
-            label="Email"
-            placeholder="Nhập email của bạn"
+            label="Email Address"
+            placeholder="e.g. traveler@example.com"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -89,8 +90,8 @@ export default function LoginScreen({ navigation }) {
           />
 
           <Input
-            label="Mật khẩu / Password"
-            placeholder="Nhập mật khẩu"
+            label="Password"
+            placeholder="e.g. ••••••••"
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -103,16 +104,16 @@ export default function LoginScreen({ navigation }) {
           {authError ? <Text style={styles.authError}>{authError}</Text> : null}
 
           <Button
-            title="Đăng nhập / Login"
+            title="Sign In"
             onPress={handleSubmit}
             loading={isLoading}
             style={styles.submitBtn}
           />
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Chưa có tài khoản? </Text>
+            <Text style={styles.footerText}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation?.navigate('Register')}>
-              <Text style={styles.registerLink}>Đăng ký ngay</Text>
+              <Text style={styles.registerLink}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>

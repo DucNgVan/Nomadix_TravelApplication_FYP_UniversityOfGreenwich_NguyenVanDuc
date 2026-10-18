@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 import Input from '../../components/common/Input';
@@ -24,7 +25,7 @@ export default function RegisterScreen({ navigation }) {
     let isValid = true;
 
     if (!fullName || fullName.trim().length < 2) {
-      setFullNameError('Họ và tên phải có ít nhất 2 ký tự');
+      setFullNameError('Full name must be at least 2 characters');
       isValid = false;
     } else {
       setFullNameError('');
@@ -32,14 +33,14 @@ export default function RegisterScreen({ navigation }) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email.trim())) {
-      setEmailError('Vui lòng nhập email hợp lệ');
+      setEmailError('Please enter a valid email address');
       isValid = false;
     } else {
       setEmailError('');
     }
 
     if (!password || password.length < 8) {
-      setPasswordError('Mật khẩu phải có ít nhất 8 ký tự');
+      setPasswordError('Password must be at least 8 characters');
       isValid = false;
     } else {
       setPasswordError('');
@@ -67,13 +68,13 @@ export default function RegisterScreen({ navigation }) {
       <View style={styles.inner}>
         <View style={styles.header}>
           <Text style={styles.logo}>NOMADIX</Text>
-          <Text style={styles.subtitle}>Tạo tài khoản mới để bắt đầu hành trình của bạn</Text>
+          <Text style={styles.subtitle}>Create a new account to begin your journey</Text>
         </View>
 
         <View style={styles.form}>
           <Input
-            label="Họ và tên / Full Name"
-            placeholder="Nhập họ và tên của bạn"
+            label="Full Name"
+            placeholder="e.g. John Doe"
             value={fullName}
             onChangeText={(text) => {
               setFullName(text);
@@ -83,8 +84,8 @@ export default function RegisterScreen({ navigation }) {
           />
 
           <Input
-            label="Email"
-            placeholder="Nhập email của bạn"
+            label="Email Address"
+            placeholder="e.g. alex@example.com"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -95,8 +96,8 @@ export default function RegisterScreen({ navigation }) {
           />
 
           <Input
-            label="Mật khẩu / Password"
-            placeholder="Nhập mật khẩu (tối thiểu 8 ký tự)"
+            label="Password"
+            placeholder="e.g. ••••••••"
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -109,16 +110,16 @@ export default function RegisterScreen({ navigation }) {
           {authError ? <Text style={styles.authError}>{authError}</Text> : null}
 
           <Button
-            title="Đăng ký / Register"
+            title="Create Account"
             onPress={handleSubmit}
             loading={isLoading}
             style={styles.submitBtn}
           />
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Đã có tài khoản? </Text>
+            <Text style={styles.footerText}>Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-              <Text style={styles.loginLink}>Đăng nhập ngay</Text>
+              <Text style={styles.loginLink}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -15,7 +15,7 @@ export const useExpenseStore = create((set, get) => ({
       set({ expenses: expenseList, isLoading: false });
       return expenseList;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi tải danh sách chi tiêu', isLoading: false });
+      set({ error: err.message || 'Failed to load expenses', isLoading: false });
       throw err;
     }
   },
@@ -32,7 +32,7 @@ export const useExpenseStore = create((set, get) => ({
       await get().fetchDebtSummary(tripId);
       return createdExpense;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi tạo chi tiêu', isLoading: false });
+      set({ error: err.message || 'Failed to create expense', isLoading: false });
       throw err;
     }
   },
@@ -44,7 +44,7 @@ export const useExpenseStore = create((set, get) => ({
       set({ debtSummary: summary, isLoading: false });
       return summary;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi tính toán bảng cân đối công nợ', isLoading: false });
+      set({ error: err.message || 'Failed to calculate debt summary', isLoading: false });
       throw err;
     }
   },
@@ -58,7 +58,7 @@ export const useExpenseStore = create((set, get) => ({
       set({ isLoading: false });
       return result;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi thanh toán công nợ', isLoading: false });
+      set({ error: err.message || 'Failed to settle debt', isLoading: false });
       throw err;
     }
   },

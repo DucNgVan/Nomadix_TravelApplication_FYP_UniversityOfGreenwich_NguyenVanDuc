@@ -15,7 +15,7 @@ export const useItineraryStore = create((set, get) => ({
       set({ trips: tripsList, isLoading: false });
       return tripsList;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi tải danh sách chuyến đi', isLoading: false });
+      set({ error: err.message || 'Failed to load trips', isLoading: false });
       throw err;
     }
   },
@@ -28,7 +28,7 @@ export const useItineraryStore = create((set, get) => ({
       set({ currentTrip: trip, isLoading: false });
       return trip;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi tải chi tiết lịch trình', isLoading: false });
+      set({ error: err.message || 'Failed to load itinerary details', isLoading: false });
       throw err;
     }
   },
@@ -45,7 +45,7 @@ export const useItineraryStore = create((set, get) => ({
       }));
       return createdTrip;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi tạo chuyến đi mới', isLoading: false });
+      set({ error: err.message || 'Failed to create new trip', isLoading: false });
       throw err;
     }
   },
@@ -76,7 +76,7 @@ export const useItineraryStore = create((set, get) => ({
       });
       return addedItem;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi thêm điểm dừng', isLoading: false });
+      set({ error: err.message || 'Failed to add stop', isLoading: false });
       throw err;
     }
   },
@@ -101,7 +101,7 @@ export const useItineraryStore = create((set, get) => ({
       });
       return invitedMember;
     } catch (err) {
-      set({ error: err.message || 'Lỗi khi mời bạn bè', isLoading: false });
+      set({ error: err.message || 'Failed to invite companion', isLoading: false });
       throw err;
     }
   },

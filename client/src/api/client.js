@@ -17,20 +17,21 @@ export const resolveApiBaseUrl = (
   envUrl = process.env.EXPO_PUBLIC_API_URL,
   scriptURL = (typeof NativeModules !== 'undefined' ? NativeModules?.SourceCode?.scriptURL : null)
 ) => {
-  // If explicitly overridden to a custom remote host (e.g. production/staging)
-  if (envUrl && !envUrl.includes('192.168.')) {
+  // If explicitly overridden to a remote HTTPS production/staging host
+  if (envUrl && envUrl.startsWith('https://')) {
     return envUrl;
   }
 
   // Auto-detect Metro server IP from scriptURL (dynamic across any Wi-Fi/LAN change)
   if (scriptURL) {
     const match = scriptURL.match(/^https?:\/\/([^/:]+)/);
-    if (match && match[1] && match[1] !== 'localhost' && match[1] !== '127.0.0.1') {
-      return `http://${match[1]}:5001/api/v1`;
+    if (match && match[1]) {
+      const host = (match[1] === 'localhost' || match[1] === '127.0.0.1') ? '10.0.2.2' : match[1];
+      return `http://${host}:5001/api/v1`;
     }
   }
 
-  if (envUrl) {
+  if (envUrl && !envUrl.includes('172.15.144.')) {
     return envUrl;
   }
 

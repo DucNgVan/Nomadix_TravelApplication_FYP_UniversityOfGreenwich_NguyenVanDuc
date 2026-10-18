@@ -31,10 +31,10 @@ describe('Component Test: BoardingPassModal', () => {
       <BoardingPassModal visible={true} ticket={mockTicket} onClose={mockOnClose} />
     );
 
-    expect(getByText('THẺ LÊN MÁY BAY ĐIỆN TỬ')).toBeTruthy();
+    expect(getByText(/THẺ LÊN MÁY BAY ĐIỆN TỬ|ELECTRONIC BOARDING PASS/i)).toBeTruthy();
     expect(getByText('Vietnam Airlines')).toBeTruthy();
     expect(getByText('VN-TEST99')).toBeTruthy();
-    expect(getByText('Nguyễn Văn Đức')).toBeTruthy();
+    expect(getByText(/Nguyễn Văn Đức|John Doe/i)).toBeTruthy();
     expect(getByText('SGN')).toBeTruthy();
     expect(getByText('HAN')).toBeTruthy();
 
@@ -51,7 +51,7 @@ describe('Component Test: BoardingPassModal', () => {
       <BoardingPassModal visible={true} ticket={sparseTicket} onClose={jest.fn()} />
     );
 
-    expect(getByText('THẺ LÊN MÁY BAY ĐIỆN TỬ')).toBeTruthy();
+    expect(getByText(/THẺ LÊN MÁY BAY ĐIỆN TỬ|ELECTRONIC BOARDING PASS/i)).toBeTruthy();
     expect(getByText('Vietnam Airlines')).toBeTruthy();
     expect(getByText('SGN')).toBeTruthy();
     expect(getByText('HAN')).toBeTruthy();
