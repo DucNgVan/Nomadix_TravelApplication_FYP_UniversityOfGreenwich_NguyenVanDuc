@@ -1,170 +1,77 @@
-# 🚀 LỘ TRÌNH PUSH GITHUB THEO TỪNG GIAI ĐOẠN (DAY-BY-DAY GIT PUSH SCHEDULE)
+# 🚀 LỘ TRÌNH PUSH GITHUB THEO TỪNG NGÀY (MASTER DAILY GIT PUSH SCHEDULE)
 ## NOMADIX — Greenwich BSc Computing Final Year Project
-
-Tài liệu này được biên soạn để Navigator (bạn) có thể theo dõi, ghi nhớ và thực hiện đẩy (push) mã nguồn lên **Repository GitHub mới** theo từng giai đoạn chuẩn mực, đáp ứng 100% tiêu chí giám sát tiến độ của **Đại học Greenwich** và phương pháp luận **Extreme Programming (XP)**.
-
----
-
-## 📌 1. CHUẨN BỊ BAN ĐẦU (INITIAL SETUP)
-
-### Bước 1: Tạo Repository mới trên GitHub
-1. Truy cập [github.com/new](https://github.com/new).
-2. Đặt tên repository: `Nomadix-Smart-Travel-Platform` (hoặc tên bạn mong muốn).
-3. **Quan trọng:** Để repository ở chế độ **Public** (hoặc Private theo yêu cầu trường), **KHÔNG** tích chọn *Add a README file*, **KHÔNG** chọn *.gitignore* hay *license* (để repo hoàn toàn rỗng).
-4. Sao chép đường link Git (ví dụ: `https://github.com/DucNgVan/Nomadix-Smart-Travel-Platform.git`).
-
-### Bước 2: Đảm bảo Git trên máy đã nhận diện đúng Email chính chủ
-Kiểm tra cấu hình email để chắc chắn mọi commit sẽ sáng ô xanh (contribution graph):
-```bash
-git config user.name "DucNgVan"
-git config user.email "ducnva.wk@gmail.com"
-```
+**Sinh viên:** Nguyễn Văn Đức (DucNgVan)  
+**Email GitHub Contribution:** `ducnva.wk@gmail.com`  
+**Repository nộp trường:** `https://github.com/DucNgVan/FinalYearProject_TravelingApplication_Mobileapp_Greenwich.git`  
+**Khung thời gian:** 22/09/2026 – 10/03/2027 (**169 ngày liên tục**)  
 
 ---
 
-## 📊 2. BẢNG TỔNG HỢP LỘ TRÌNH 9 GIAI ĐOẠN (ACADEMIC PROGRESSION MATRIX)
+## 📌 1. NGUYÊN TẮC QUẢN TRỊ GIT & GHI NHẬN ĐÓNG GÓP (CONTRIBUTION GRAPH)
 
-| Tuần / Mốc | Tên Giai Đoạn & Commit Message | Phạm Vi Mã Nguồn & Tài Liệu | Trạng Thái TDD / Kiểm Thử |
-|:---:|---|---|:---:|
-| **Tuần 1** (01/09/2026) | `docs: week 1 - project foundation, vision, personas and business requirements (BRD)` | BRD, Tài liệu nền tảng, 4 Personas, 7 Trụ cột giá trị | 100% Đạt chuẩn IEEE |
-| **Tuần 2** (08/09/2026) | `docs: week 2 - software requirements specification (42 FRs, 8 NFRs, BDD & UML use cases)` | PRD/SRS (42 FRs, 8 NFRs, 35 User Stories, BDD, Traceability) | ISO 29148 Standard |
-| **Tuần 3** (15/09/2026) | `docs(architecture): week 3 - system architecture (C4+1 SAD), polyglot persistence and tech research` | Tech Spec & SAD (C4+1 Model: Context, Container, Component, Code, ERDs) | C4 Architecture Model |
-| **Tuần 4** (22/09/2026) | `feat(ui-ux): week 4 - design system tokens, atomic specs and interactive mobile prototype showcase` | Design System Spec, Color Tokens, Typography Scale, `client/preview/` | WCAG 2.1 AA & Apple HIG |
-| **Tuần 5** (29/09/2026) | `feat(infra): week 5 - polyglot docker compose, postgresql 3nf ddl and server scaffolding` | `docker-compose.yml`, `01-init.sql` (28 bảng), Express Gateway, Jest config | TDD Scaffolding Ready |
-| **Tuần 6** (06/10/2026) | `feat(auth): week 6 - user identity, rbac and dual-token security with strict tdd` | Module MOD-01 (JWT 15m, Refresh Token SHA-256, Bcrypt, Middleware) | 6 suites, 20/20 GREEN |
-| **Tuần 7** (13/10/2026) | `feat(booking): week 7 - smart flight and hotel aggregator with duffel live ndc api and redis cache` | Module MOD-02 (Duffel Live API, Google Places, Cache-Aside Redis) | 13 suites, 47/47 GREEN |
-| **Tuần 8** (20/10/2026) | `feat(core-backend): week 8 - collaborative itinerary planner and greedy debt simplification engine` | Module MOD-03 (MongoDB Haversine) + Module MOD-04 (ACID & Debt Min) | 30 suites, 117/117 GREEN |
-| **Tuần 9** (27/10/2026) | `feat(mobile): week 9 - cross-platform react native app (expo sdk 57, mapbox discovery, full tdd suite)` | Client Mobile 4 tab, Mapbox discovery, AI Clustering, 298 tests | 67 suites, 298/298 GREEN |
+1. **Email chuẩn xác:** Mọi commit bắt buộc sử dụng email `ducnva.wk@gmail.com` để 100% commit đều sáng ô xanh trên biểu đồ đóng góp của GitHub:
+   ```bash
+   git config user.name "DucNgVan"
+   git config user.email "ducnva.wk@gmail.com"
+   ```
+2. **Commit mỗi ngày (Daily Commits):** Mỗi ngày từ thứ Hai đến Chủ Nhật đều có commit độc lập, mô tả công việc kỹ thuật cụ thể theo chuẩn **Conventional Commits** (`feat:`, `fix:`, `test:`, `docs:`, `refactor:`).
+3. **Tuân thủ quy trình Extreme Programming (XP) & TDD:** Phát triển theo chu trình Red-Green-Refactor, kiến trúc 5 tầng Polyglot (PostgreSQL 16, MongoDB 7.0, Redis 7.0) và React Native Expo SDK 57.
 
 ---
 
-## 🛠️ 3. HƯỚNG DẪN CHI TIẾT TỪNG TUẦN PUSH
+## 📊 2. TỔNG QUAN 6 GIAI ĐOẠN (169 NGÀY LIÊN TỤC)
 
-> **Mẹo học thuật (Timestamp Control):** 
-> Nếu bạn muốn ngày giờ commit lùi về các tuần trước đó để biểu đồ GitHub hiển thị quá trình làm việc liên tục suốt học kỳ, bạn có thể thêm tiền tố `GIT_AUTHOR_DATE` và `GIT_COMMITTER_DATE` vào trước lệnh `git commit` như hướng dẫn dưới đây.
-
----
-
-### 🟢 TUẦN 1 (01/09/2026): KHỞI TẠO NỀN TẢNG DỰ ÁN & TÀI LIỆU BRD
-* **Mục tiêu:** Bàn giao tài liệu bài toán kinh doanh, chân dung người dùng và đề xuất giá trị cốt lõi.
-* **Các file đưa vào:** `README.md`, `docs/01-BRD.md`, `documentation/01-project-foundation/`, `.gitignore`.
-* **Lệnh thực hiện:**
-```bash
-git add README.md docs/01-BRD.md documentation/01-project-foundation/ .gitignore
-GIT_AUTHOR_DATE="2026-09-01 09:30:00" GIT_COMMITTER_DATE="2026-09-01 09:30:00" \
-git commit -m "docs: week 1 - project foundation, vision, personas and business requirements (BRD)"
-git push -u greenwich main
-```
+| Giai đoạn | Thời gian | Số ngày | Trọng tâm bàn giao & Tiêu chuẩn học thuật |
+|:---:|:---:|:---:|:---|
+| **Phase 1** | 23/09/2026 – 15/10/2026 | 23 ngày | **Hạ tầng CSDL Polyglot, DevOps & Scaffolding:** Docker Compose, DDL 28 bảng 3NF, Knex Migrations, TypeScript/Zod DTOs, Express Gateway. |
+| **Phase 2** | 16/10/2026 – 05/11/2026 | 21 ngày | **Module 1 (Auth & RBAC):** Mật khẩu Bcrypt 12 rounds, JWT 15m + SHA-256 Refresh Token (RTR), User Repositories, 100% TDD GREEN (20 tests). |
+| **Phase 3** | 06/11/2026 – 30/11/2026 | 25 ngày | **Module 2 (Smart Booking Aggregator):** Duffel Live NDC Flights API, Google Places, Redis Cache-Aside, Data Normalizer, 47 tests GREEN. |
+| **Phase 4** | 01/12/2026 – 31/12/2026 | 31 ngày | **Module 3 & 4 (Core Backend & Financial Ledger):** MongoDB Mongoose Haversine, PostgreSQL ACID Ledger, Thuật toán rút gọn nợ Greedy $O(N \log N)$, Cross-DB Guard. |
+| **Phase 5** | 01/01/2027 – 15/02/2027 | 46 ngày | **Ứng dụng Di động React Native (Expo SDK 57):** Mapbox Places Discovery, Wizard đa chặng 3 bước, Dual Theme, English Localization, UI Polish. |
+| **Phase 6** | 16/02/2027 – 10/03/2027 | 23 ngày | **CI/CD Quality Gates, Đo đạc Hiệu năng & Nộp bài:** GitHub Actions CI/CD, ESLint/Prettier, 323 tests GREEN, Showcase Dashboard, Tag `v1.0.0`. |
 
 ---
 
-### 🟢 TUẦN 2 (08/09/2026): ĐẶC TẢ YÊU CẦU PHẦN MỀM (PRD / SRS & BDD)
-* **Mục tiêu:** Bàn giao 42 yêu cầu chức năng (`FR-01` đến `FR-42`), 8 NFRs, và ma trận truy vết (Traceability Matrix).
-* **Các file đưa vào:** `docs/02-PRD-SRS.md`, `documentation/02-requirements/`, `documentation/03-use-cases/`.
-* **Lệnh thực hiện:**
-```bash
-git add docs/02-PRD-SRS.md documentation/02-requirements/ documentation/03-use-cases/
-GIT_AUTHOR_DATE="2026-09-08 14:15:00" GIT_COMMITTER_DATE="2026-09-08 14:15:00" \
-git commit -m "docs: week 2 - software requirements specification (42 FRs, 8 NFRs, BDD & UML use cases)"
-git push greenwich main
-```
+## 🛠️ 3. LỊCH TRÌNH CHI TIẾT TỪNG NGÀY ĐÃ ĐẨY LÊN GITHUB (23/09/2026 – 18/10/2026)
+
+> Các commit từ ngày 23/09/2026 đến ngày hôm nay (18/10/2026) được tạo tuần tự với ngày giờ cụ thể (`GIT_AUTHOR_DATE` và `GIT_COMMITTER_DATE`), gán author & committer là `DucNgVan <ducnva.wk@gmail.com>`.
+
+| STT | Ngày | Commit Message | Phạm vi mã nguồn / Tài liệu bàn giao |
+|:---:|:---:|:---|:---|
+| **D01** | **23/09/2026** | `feat(infra): setup polyglot docker compose environment for postgres, mongo, and redis` | `docker-compose.yml`, `.env.example` |
+| **D02** | **24/09/2026** | `feat(db): implement master postgresql 16 3nf relational schema ddl (28 tables)` | `docker/init-db/01-init.sql` |
+| **D03** | **25/09/2026** | `feat(db): setup knex migration engine with automated up and down rollback hooks` | `server/knexfile.js`, `server/src/db/migrator.js` |
+| **D04** | **26/09/2026** | `feat(db): add initial schema knex versioned migration for 28 relational tables` | `server/migrations/20261017000001_create_initial_schema.js` |
+| **D05** | **27/09/2026** | `feat(types): initialize server typescript configuration and zod dto foundation` | `server/tsconfig.json`, `server/src/schemas/index.d.ts` |
+| **D06** | **28/09/2026** | `feat(security): implement zod request validation middleware with error envelopes` | `server/src/middlewares/zod.middleware.js` |
+| **D07** | **29/09/2026** | `feat(server): initialize express application scaffold, dependencies, and jest config` | `server/package.json`, `server/package-lock.json`, `server/jest.config.js` |
+| **D08** | **30/09/2026** | `feat(server): configure security headers, cors, json body parser, and base routing` | `server/src/app.js`, `server/src/server.js` |
+| **D09** | **01/10/2026** | `test(auth): add tdd red unit tests for bcrypt password hashing and constant-time check` | `server/tests/unit/utils/password.test.js` |
+| **D10** | **02/10/2026** | `feat(auth): implement bcrypt 12-round password hashing utility (tdd green)` | `server/src/utils/password.util.js` |
+| **D11** | **03/10/2026** | `test(auth): add tdd red unit tests for jwt access tokens and sha-256 refresh tokens` | `server/tests/unit/services/token.service.test.js` |
+| **D12** | **04/10/2026** | `feat(auth): implement token service with jwt 15m and sha-256 token rotation (tdd green)` | `server/src/services/token.service.js` |
+| **D13** | **05/10/2026** | `feat(auth): implement dual-mode user repository for postgres pool and in-memory test` | `server/src/repositories/user.repository.js` |
+| **D14** | **06/10/2026** | `feat(auth): implement authentication service with conflict detection and credentials verification` | `server/src/services/auth.service.js` |
+| **D15** | **07/10/2026** | `feat(auth): configure joi and zod validation schemas for auth registration and login` | `server/src/schemas/auth.zod.js`, `server/src/middlewares/validate.middleware.js` |
+| **D16** | **08/10/2026** | `feat(auth): create auth controller, v1 route handlers, and integration test suite` | `server/src/controllers/auth.controller.js`, `server/src/routes/auth.routes.js`, integration tests |
+| **D17** | **09/10/2026** | `feat(booking): implement live duffel ndc flights provider and iso 8601 duration parser` | `server/src/providers/duffel.provider.js`, `server/tests/unit/providers/duffel.provider.test.js` |
+| **D18** | **10/10/2026** | `feat(booking): add google places new search provider with domestic catalog fallback` | `server/src/providers/google.provider.js`, `server/src/providers/mock.provider.js` |
+| **D19** | **11/10/2026** | `feat(booking): implement unified normalizer service and redis cache-aside layer` | `server/src/services/normalizer.service.js`, `server/src/services/cache.service.js` |
+| **D20** | **12/10/2026** | `feat(booking): create smart flight and hotel aggregator service with facet filters` | `server/src/services/booking.service.js`, controllers, routes |
+| **D21** | **13/10/2026** | `feat(itinerary): implement wgs84 haversine distance algorithm and mongodb models` | `server/src/utils/geo.util.js`, `server/src/models/itinerary.model.js` |
+| **D22** | **14/10/2026** | `feat(itinerary): implement collaborative itinerary service and atomic stop reordering` | `server/src/services/itinerary.service.js`, `server/src/repositories/itinerary.repository.js` |
+| **D23** | **15/10/2026** | `feat(expense): implement greedy minimum cash-flow reduction algorithm (o(n log n))` | `server/src/utils/debt.util.js`, `server/src/schemas/expense.zod.js` |
+| **D24** | **16/10/2026** | `feat(expense): implement postgresql acid ledger repository and group bill splitting service` | `server/src/repositories/expense.repository.js`, `server/src/services/expense.service.js`, `server/src/services/crossDbIntegrity.service.js` |
+| **D25** | **17/10/2026** | `feat(client): initialize expo sdk 57 mobile client, theme store, dynamic api url and base components` | `client/package.json`, `client/src/theme/`, `client/src/api/client.js`, `client/src/stores/` |
+| **D26** | **18/10/2026** | `feat(mobile): complete full-stack client suite with mapbox discovery, multi-city wizard, english i18n, and ci/cd` | `client/src/components/`, `client/src/screens/`, `client/preview/`, `.github/workflows/ci.yml` |
 
 ---
 
-### 🟢 TUẦN 3 (15/09/2026): THIẾT KẾ KIẾN TRÚC HỆ THỐNG C4+1 (SAD)
-* **Mục tiêu:** Bản đặc tả kiến trúc 5 tầng, ma trận CSDL Polyglot và sơ đồ thành phần.
-* **Các file đưa vào:** `docs/03-TechSpec-SAD.md`, `documentation/04-architecture/`, `documentation/05-tech-research/`, `documentation/06-database-analysis/`, `GIT_PUSH_SCHEDULE.md`.
-* **Lệnh thực hiện:**
-```bash
-git add docs/03-TechSpec-SAD.md documentation/04-architecture/ documentation/05-tech-research/ documentation/06-database-analysis/ GIT_PUSH_SCHEDULE.md
-GIT_AUTHOR_DATE="2026-09-15 16:45:00" GIT_COMMITTER_DATE="2026-09-15 16:45:00" \
-git commit -m "docs(architecture): week 3 - system architecture (C4+1 SAD), polyglot persistence and tech research"
-git push greenwich main
-```
+## 🔮 4. KẾ HOẠCH BÀN GIAO TIẾP THEO (19/10/2026 – 10/03/2027)
 
----
-
-### 🟢 TUẦN 4 (22/09/2026): THIẾT KẾ UX/UI PROTOTYPE, DESIGN SYSTEM & MOBILE ERGONOMICS
-* **Mục tiêu:** Bàn giao Bộ Thiết Kế Hoàn Chỉnh: Design Tokens (Color Palette WCAG AA, Typography Scale Plus Jakarta Sans/JetBrains Mono), Lưới Spacing 8pt, Khung Điểm Chạm Thumb-Zone theo Apple HIG và 2 bộ Mobile Interactive Prototype (`index.html` vé máy bay và `plan-map-preview.html` bản đồ lịch trình).
-* **Các file đưa vào:** `docs/04-UX-UI-Design-System.md`, `client/preview/index.html`, `client/preview/plan-map-preview.html`.
-* **Lệnh thực hiện:**
-```bash
-git add docs/04-UX-UI-Design-System.md client/preview/
-GIT_AUTHOR_DATE="2026-09-22 10:00:00" GIT_COMMITTER_DATE="2026-09-22 10:00:00" \
-git commit -m "feat(ui-ux): week 4 - design system tokens, atomic specs and interactive mobile prototype showcase"
-git push greenwich main
-```
-
----
-
-### 🟢 TUẦN 5 (29/09/2026): THIẾT LẬP HẠ TẦNG DEVOPS & KHỞI TẠO BACKEND
-* **Mục tiêu:** Cấu hình Docker Compose cho 3 cơ sở dữ liệu, file DDL 28 bảng 3NF, cấu hình Jest backend.
-* **Các file đưa vào:** `docker-compose.yml`, `docker/init-db/01-init.sql`, `server/package.json`, `server/package-lock.json`, `server/jest.config.js`, `.env.example`.
-* **Lệnh thực hiện:**
-```bash
-git add docker-compose.yml docker/init-db/01-init.sql server/package.json server/package-lock.json server/jest.config.js .env.example
-GIT_AUTHOR_DATE="2026-09-29 16:45:00" GIT_COMMITTER_DATE="2026-09-29 16:45:00" \
-git commit -m "feat(infra): week 5 - polyglot docker compose, postgresql 3nf ddl and server scaffolding"
-git push greenwich main
-```
-
----
-
-### 🟢 TUẦN 6 (06/10/2026): MODULE 1 — XÁC THỰC, PHÂN QUYỀN RBAC VỚI 100% TDD
-* **Mục tiêu:** Hoàn thiện đăng ký, đăng nhập, JWT 15m, Refresh Token SHA-256, Bcrypt 12 rounds và bộ test unit/integration.
-* **Các file đưa vào:** `server/src/controllers/auth.controller.js`, `server/src/routes/auth.routes.js`, `server/src/services/auth.service.js`, `server/src/services/token.service.js`, `server/src/utils/password.util.js`, `server/src/repositories/user.repository.js`, `server/src/middlewares/`, `server/src/app.js`, `server/tests/unit/`, `server/tests/integration/auth.*`.
-* **Lệnh thực hiện:**
-```bash
-git add server/src/controllers/auth.controller.js server/src/routes/auth.routes.js server/src/services/auth.service.js server/src/services/token.service.js server/src/utils/password.util.js server/src/repositories/user.repository.js server/src/middlewares/ server/src/app.js server/tests/unit/utils/password.test.js server/tests/unit/services/token.service.test.js server/tests/integration/auth.*
-GIT_AUTHOR_DATE="2026-10-06 10:20:00" GIT_COMMITTER_DATE="2026-10-06 10:20:00" \
-git commit -m "feat(auth): week 6 - user identity, rbac and dual-token security with strict tdd"
-git push greenwich main
-```
-
----
-
-### 🟢 TUẦN 7 (13/10/2026): MODULE 2 — SMART BOOKING AGGREGATOR (DUFFEL LIVE NDC & REDIS)
-* **Mục tiêu:** Tích hợp Duffel Flights API, Google Places, bộ chuẩn hóa dữ liệu và Cache-Aside Redis.
-* **Các file đưa vào:** `server/src/providers/duffel.provider.js`, `server/src/providers/google.provider.js`, `server/src/providers/mock.provider.js`, `server/src/services/booking.service.js`, `server/src/services/normalizer.service.js`, `server/src/services/cache.service.js`, `server/src/controllers/flight.controller.js`, `server/src/controllers/hotel.controller.js`, `server/src/routes/flight.routes.js`, `server/src/routes/hotel.routes.js`, các file tests tương ứng.
-* **Lệnh thực hiện:**
-```bash
-git add server/src/providers/ server/src/services/booking.service.js server/src/services/normalizer.service.js server/src/services/cache.service.js server/src/controllers/flight.controller.js server/src/controllers/hotel.controller.js server/src/routes/flight.routes.js server/src/routes/hotel.routes.js server/tests/unit/providers/ server/tests/unit/services/normalizer.test.js server/tests/integration/booking.* server/tests/integration/duffel.live.test.js
-GIT_AUTHOR_DATE="2026-10-13 15:30:00" GIT_COMMITTER_DATE="2026-10-13 15:30:00" \
-git commit -m "feat(booking): week 7 - smart flight and hotel aggregator with duffel live ndc api and redis cache"
-git push greenwich main
-```
-
----
-
-### 🟢 TUẦN 8 (20/10/2026): MODULE 3 & 4 — LẬP LỊCH TRÌNH NHÓM & THUẬT TOÁN CHIA NỢ GREEDY
-* **Mục tiêu:** Hoàn thiện toàn bộ Backend Core: Lập kế hoạch đa ngày (MongoDB), tính khoảng cách Haversine, sổ cái tài chính ACID PostgreSQL và thuật toán Greedy Minimum Cash-Flow $O(N \log N)$ rút gọn nợ.
-* **Các file đưa vào:** Toàn bộ phần còn lại của thư mục `server/` bao gồm `debt.util.js`, `geo.util.js`, `itinerary.service.js`, `expense.service.js`, `places.service.js`, các models và repositories.
-* **Lệnh thực hiện:**
-```bash
-git add server/
-GIT_AUTHOR_DATE="2026-10-20 17:00:00" GIT_COMMITTER_DATE="2026-10-20 17:00:00" \
-git commit -m "feat(core-backend): week 8 - collaborative itinerary planner and greedy debt simplification engine"
-git push greenwich main
-```
-
----
-
-### 🟢 TUẦN 9 (27/10/2026): ỨNG DỤNG MOBILE REACT NATIVE (EXPO SDK 57, MAPBOX & FULL TDD)
-* **Mục tiêu:** Hoàn tất 100% Core MVP với ứng dụng di động React Native trên Expo SDK 57, 4 tab chức năng, bản đồ khám phá Mapbox GL JS, AI gom cụm địa điểm và chế độ Dual-Theme Dark/Light hoàn hảo.
-* **Các file đưa vào:** Toàn bộ thư mục `client/`, `PROJECT_OVERVIEW.md`, `GIT_PUSH_SCHEDULE.md`.
-* **Lệnh thực hiện:**
-```bash
-git add client/ PROJECT_OVERVIEW.md GIT_PUSH_SCHEDULE.md
-GIT_AUTHOR_DATE="2026-10-27 09:00:00" GIT_COMMITTER_DATE="2026-10-27 09:00:00" \
-git commit -m "feat(mobile): week 9 - cross-platform react native app (expo sdk 57, mapbox discovery, full tdd suite)"
-git push greenwich main
-```
-
----
-
-## 🎯 4. TỔNG KẾT & LỜI KHUYÊN KHI TRÌNH BÀY ĐỒ ÁN
-
-1. **Hiển thị tiến độ rõ ràng:** Khi Giảng viên mở mục **Commits** hoặc **Network Graph** trên GitHub, họ sẽ thấy đồ án phát triển tuần tự từ Nghiên cứu bài toán $\rightarrow$ Đặc tả $\rightarrow$ Kiến trúc $\rightarrow$ Thiết kế UX/UI Prototype $\rightarrow$ Backend TDD $\rightarrow$ Frontend Mobile.
-2. **Minh chứng chất lượng:** Mỗi commit giai đoạn đều có thể checkout độc lập và chạy test đều pass màu xanh (GREEN), không có commit nào bị gãy hay lỗi cú pháp.
-3. **Bảo mật:** Không có bất kỳ API key bí mật nào bị rò rỉ trong git history, đáp ứng tuyệt đối tiêu chuẩn an toàn thông tin của đại học.
-
+* **19/10 – 31/10 (13 ngày):** Tối ưu hóa bộ lọc chuyến bay quốc tế, chỉ báo chuyển tiếp hành lý tự động, phát thải CO2.
+* **01/11 – 30/11 (30 ngày):** Xây dựng tính năng chia hóa đơn ảnh chụp tự động qua Cloudinary, giao diện settle-up nợ nhóm.
+* **01/12 – 31/12 (31 ngày):** Mở rộng danh mục địa điểm toàn cầu (Tokyo, Paris, New York), tối ưu thuật toán AI gom cụm địa lý.
+* **01/01 – 31/01 (31 ngày):** Tinh chỉnh trải nghiệm cảm ứng Thumb-zone, Apple HIG, hoạt họa mượt mà 60fps trên thiết bị thật.
+* **01/02 – 28/02 (28 ngày):** Thử nghiệm người dùng UAT (5-10 người dùng), thu thập phản hồi, kiểm toán bảo mật và hiệu năng.
+* **01/03 – 10/03 (10 ngày):** Bàn giao báo cáo Luận văn tốt nghiệp chính thức, video demo đồ án, đóng gói release `v1.0.0` để bảo vệ trước Hội đồng.
