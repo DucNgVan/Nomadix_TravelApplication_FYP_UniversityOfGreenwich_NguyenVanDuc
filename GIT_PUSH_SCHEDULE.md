@@ -1,32 +1,32 @@
-# 🚀 LỘ TRÌNH PUSH GITHUB THEO TỪNG NGÀY (MASTER DAILY GIT PUSH SCHEDULE)
+# 🚀 LỘ TRÌNH PUSH GITHUB THEO TỪNG NGÀY (REALISTIC ACADEMIC GIT PUSH SCHEDULE)
 ## NOMADIX — Greenwich BSc Computing Final Year Project
 **Sinh viên:** Nguyễn Văn Đức (DucNgVan)  
 **Email GitHub Contribution:** `ducnva.wk@gmail.com`  
 **Repository nộp trường:** `https://github.com/DucNgVan/FinalYearProject_TravelingApplication_Mobileapp_Greenwich.git`  
-**Khung thời gian:** 22/09/2026 – 10/03/2027 (**169 ngày liên tục**)  
+**Khung thời gian:** 22/09/2026 – 10/03/2027 (**169 ngày liên tục / 24 tuần**)  
 
 ---
 
-## 📌 1. NGUYÊN TẮC BÁO CÁO TIẾN ĐỘ HỌC THUẬT (ACADEMIC PROGRESSION ALIGNMENT)
+## 📌 1. NGUYÊN TẮC QUẢN LÝ TIẾN ĐỘ HỌC THUẬT THỰC TẾ (REALISTIC PACING)
 
 1. **Email đóng góp chuẩn xác:** Toàn bộ commit đều mang danh tính author & committer là `DucNgVan <ducnva.wk@gmail.com>` để 100% commit đều sáng ô xanh trên biểu đồ đóng góp của GitHub.
-2. **Khớp 100% mốc báo cáo với Giảng viên hướng dẫn (Supervisor Sign-off):**
-   * **Từ 23/09/2026 đến 13/10/2026 (21 ngày):** Tập trung nghiên cứu UX, đặc tả Design Tokens (WCAG 2.1 AA, Plus Jakarta Sans, 8pt grid), dựng wireframe và hoàn thiện 2 bộ **HTML Interactive Mobile Prototype Preview** (`index.html` và `plan-map-preview.html`). **Chốt và ký duyệt bản Prototype Preview HTML vào ngày 13/10/2026**.
-   * **Từ 14/10/2026 đến 18/10/2026 (5 ngày):** Chuyển sang giai đoạn lập trình mã nguồn (Implementation Phase): Thiết lập CSDL Polyglot & Docker, xây dựng 4 Backend Core Modules với 100% TDD, hoàn thiện ứng dụng di động React Native trên Expo SDK 57 (Mapbox Discovery, Multi-City Wizard, Dual Theme, English Localization và CI/CD).
-   * **Từ 19/10/2026 đến 10/03/2027:** Tối ưu hóa tính năng nâng cao, chia hóa đơn ảnh chụp Cloudinary, mở rộng kho địa điểm toàn cầu, thử nghiệm người dùng UAT và nộp luận văn hoàn chỉnh.
+2. **Tiến độ tự nhiên của một kỹ sư độc lập (Human Engineering Pace):**
+   * **Từ 23/09/2026 đến 13/10/2026 (21 ngày):** Nghiên cứu trải nghiệm người dùng du lịch nhóm, xây dựng Design System (WCAG 2.1 AA, Plus Jakarta Sans, 8pt grid), dựng wireframe và hoàn thiện 2 bộ **HTML Interactive Mobile Prototype Preview** (`index.html` và `plan-map-preview.html`). **Chốt và duyệt Prototype Preview HTML vào ngày 13/10/2026**.
+   * **Từ 14/10/2026 đến 18/10/2026 (5 ngày — Hiện tại):** Khởi công mã nguồn Backend: Dựng môi trường Docker Compose 3 CSDL, thiết kế DDL 28 bảng PostgreSQL chuẩn 3NF, Knex versioned migrations, Zod runtime DTOs và hoàn thành **Module 1 (Xác thực người dùng & Phân quyền RBAC với 100% TDD GREEN)**.
+   * **Từ 19/10/2026 đến 10/03/2027 (4.5 tháng tiếp theo):** Triển khai lần lượt Module 2 Booking, Module 3 Lịch trình, Module 4 Sổ cái chia nợ, xây dựng ứng dụng di động React Native trên Expo SDK 57, kiểm thử người dùng UAT, đo đạc Benchmark và nộp luận văn tốt nghiệp.
 
 ---
 
-## 📊 2. TỔNG QUAN 6 GIAI ĐOẠN (169 NGÀY LIÊN TỤC)
+## 📊 2. TỔNG QUAN 6 GIAI ĐOẠN (169 NGÀY TỪ 22/09/2026 ĐẾN 10/03/2027)
 
-| Giai đoạn | Thời gian | Số ngày | Trọng tâm bàn giao & Tiêu chuẩn học thuật |
+| Giai đoạn | Thời gian | Số ngày | Trọng tâm học thuật & Tiến độ bàn giao |
 |:---:|:---:|:---:|:---|
-| **Phase 1** | 23/09/2026 – 13/10/2026 | 21 ngày | **UX/UI Research, Wireframing & Chốt Prototype HTML Preview:** Design Tokens WCAG AA, iPhone 16 Pro Frame, Mapbox GL JS v3, Chốt Preview HTML với Nhà trường ngày 13/10. |
-| **Phase 2** | 14/10/2026 – 18/10/2026 | 5 ngày | **Core Full-Stack Implementation (MVP Ready):** Docker 3NF, Module 1 (Auth), Module 2 (Booking Live NDC), Module 3 & 4 (Itinerary Haversine & Greedy Debt $O(N \log N)$), Mobile React Native Expo SDK 57, Mapbox Discovery, 323 tests GREEN. |
-| **Phase 3** | 19/10/2026 – 15/11/2026 | 28 ngày | **Advanced Booking & Live Amenities:** Tối ưu hóa bộ lọc chuyến bay quốc tế, chỉ báo chuyển tiếp hành lý tự động, đo phát thải CO2, voucher ưu đãi nhóm. |
-| **Phase 4** | 16/11/2026 – 31/12/2026 | 46 ngày | **Receipt OCR Media Pipeline & Settle-up Hub:** Tích hợp Cloudinary receipt storage, chia tiền hóa đơn tự động, đồng bộ hóa số dư tức thời. |
-| **Phase 5** | 01/01/2027 – 15/02/2027 | 46 ngày | **Global Places Expansion & Touch Ergonomics:** Mở rộng Tokyo, Paris, New York, tối ưu thuật toán AI gom cụm địa lý, tinh chỉnh chuyển động 60fps trên thiết bị thật. |
-| **Phase 6** | 16/02/2027 – 10/03/2027 | 23 ngày | **UAT Testing, Benchmarks, Thesis & Final Defense:** Kiểm toán bảo mật, thử nghiệm 10 người dùng, đo độ trễ Redis/Mongo, đóng gói Luận văn và gắn tag `v1.0.0`. |
+| **Phase 1** | 23/09/2026 – 13/10/2026 | 21 ngày | **UX/UI Research, Wireframing & Chốt Prototype HTML:** Design Tokens WCAG AA, iPhone 16 Pro Frame, Mapbox GL JS v3, Chốt Preview HTML với Nhà trường ngày 13/10. *(Đã hoàn thành)* |
+| **Phase 2** | 14/10/2026 – 18/10/2026 | 5 ngày | **Backend Infrastructure & Module 1 (Auth & RBAC):** Docker Compose (Postgres, Mongo, Redis), DDL 28 bảng 3NF, Knex Migrations, Zod DTOs, Bcrypt 12 rounds, JWT 15m + SHA-256 RTR. *(Đã hoàn thành tính đến hôm nay 18/10)* |
+| **Phase 3** | 19/10/2026 – 15/11/2026 | 28 ngày | **Module 2 (Smart Booking Aggregator):** Duffel Live NDC Flights API, Google Places, Normalizer Service, Redis Cache-Aside layer (TTL 1800s/3600s), 47 tests GREEN. |
+| **Phase 4** | 16/11/2026 – 31/12/2026 | 46 ngày | **Module 3 (Collaborative Itinerary) & Module 4 (Group Expense Hub):** MongoDB Timeline, Haversine WGS84, Sổ cái tài chính PostgreSQL ACID, Thuật toán rút gọn nợ Greedy $O(N \log N)$, Cross-DB Guard. |
+| **Phase 5** | 01/01/2027 – 15/02/2027 | 46 ngày | **Ứng dụng Di động React Native (Expo SDK 57):** Chuyển giao diện từ Prototype sang React Native native code, Mapbox GL Discovery, Wizard đa chặng 3 bước, Dual Theme, English Localization, UI Polish. |
+| **Phase 6** | 16/02/2027 – 10/03/2027 | 23 ngày | **CI/CD Quality Gates, Đo đạc Benchmark, UAT & Nộp Luận Văn:** GitHub Actions CI/CD, 323 tests GREEN, đo latency CSDL, thử nghiệm 10 người dùng, đóng gói Luận văn và gắn tag `v1.0.0`. |
 
 ---
 
@@ -57,25 +57,23 @@
 
 ---
 
-### 💻 Chặng B: Lập trình Mã nguồn Hệ thống (Implementation Phase: 14/10 – 18/10/2026)
-* **14/10/2026:** `feat(infra): setup polyglot docker compose, 28-table 3nf postgresql ddl, knex migrations, and zod dto foundation`
-  * Khởi tạo `docker-compose.yml`, `01-init.sql` (28 bảng PostgreSQL 3NF), `knexfile.js`, `migrator.js`, `tsconfig.json`, `zod.middleware.js`.
-* **15/10/2026:** `feat(auth): implement module 1 - user identity, rbac, bcrypt 12 rounds, and dual-token security with strict tdd`
-  * Express server gateway, mã hóa mật khẩu Bcrypt 12 rounds, JWT 15m + SHA-256 Refresh Token (RTR), User repository, 20 test cases GREEN.
-* **16/10/2026:** `feat(booking): implement module 2 - smart flight and hotel aggregator with duffel live ndc api and redis cache`
-  * Adapter Duffel Live NDC Flights API, Google Places API, Redis Cache-Aside layer (TTL 1800s/3600s), Data normalizer, 47 test cases GREEN.
-* **17/10/2026:** `feat(core-backend): implement module 3 (itinerary haversine) and module 4 (postgresql acid ledger & greedy debt algorithm)`
-  * CSDL MongoDB timeline, Haversine WGS84, Sổ cái tài chính PostgreSQL ACID transactions (`NUMERIC(12, 2)`), thuật toán Greedy Minimum Cash-Flow Reduction $O(N \log N)$, Cross-DB integrity guard, 117 test cases GREEN.
-* **18/10/2026 (Hôm nay):** `feat(mobile): implement complete react native client (expo sdk 57, mapbox discovery, multi-city wizard, english i18n, and ci/cd)`
-  * Ứng dụng di động React Native trên Expo SDK 57, Mapbox Places Discovery, Wizard đa chặng 3 bước, Dual Theme Sáng/Tối, tiếng Anh chuẩn quốc tế, CI/CD GitHub Actions workflow, **323/323 tests GREEN**.
+### 💻 Chặng B: Bắt Đầu Code Backend & Module 1 (14/10 – 18/10/2026 / 5 ngày)
+* **14/10/2026:** `feat(infra): setup polyglot docker compose environment for postgres, mongo, and redis`  
+  * Khởi tạo `docker-compose.yml`, cấu hình cổng mạng và `.env.example`.
+* **15/10/2026:** `feat(db): implement master postgresql 16 3nf relational schema ddl (28 tables)`  
+  * Viết DDL chuẩn 3NF khởi tạo 28 bảng trong `docker/init-db/01-init.sql`.
+* **16/10/2026:** `feat(db): setup knex migration engine and zod dto runtime validation schemas`  
+  * Cấu hình Knex migrations (`knexfile.js`, `migrator.js`, `initial_schema.js`) và Zod schemas (`auth.zod.js`, `zod.middleware.js`).
+* **17/10/2026:** `test(auth): implement tdd red unit tests for password hashing, jwt tokens, and user repository`  
+  * Bộ test unit RED state kiểm thử mã hóa mật khẩu Bcrypt và JWT access tokens.
+* **18/10/2026 (Hôm nay):** `feat(auth): complete module 1 - user identity, rbac, bcrypt 12 rounds, and dual-token security with 100% tdd green`  
+  * Hoàn thành Module 1: `auth.service.js`, `user.repository.js`, `token.service.js`, `password.util.js`, routes, controllers và tài liệu bảo vệ `docs/05-Code-Architecture-And-Defense-Guide.md`.
 
 ---
 
 ## 🔮 4. KẾ HOẠCH BÀN GIAO TIẾP THEO (19/10/2026 – 10/03/2027)
 
-* **19/10 – 31/10 (13 ngày):** Tối ưu hóa bộ lọc chuyến bay quốc tế, chỉ báo chuyển tiếp hành lý tự động, phát thải CO2.
-* **01/11 – 30/11 (30 ngày):** Xây dựng tính năng chia hóa đơn ảnh chụp tự động qua Cloudinary, giao diện settle-up nợ nhóm.
-* **01/12 – 31/12 (31 ngày):** Mở rộng danh mục địa điểm toàn cầu (Tokyo, Paris, New York), tối ưu thuật toán AI gom cụm địa lý.
-* **01/01 – 31/01 (31 ngày):** Tinh chỉnh trải nghiệm cảm ứng Thumb-zone, Apple HIG, hoạt họa mượt mà 60fps trên thiết bị thật.
-* **01/02 – 28/02 (28 ngày):** Thử nghiệm người dùng UAT (5-10 người dùng), thu thập phản hồi, kiểm toán bảo mật và hiệu năng.
-* **01/03 – 10/03 (10 ngày):** Bàn giao báo cáo Luận văn tốt nghiệp chính thức, video demo đồ án, đóng gói release `v1.0.0` để bảo vệ trước Hội đồng.
+* **19/10 – 15/11 (4 tuần):** Module 2 — Smart Booking Aggregator (Duffel API, Google Places, Cache-Aside Redis).
+* **16/11 – 31/12 (6 tuần):** Module 3 & 4 — Collaborative Itinerary MongoDB, Sổ cái PostgreSQL ACID và Thuật toán Greedy Minimum Cash-Flow.
+* **01/01 – 15/02 (6 tuần):** Chuyển giao và hoàn thiện ứng dụng di động React Native trên Expo SDK 57 (Mapbox Discovery, Wizard đa chặng, Dual Theme).
+* **16/02 – 10/03 (3 tuần):** Kiểm thử UAT, đo benchmark hệ thống, đóng gói Luận văn và bảo vệ đồ án tốt nghiệp.
