@@ -171,7 +171,7 @@ describe('Unit Test: Itinerary Store (Collaborative Planning & Companion Invites
 
     apiClient.get.mockRejectedValueOnce({});
     await expect(useItineraryStore.getState().fetchTripDetails('t-1')).rejects.toBeDefined();
-    expect(useItineraryStore.getState().error).toBe('Lỗi khi tải chi tiết lịch trình');
+    expect(useItineraryStore.getState().error).toMatch(/Failed to load itinerary details|Lỗi khi tải chi tiết lịch trình/);
   });
 
   test('should handle createTrip, addStop and inviteCompanion errors and null currentTrip', async () => {

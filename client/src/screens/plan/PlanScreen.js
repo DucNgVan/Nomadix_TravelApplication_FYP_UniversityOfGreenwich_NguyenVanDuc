@@ -234,7 +234,7 @@ export default function PlanScreen() {
           />
           <TextInput
             style={styles.modalInput}
-            placeholder="e.g. Da Nang"
+            placeholder="e.g. Destination (Tokyo, Paris)"
             placeholderTextColor={themeColors.textMuted}
             value={newTripDest}
             onChangeText={setNewTripDest}
@@ -803,7 +803,7 @@ export default function PlanScreen() {
 
               <TextInput
                 style={styles.modalInput}
-                placeholder="e.g. Datanla Waterfall, Eiffel Tower"
+                placeholder="e.g. Ba Na Hills, Datanla Waterfall, Eiffel Tower"
                 placeholderTextColor={themeColors.textMuted}
                 value={stopName}
                 onChangeText={setStopName}
@@ -845,6 +845,8 @@ export default function PlanScreen() {
             </View>
           </View>
         </Modal>
+
+        {renderCreateTripModal()}
       </View>
     </SafeAreaView>
   );

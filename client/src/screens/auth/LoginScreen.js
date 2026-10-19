@@ -23,14 +23,14 @@ export default function LoginScreen({ navigation }) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email.trim())) {
-      setEmailError('Please enter a valid email address');
+      setEmailError('Vui lòng nhập email hợp lệ (Please enter a valid email)');
       isValid = false;
     } else {
       setEmailError('');
     }
 
     if (!password) {
-      setPasswordError('Please enter your password');
+      setPasswordError('Vui lòng nhập mật khẩu (Please enter your password)');
       isValid = false;
     } else {
       setPasswordError('');
@@ -74,12 +74,12 @@ export default function LoginScreen({ navigation }) {
             onPress={handleQuickDemoLogin}
             activeOpacity={0.8}
           >
-            <Text style={styles.demoLoginText}>⚡ 1-Tap Demo Login (abc@gmail.com / 123)</Text>
+            <Text style={styles.demoLoginText}>⚡ 1-Tap: Vào ngay Demo (abc@gmail.com / 123)</Text>
           </TouchableOpacity>
 
           <Input
             label="Email Address"
-            placeholder="e.g. traveler@example.com"
+            placeholder="Enter your email (e.g. traveler@example.com)"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -91,7 +91,7 @@ export default function LoginScreen({ navigation }) {
 
           <Input
             label="Password"
-            placeholder="e.g. ••••••••"
+            placeholder="Enter your password (e.g. ••••••••)"
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -104,7 +104,7 @@ export default function LoginScreen({ navigation }) {
           {authError ? <Text style={styles.authError}>{authError}</Text> : null}
 
           <Button
-            title="Sign In"
+            title="Login"
             onPress={handleSubmit}
             loading={isLoading}
             style={styles.submitBtn}

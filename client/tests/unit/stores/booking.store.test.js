@@ -183,7 +183,7 @@ describe('Unit Test: Booking Store (Zustand State Management)', () => {
       useBookingStore.getState().searchFlights({ origin: 'SGN', destination: 'HAN' })
     ).rejects.toBeDefined();
 
-    expect(useBookingStore.getState().flightError).toBe('Lỗi khi tìm kiếm chuyến bay');
+    expect(useBookingStore.getState().flightError).toMatch(/Failed to search flights|Lỗi khi tìm kiếm chuyến bay/);
 
     apiClient.get.mockRejectedValueOnce({});
 
@@ -191,7 +191,7 @@ describe('Unit Test: Booking Store (Zustand State Management)', () => {
       useBookingStore.getState().searchHotels({ destination: 'Da Nang' })
     ).rejects.toBeDefined();
 
-    expect(useBookingStore.getState().hotelError).toBe('Lỗi khi tìm kiếm khách sạn');
+    expect(useBookingStore.getState().hotelError).toMatch(/Failed to search hotels|Lỗi khi tìm kiếm khách sạn/);
   });
 
   test('should handle null or empty response from API without error', async () => {

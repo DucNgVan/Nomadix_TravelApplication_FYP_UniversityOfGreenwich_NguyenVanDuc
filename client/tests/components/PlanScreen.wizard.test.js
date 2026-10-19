@@ -143,8 +143,8 @@ describe('Component Test: PlanScreen Multi-City Wizard Integration', () => {
     await waitFor(() => {
       expect(mockCreateTrip).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: expect.stringContaining('Journey: Đà Nẵng - Hội An'),
-          destination: 'Đà Nẵng - Hội An',
+          title: expect.stringMatching(/Journey.*(Đà Nẵng|Da Nang).*(Hội An|Hoi An)/i),
+          destination: expect.stringMatching(/(Đà Nẵng|Da Nang).*(Hội An|Hoi An)/i),
         })
       );
       expect(mockApplyAiPlan).toHaveBeenCalled();

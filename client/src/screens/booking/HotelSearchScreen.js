@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   ScrollView,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../components/common/Input';
@@ -17,7 +18,7 @@ import { useThemeStore } from '../../stores/theme.store';
 import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 
-const QUICK_CITIES = ['Da Nang', 'Hoi An', 'Hanoi', 'Ho Chi Minh', 'Tokyo', 'Paris'];
+const QUICK_CITIES = ['Da Nang', 'Hoi An', 'Hanoi', 'Đà Lạt', 'Ho Chi Minh', 'Tokyo', 'Paris'];
 
 const STAY_VIBES = [
   { id: 'vibe-1', label: '🏝️ Beachfront', destination: 'Da Nang' },
@@ -55,6 +56,31 @@ export default function HotelSearchScreen({ navigation }) {
   const [checkOut, setCheckOut] = useState('');
   const [validationError, setValidationError] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [adults, setAdults] = useState(2);
+  const [childrenCount, setChildrenCount] = useState(0);
+  const [rooms, setRooms] = useState(1);
+  const [guestModalVisible, setGuestModalVisible] = useState(false);
+  const [advanceModalVisible, setAdvanceModalVisible] = useState(false);
+  const [priceTier, setPriceTier] = useState('all');
+  const [starRating, setStarRating] = useState('all');
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+
+  const calculateNights = () => {
+    if (!checkIn || !checkOut) return null;
+    const d1 = new Date(normalizeDateInput(checkIn));
+    const d2 = new Date(normalizeDateInput(checkOut));
+    if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return null;
+    const diff = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+    return diff > 0 ? diff : null;
+  };
+
+  const toggleAmenity = (amenity) => {
+    if (selectedAmenities.includes(amenity)) {
+      setSelectedAmenities(selectedAmenities.filter((a) => a !== amenity));
+    } else {
+      setSelectedAmenities([...selectedAmenities, amenity]);
+    }
+  };
 
   const { hotels, isLoadingHotels, hotelError, searchHotels, selectHotel } = useBookingStore();
 
@@ -185,6 +211,8 @@ export default function HotelSearchScreen({ navigation }) {
                   ]}
                   onPress={() => {
                     setDestination(city);
+                    if (!checkIn) setCheckIn('2026-10-15');
+                    if (!checkOut) setCheckOut('2026-10-18');
                     setValidationError('');
                   }}
                 >
@@ -234,6 +262,53 @@ export default function HotelSearchScreen({ navigation }) {
                   }}
                 />
               </View>
+            </View>
+
+            {calculateNights() ? (
+              <View style={styles.nightsBadgeRow}>
+                <Text style={[styles.nightsBadgeText, { color: themeColors.primary, backgroundColor: mode === 'dark' ? 'rgba(0,102,255,0.15)' : 'rgba(0,102,255,0.08)' }]}>
+                  {calculateNights()} {calculateNights() > 1 ? 'Nights Stay' : 'Night Stay'}
+                </Text>
+              </View>
+            ) : null}
+
+            {/* Guests & Rooms Stepper Selector Button */}
+            <TouchableOpacity
+              style={[
+                styles.guestsSelectorBtn,
+                {
+                  backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#F8FAFC',
+                  borderColor: themeColors.border,
+                },
+              ]}
+              activeOpacity={0.8}
+              onPress={() => setGuestModalVisible(true)}
+            >
+              <View>
+                <Text style={[styles.guestsSelectorLabel, { color: themeColors.textMuted }]}>Guests & Rooms</Text>
+                <Text style={[styles.guestsSelectorValue, { color: themeColors.text }]}>
+                  {adults} Adult{adults > 1 ? 's' : ''} • {childrenCount} Child{childrenCount !== 1 ? 'ren' : ''} • {rooms} Room{rooms > 1 ? 's' : ''}
+                </Text>
+              </View>
+              <Text style={[styles.editLinkText, { color: themeColors.primary }]}>Change</Text>
+            </TouchableOpacity>
+
+            {/* Advance Filters Bar */}
+            <View style={styles.advanceRow}>
+              <TouchableOpacity
+                onPress={() => setAdvanceModalVisible(true)}
+                activeOpacity={0.7}
+                style={styles.advanceFilterBtn}
+              >
+                <Text style={[styles.advanceFilterText, { color: themeColors.primary }]}>
+                  ⚙ Advance Search & Filters
+                </Text>
+              </TouchableOpacity>
+              <Text style={[styles.activeFilterCount, { color: themeColors.textMuted }]}>
+                {(priceTier !== 'all' ? 1 : 0) + (starRating !== 'all' ? 1 : 0) + selectedAmenities.length > 0
+                  ? `${(priceTier !== 'all' ? 1 : 0) + (starRating !== 'all' ? 1 : 0) + selectedAmenities.length} active`
+                  : 'All filters'}
+              </Text>
             </View>
 
             {validationError ? (
@@ -402,6 +477,217 @@ export default function HotelSearchScreen({ navigation }) {
           />
         )}
       </View>
+
+      {/* Modal 1: Guests & Rooms Stepper Modal */}
+      <Modal
+        visible={guestModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setGuestModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalSheet, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
+            <View style={[styles.modalHeader, { borderBottomColor: themeColors.border }]}>
+              <Text style={[styles.modalTitle, { color: themeColors.text }]}>Guests & Rooms</Text>
+              <TouchableOpacity onPress={() => setGuestModalVisible(false)} style={styles.modalCloseBtn}>
+                <Text style={[styles.modalCloseText, { color: themeColors.textMuted }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.stepperContainer}>
+              {/* Adults Stepper */}
+              <View style={[styles.stepperRow, { borderColor: themeColors.border }]}>
+                <View>
+                  <Text style={[styles.stepperLabel, { color: themeColors.text }]}>Adults</Text>
+                  <Text style={[styles.stepperSub, { color: themeColors.textMuted }]}>Age 18+</Text>
+                </View>
+                <View style={styles.stepperActions}>
+                  <TouchableOpacity
+                    style={[styles.stepBtn, { borderColor: themeColors.border }]}
+                    onPress={() => setAdults(Math.max(1, adults - 1))}
+                  >
+                    <Text style={[styles.stepBtnText, { color: themeColors.text }]}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={[styles.stepVal, { color: themeColors.text }]}>{adults}</Text>
+                  <TouchableOpacity
+                    style={[styles.stepBtn, { borderColor: themeColors.border }]}
+                    onPress={() => setAdults(Math.min(8, adults + 1))}
+                  >
+                    <Text style={[styles.stepBtnText, { color: themeColors.text }]}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Children Stepper */}
+              <View style={[styles.stepperRow, { borderColor: themeColors.border }]}>
+                <View>
+                  <Text style={[styles.stepperLabel, { color: themeColors.text }]}>Children</Text>
+                  <Text style={[styles.stepperSub, { color: themeColors.textMuted }]}>Ages 0 - 17</Text>
+                </View>
+                <View style={styles.stepperActions}>
+                  <TouchableOpacity
+                    style={[styles.stepBtn, { borderColor: themeColors.border }]}
+                    onPress={() => setChildrenCount(Math.max(0, childrenCount - 1))}
+                  >
+                    <Text style={[styles.stepBtnText, { color: themeColors.text }]}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={[styles.stepVal, { color: themeColors.text }]}>{childrenCount}</Text>
+                  <TouchableOpacity
+                    style={[styles.stepBtn, { borderColor: themeColors.border }]}
+                    onPress={() => setChildrenCount(Math.min(6, childrenCount + 1))}
+                  >
+                    <Text style={[styles.stepBtnText, { color: themeColors.text }]}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Rooms Stepper */}
+              <View style={[styles.stepperRow, { borderColor: themeColors.border }]}>
+                <View>
+                  <Text style={[styles.stepperLabel, { color: themeColors.text }]}>Rooms</Text>
+                  <Text style={[styles.stepperSub, { color: themeColors.textMuted }]}>Number of rooms</Text>
+                </View>
+                <View style={styles.stepperActions}>
+                  <TouchableOpacity
+                    style={[styles.stepBtn, { borderColor: themeColors.border }]}
+                    onPress={() => setRooms(Math.max(1, rooms - 1))}
+                  >
+                    <Text style={[styles.stepBtnText, { color: themeColors.text }]}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={[styles.stepVal, { color: themeColors.text }]}>{rooms}</Text>
+                  <TouchableOpacity
+                    style={[styles.stepBtn, { borderColor: themeColors.border }]}
+                    onPress={() => setRooms(Math.min(4, rooms + 1))}
+                  >
+                    <Text style={[styles.stepBtnText, { color: themeColors.text }]}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+
+            <Button
+              title="Apply Selection"
+              onPress={() => setGuestModalVisible(false)}
+              style={styles.modalApplyBtn}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal 2: Advance Search & Filters Modal */}
+      <Modal
+        visible={advanceModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setAdvanceModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalSheet, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
+            <View style={[styles.modalHeader, { borderBottomColor: themeColors.border }]}>
+              <Text style={[styles.modalTitle, { color: themeColors.text }]}>Advance Hotel Filters</Text>
+              <TouchableOpacity onPress={() => setAdvanceModalVisible(false)} style={styles.modalCloseBtn}>
+                <Text style={[styles.modalCloseText, { color: themeColors.textMuted }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.advanceModalScroll}>
+              {/* Price Tier */}
+              <View style={styles.filterSection}>
+                <Text style={[styles.filterSectionTitle, { color: themeColors.text }]}>Price Budget</Text>
+                <View style={styles.filterChipRow}>
+                  {[
+                    { id: 'all', label: 'All Budgets' },
+                    { id: 'under1m', label: '< 1.5M ₫' },
+                    { id: 'mid', label: '1.5M - 3.5M ₫' },
+                    { id: 'luxury', label: '> 3.5M ₫' },
+                  ].map((p) => (
+                    <TouchableOpacity
+                      key={p.id}
+                      style={[
+                        styles.filterOptionChip,
+                        {
+                          backgroundColor: priceTier === p.id ? themeColors.primary : (mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F1F5F9'),
+                        },
+                      ]}
+                      onPress={() => setPriceTier(p.id)}
+                    >
+                      <Text style={[styles.filterOptionText, { color: priceTier === p.id ? '#FFFFFF' : themeColors.text }]}>
+                        {p.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Star Rating */}
+              <View style={styles.filterSection}>
+                <Text style={[styles.filterSectionTitle, { color: themeColors.text }]}>Star Rating</Text>
+                <View style={styles.filterChipRow}>
+                  {[
+                    { id: 'all', label: 'All Stars' },
+                    { id: '3', label: '3★' },
+                    { id: '4', label: '4★' },
+                    { id: '5', label: '5★ Luxury' },
+                  ].map((s) => (
+                    <TouchableOpacity
+                      key={s.id}
+                      style={[
+                        styles.filterOptionChip,
+                        {
+                          backgroundColor: starRating === s.id ? themeColors.primary : (mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F1F5F9'),
+                        },
+                      ]}
+                      onPress={() => setStarRating(s.id)}
+                    >
+                      <Text style={[styles.filterOptionText, { color: starRating === s.id ? '#FFFFFF' : themeColors.text }]}>
+                        {s.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Top Amenities */}
+              <View style={styles.filterSection}>
+                <Text style={[styles.filterSectionTitle, { color: themeColors.text }]}>Top Amenities</Text>
+                <View style={styles.filterChipRow}>
+                  {[
+                    { id: 'pool', label: '🏊 Infinity Pool' },
+                    { id: 'breakfast', label: '🍳 Free Breakfast' },
+                    { id: 'beach', label: '🏖 Private Beach' },
+                    { id: 'cancel', label: '✓ Free Cancellation' },
+                  ].map((a) => {
+                    const isSelected = selectedAmenities.includes(a.id);
+                    return (
+                      <TouchableOpacity
+                        key={a.id}
+                        style={[
+                          styles.filterOptionChip,
+                          {
+                            backgroundColor: isSelected ? themeColors.primary : (mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F1F5F9'),
+                          },
+                        ]}
+                        onPress={() => toggleAmenity(a.id)}
+                      >
+                        <Text style={[styles.filterOptionText, { color: isSelected ? '#FFFFFF' : themeColors.text }]}>
+                          {a.label}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            </ScrollView>
+
+            <Button
+              title="Apply Filters"
+              onPress={() => setAdvanceModalVisible(false)}
+              style={styles.modalApplyBtn}
+            />
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -668,5 +954,155 @@ const styles = StyleSheet.create({
   squadSub: {
     fontSize: 11,
     lineHeight: 15,
+  },
+  nightsBadgeRow: {
+    marginVertical: 4,
+    alignItems: 'flex-start',
+  },
+  nightsBadgeText: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  guestsSelectorBtn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    marginVertical: 4,
+  },
+  guestsSelectorLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  guestsSelectorValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  editLinkText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  advanceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 4,
+  },
+  advanceFilterBtn: {
+    paddingVertical: 4,
+  },
+  advanceFilterText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  activeFilterCount: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    borderWidth: 1,
+    padding: 20,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  modalCloseBtn: {
+    padding: 4,
+  },
+  modalCloseText: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  stepperContainer: {
+    marginVertical: 14,
+  },
+  stepperRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  stepperLabel: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  stepperSub: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  stepperActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  stepBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepBtnText: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  stepVal: {
+    fontSize: 16,
+    fontWeight: '700',
+    minWidth: 20,
+    textAlign: 'center',
+  },
+  modalApplyBtn: {
+    marginTop: 10,
+  },
+  advanceModalScroll: {
+    maxHeight: 340,
+    marginVertical: 10,
+  },
+  filterSection: {
+    marginBottom: 16,
+  },
+  filterSectionTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  filterChipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  filterOptionChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 14,
+  },
+  filterOptionText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 });

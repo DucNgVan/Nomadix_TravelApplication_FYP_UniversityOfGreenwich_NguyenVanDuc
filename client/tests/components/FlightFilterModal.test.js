@@ -22,13 +22,13 @@ describe('Component Test: FlightFilterModal', () => {
       />
     );
 
-    expect(getByText(/Bộ Lọc Chuyến Bay/i)).toBeTruthy();
-    expect(getByText(/Giá rẻ nhất/i)).toBeTruthy();
-    expect(getByText(/Bay sớm/i)).toBeTruthy();
-    expect(getByText(/Bay muộn/i)).toBeTruthy();
-    expect(getByText(/Bay thẳng/i)).toBeTruthy();
-    expect(getByText(/Nối chuyến/i)).toBeTruthy();
-    expect(getByText(/Hành lý nhiều|Có hành lý ký gửi/i)).toBeTruthy();
+    expect(getByText(/Flight Filters|Bộ Lọc Chuyến Bay/i)).toBeTruthy();
+    expect(getByText(/Cheapest|Giá rẻ nhất/i)).toBeTruthy();
+    expect(getByText(/Early Flight|Bay sớm/i)).toBeTruthy();
+    expect(getByText(/Late Flight|Bay muộn/i)).toBeTruthy();
+    expect(getByText(/Direct|Bay thẳng/i)).toBeTruthy();
+    expect(getByText(/Connecting|Nối chuyến/i)).toBeTruthy();
+    expect(getByText(/Includes Checked Baggage|Hành lý nhiều|Có hành lý ký gửi/i)).toBeTruthy();
 
     // Verify local airlines are NOT present
     expect(queryByText(/VietJet Air/i)).toBeNull();
@@ -47,13 +47,13 @@ describe('Component Test: FlightFilterModal', () => {
       />
     );
 
-    const sortLateBtn = getByText(/Bay muộn/i);
+    const sortLateBtn = getByText(/Late Flight|Bay muộn/i);
     fireEvent.press(sortLateBtn);
 
-    const baggageToggle = getByText(/Hành lý nhiều|Có hành lý ký gửi/i);
+    const baggageToggle = getByText(/Includes Checked Baggage|Hành lý nhiều|Có hành lý ký gửi/i);
     fireEvent.press(baggageToggle);
 
-    const applyBtn = getByText(/Áp dụng bộ lọc/i);
+    const applyBtn = getByText(/Apply Filters|Áp dụng bộ lọc/i);
     fireEvent.press(applyBtn);
 
     expect(onApplyMock).toHaveBeenCalledWith(
@@ -76,7 +76,7 @@ describe('Component Test: FlightFilterModal', () => {
       />
     );
 
-    const resetBtn = getByText(/Đặt lại/i);
+    const resetBtn = getByText(/Reset|Đặt lại/i);
     fireEvent.press(resetBtn);
 
     expect(onResetMock).toHaveBeenCalledTimes(1);
@@ -96,11 +96,11 @@ describe('Component Test: FlightFilterModal', () => {
     );
 
     // Toggle types
-    fireEvent.press(getByText('Bay thẳng'));
-    fireEvent.press(getByText('Nối chuyến'));
+    fireEvent.press(getByText(/Direct|Bay thẳng/i));
+    fireEvent.press(getByText(/Connecting|Nối chuyến/i));
 
     // Toggle baggage
-    fireEvent.press(getByText(/Hành lý nhiều|Có hành lý ký gửi/i));
+    fireEvent.press(getByText(/Includes Checked Baggage|Hành lý nhiều|Có hành lý ký gửi/i));
 
     // Close button
     fireEvent.press(getByText('✕'));

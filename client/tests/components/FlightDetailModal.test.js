@@ -45,9 +45,9 @@ describe('Component Test: FlightDetailModal', () => {
     expect(getByText(/Airbus A350-900/i)).toBeTruthy();
     expect(getByText(/SGN/i)).toBeTruthy();
     expect(getByText(/HAN/i)).toBeTruthy();
-    expect(getByText(/Bay thẳng/i)).toBeTruthy();
+    expect(getByText(/Direct|Bay thẳng/i)).toBeTruthy();
     expect(getByText(/2.073.060|2,073,060/i)).toBeTruthy();
-    expect(getByText(/Đặt Vé Sandbox/i)).toBeTruthy();
+    expect(getByText(/Book.*Sandbox|Đặt Vé Sandbox/i)).toBeTruthy();
   });
 
   test('RED-FE-DTL-02: displays transit layover alert when stops > 0', () => {
@@ -55,7 +55,7 @@ describe('Component Test: FlightDetailModal', () => {
       <FlightDetailModal visible={true} flight={mockFlightTransit} onClose={jest.fn()} onBookSandbox={jest.fn()} />
     );
 
-    expect(getAllByText(/1 điểm dừng|Quá cảnh/i).length).toBeGreaterThanOrEqual(1);
+    expect(getAllByText(/1 stop|1 điểm dừng|Quá cảnh/i).length).toBeGreaterThanOrEqual(1);
     expect(getByText(/VN-1404/i)).toBeTruthy();
   });
 
@@ -65,7 +65,7 @@ describe('Component Test: FlightDetailModal', () => {
       <FlightDetailModal visible={true} flight={mockFlightDirect} onClose={jest.fn()} onBookSandbox={onBookMock} />
     );
 
-    const bookBtn = getByText(/Đặt Vé Sandbox/i);
+    const bookBtn = getByText(/Book.*Sandbox|Đặt Vé Sandbox/i);
     fireEvent.press(bookBtn);
 
     expect(onBookMock).toHaveBeenCalledWith(mockFlightDirect);

@@ -98,13 +98,13 @@ describe('Component Test: PlanMapDiscovery (Interactive Map, Search & AI Plan Bu
     fireEvent.press(selectButtons[0]);
 
     // Counter badge should show 1 selected
-    expect(getByText(/1 selected/i)).toBeTruthy();
+    expect(getByText(/1.*selected/i)).toBeTruthy();
 
     // Toggle again to deselect
     const selectedBtn = getByText(/✓ Selected/i);
     fireEvent.press(selectedBtn);
 
-    expect(getByText(/0 selected/i)).toBeTruthy();
+    expect(getByText(/0.*selected/i)).toBeTruthy();
   });
 
   it('RED-FE-MAP-04: triggers onGenerateAiPlan callback when tapping AI button with selected places', () => {

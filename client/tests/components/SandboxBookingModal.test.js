@@ -24,10 +24,10 @@ describe('Component Test: SandboxBookingModal', () => {
     );
 
     expect(getByText(/Duffel API Sandbox Payment/i)).toBeTruthy();
-    expect(getByText(/Số dư Duffel Sandbox Test/i)).toBeTruthy();
+    expect(getByText(/Duffel Sandbox Test Balance|Số dư Duffel Sandbox Test/i)).toBeTruthy();
     expect(getByText(/50\.000\.000|50,000,000/i)).toBeTruthy();
     expect(getByText(/2\.073\.060|2,073,060/i)).toBeTruthy();
-    expect(getByText(/Xác nhận Đặt Vé/i)).toBeTruthy();
+    expect(getByText(/Confirm Booking.*Save to Account|Xác nhận Đặt Vé/i)).toBeTruthy();
   });
 
   test('RED-FE-SBX-05: confirming booking triggers success and displays PNR and e-ticket number', async () => {
@@ -41,12 +41,12 @@ describe('Component Test: SandboxBookingModal', () => {
       />
     );
 
-    const confirmBtn = getByText(/Xác nhận Đặt Vé/i);
+    const confirmBtn = getByText(/Confirm Booking.*Save to Account|Xác nhận Đặt Vé/i);
     await act(async () => {
       fireEvent.press(confirmBtn);
     });
 
-    expect(await findByText(/Đặt Vé Thật Thành Công|Đặt Vé Thành Công/i)).toBeTruthy();
+    expect(await findByText(/Booking Confirmed Successfully|Đặt Vé Thật Thành Công|Đặt Vé Thành Công/i)).toBeTruthy();
     expect(onBookingSuccessMock).toHaveBeenCalledTimes(1);
   });
 });

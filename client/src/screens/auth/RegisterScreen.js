@@ -25,7 +25,7 @@ export default function RegisterScreen({ navigation }) {
     let isValid = true;
 
     if (!fullName || fullName.trim().length < 2) {
-      setFullNameError('Full name must be at least 2 characters');
+      setFullNameError('Họ và tên phải có ít nhất 2 ký tự (Full name must be at least 2 characters)');
       isValid = false;
     } else {
       setFullNameError('');
@@ -33,14 +33,14 @@ export default function RegisterScreen({ navigation }) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email.trim())) {
-      setEmailError('Please enter a valid email address');
+      setEmailError('Vui lòng nhập email hợp lệ (Please enter a valid email address)');
       isValid = false;
     } else {
       setEmailError('');
     }
 
     if (!password || password.length < 8) {
-      setPasswordError('Password must be at least 8 characters');
+      setPasswordError('Mật khẩu phải có ít nhất 8 ký tự (Password must be at least 8 characters)');
       isValid = false;
     } else {
       setPasswordError('');
@@ -74,7 +74,7 @@ export default function RegisterScreen({ navigation }) {
         <View style={styles.form}>
           <Input
             label="Full Name"
-            placeholder="e.g. John Doe"
+            placeholder="Full Name (e.g. John Doe)"
             value={fullName}
             onChangeText={(text) => {
               setFullName(text);
@@ -85,7 +85,7 @@ export default function RegisterScreen({ navigation }) {
 
           <Input
             label="Email Address"
-            placeholder="e.g. alex@example.com"
+            placeholder="Enter your email (e.g. alex@example.com)"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -97,7 +97,7 @@ export default function RegisterScreen({ navigation }) {
 
           <Input
             label="Password"
-            placeholder="e.g. ••••••••"
+            placeholder="Enter your password (e.g. ••••••••)"
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -110,7 +110,7 @@ export default function RegisterScreen({ navigation }) {
           {authError ? <Text style={styles.authError}>{authError}</Text> : null}
 
           <Button
-            title="Create Account"
+            title="Register"
             onPress={handleSubmit}
             loading={isLoading}
             style={styles.submitBtn}
@@ -119,7 +119,7 @@ export default function RegisterScreen({ navigation }) {
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-              <Text style={styles.loginLink}>Sign In</Text>
+              <Text style={styles.loginLink}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>

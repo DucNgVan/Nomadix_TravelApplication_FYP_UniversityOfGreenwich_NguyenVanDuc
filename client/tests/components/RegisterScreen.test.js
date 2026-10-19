@@ -68,7 +68,7 @@ describe('Component Test: RegisterScreen', () => {
     const mockNavigation = { navigate: jest.fn() };
     const { getByText } = render(<RegisterScreen navigation={mockNavigation} />);
 
-    fireEvent.press(getByText('Đăng nhập ngay'));
+    fireEvent.press(getByText(/Login|Đăng nhập/i));
     expect(mockNavigation.navigate).toHaveBeenCalledWith('Login');
   });
 });

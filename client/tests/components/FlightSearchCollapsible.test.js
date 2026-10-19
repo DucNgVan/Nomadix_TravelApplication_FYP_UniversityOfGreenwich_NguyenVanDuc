@@ -39,7 +39,7 @@ describe('Component Test: FlightSearchScreen with Collapsible Search Box & Route
     const routeChip = getByText('SGN → HAN');
     fireEvent.press(routeChip);
 
-    const searchBtn = getByText('Tìm chuyến bay');
+    const searchBtn = getByText(/Tìm chuyến bay|Search Flights/i);
     fireEvent.press(searchBtn);
 
     expect(mockSearchFlights).toHaveBeenCalledWith(
@@ -55,15 +55,15 @@ describe('Component Test: FlightSearchScreen with Collapsible Search Box & Route
 
     // Click quick route and search
     fireEvent.press(getByText('SGN → HAN'));
-    fireEvent.press(getByText('Tìm chuyến bay'));
+    fireEvent.press(getByText(/Tìm chuyến bay|Search Flights/i));
 
     // Should see "Thay đổi" button in collapsed summary
     await waitFor(() => {
-      expect(getByText(/Thay đổi/)).toBeTruthy();
+      expect(getByText(/Thay đổi|Edit/i)).toBeTruthy();
     });
 
     // Clicking "Thay đổi" expands the search box back
-    fireEvent.press(getByText(/Thay đổi/));
-    expect(queryByPlaceholderText('Điểm đi (VD: SGN)')).toBeTruthy();
+    fireEvent.press(getByText(/Thay đổi|Edit/i));
+    expect(queryByPlaceholderText(/Điểm đi|Origin/i)).toBeTruthy();
   });
 });

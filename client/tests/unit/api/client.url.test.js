@@ -13,8 +13,14 @@ describe('Unit Test: Dynamic API Base URL Resolution', () => {
     expect(resolvedUrl).toBe('http://192.168.1.88:5001/api/v1');
   });
 
-  test('RED-FE-URL-03: should fallback to active Mac IP http://192.168.1.26:5001/api/v1 by default', () => {
+  test('RED-FE-URL-03: should fallback to active Mac IP http://172.15.144.95:5001/api/v1 by default', () => {
     const resolvedUrl = resolveApiBaseUrl(null, null);
-    expect(resolvedUrl).toBe('http://192.168.1.26:5001/api/v1');
+    expect(resolvedUrl).toBe('http://172.15.144.95:5001/api/v1');
+  });
+
+  test('RED-FE-URL-04: should accept LAN IP from environment http://172.15.144.95:5001/api/v1 without filtering it out', () => {
+    const envUrl = 'http://172.15.144.95:5001/api/v1';
+    const resolvedUrl = resolveApiBaseUrl(envUrl, null);
+    expect(resolvedUrl).toBe('http://172.15.144.95:5001/api/v1');
   });
 });

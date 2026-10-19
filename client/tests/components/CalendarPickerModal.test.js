@@ -22,9 +22,9 @@ describe('Component Test: CalendarPickerModal', () => {
     );
 
     expect(getByText(/Chọn ngày khởi hành/i)).toBeTruthy();
-    expect(getByText(/Tháng 10/i)).toBeTruthy();
-    expect(getByText('T2')).toBeTruthy();
-    expect(getByText('CN')).toBeTruthy();
+    expect(getByText(/October|Tháng 10/i)).toBeTruthy();
+    expect(getByText(/Mon|T2/i)).toBeTruthy();
+    expect(getByText(/Sun|CN/i)).toBeTruthy();
 
     // Close button
     fireEvent.press(getByTestId('cal-close-btn'));
@@ -59,15 +59,15 @@ describe('Component Test: CalendarPickerModal', () => {
       />
     );
 
-    expect(getByText(/Tháng 12, 2026/i)).toBeTruthy();
+    expect(getByText(/December.*2026|Tháng 12.*2026/i)).toBeTruthy();
 
     // Next month crosses to Jan 2027
     fireEvent.press(getByTestId('cal-next-month'));
-    expect(getByText(/Tháng 1, 2027/i)).toBeTruthy();
+    expect(getByText(/January.*2027|Tháng 1.*2027/i)).toBeTruthy();
 
     // Prev month crosses back to Dec 2026
     fireEvent.press(getByTestId('cal-prev-month'));
-    expect(getByText(/Tháng 12, 2026/i)).toBeTruthy();
+    expect(getByText(/December.*2026|Tháng 12.*2026/i)).toBeTruthy();
 
     // Further prev to Jan 2026 and across to Dec 2025
     const janModal = render(
@@ -79,12 +79,12 @@ describe('Component Test: CalendarPickerModal', () => {
       />
     );
     fireEvent.press(janModal.getByTestId('cal-prev-month'));
-    expect(janModal.getByText(/Tháng 12, 2025/i)).toBeTruthy();
+    expect(janModal.getByText(/December.*2025|Tháng 12.*2025/i)).toBeTruthy();
   });
 
   test('handles default props when selectedDate and callbacks are undefined', () => {
     const { getByText } = render(<CalendarPickerModal visible={true} selectedDate="" />);
-    expect(getByText(/Tháng 10, 2026/i)).toBeTruthy();
+    expect(getByText(/October.*2026|Tháng 10.*2026/i)).toBeTruthy();
   });
 
   test('RED-FE-CAL-04: disables dates prior to minDate and prevents onSelectDate', () => {

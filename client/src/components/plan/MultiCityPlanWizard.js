@@ -501,6 +501,12 @@ export default function MultiCityPlanWizard({
           const cityPlaces = allSelectedPlaces.filter((p) => {
             if (!p.city) return true;
             const norm = p.city.toLowerCase();
+            if (k === 'danang') return /đà nẵng|da nang/i.test(norm);
+            if (k === 'hoian') return /hội an|hoi an/i.test(norm);
+            if (k === 'hanoi') return /hà nội|ha noi/i.test(norm);
+            if (k === 'tokyo') return /tokyo/i.test(norm);
+            if (k === 'paris') return /paris/i.test(norm);
+            if (k === 'newyork') return /new york/i.test(norm);
             return norm.includes(cityObj?.name?.toLowerCase() || '');
           });
 

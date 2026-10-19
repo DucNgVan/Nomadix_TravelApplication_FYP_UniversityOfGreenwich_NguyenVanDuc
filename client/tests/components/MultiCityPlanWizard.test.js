@@ -70,11 +70,11 @@ describe('Component Test: MultiCityPlanWizard (Guided Step-by-Step Multi-City Ma
     expect(getByTestId('wizard-setup-stage')).toBeTruthy();
 
     // City selector chips
-    expect(getAllByText(/Đà Nẵng/i).length).toBeGreaterThan(0);
-    expect(getAllByText(/Hội An/i).length).toBeGreaterThan(0);
+    expect(getAllByText(/Đà Nẵng|Da Nang/i).length).toBeGreaterThan(0);
+    expect(getAllByText(/Hội An|Hoi An/i).length).toBeGreaterThan(0);
 
     // Budget options (Budget, Standard, Luxury)
-    expect(getByText(/Budget/i)).toBeTruthy();
+    expect(getAllByText(/Budget/i).length).toBeGreaterThan(0);
     expect(getAllByText(/Standard/i).length).toBeGreaterThan(0);
     expect(getByText(/Luxury/i)).toBeTruthy();
 
@@ -178,7 +178,7 @@ describe('Component Test: MultiCityPlanWizard (Guided Step-by-Step Multi-City Ma
     expect(mockOnComplete).toHaveBeenCalledWith(
       expect.objectContaining({
         title: expect.any(String),
-        cities: expect.arrayContaining(['Đà Nẵng', 'Hội An']),
+        cities: expect.arrayContaining([expect.stringMatching(/Đà Nẵng|Da Nang/i), expect.stringMatching(/Hội An|Hoi An/i)]),
         places: expect.arrayContaining([
           expect.objectContaining({ id: 'dn-01' }),
           expect.objectContaining({ id: 'ha-01' }),

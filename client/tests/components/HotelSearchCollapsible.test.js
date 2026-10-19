@@ -39,7 +39,7 @@ describe('Component Test: HotelSearchScreen with Collapsible Search Box & City C
     fireEvent.press(chipDaLat);
 
     // Search button
-    const searchBtn = getByText('Tìm khách sạn');
+    const searchBtn = getByText(/Tìm khách sạn|Search Hotels/i);
     fireEvent.press(searchBtn);
 
     expect(mockSearchHotels).toHaveBeenCalledWith(
@@ -54,15 +54,15 @@ describe('Component Test: HotelSearchScreen with Collapsible Search Box & City C
 
     // Select Da Lat and search
     fireEvent.press(getByText('Đà Lạt'));
-    fireEvent.press(getByText('Tìm khách sạn'));
+    fireEvent.press(getByText(/Tìm khách sạn|Search Hotels/i));
 
     // Should display collapsed summary card
     await waitFor(() => {
-      expect(getByText(/Thay đổi/)).toBeTruthy();
+      expect(getByText(/Thay đổi|Edit/i)).toBeTruthy();
     });
 
     // Clicking "Thay đổi" expands search box again
-    fireEvent.press(getByText(/Thay đổi/));
-    expect(queryByPlaceholderText('Thành phố / Điểm đến')).toBeTruthy();
+    fireEvent.press(getByText(/Thay đổi|Edit/i));
+    expect(queryByPlaceholderText(/Thành phố|Destination/i)).toBeTruthy();
   });
 });

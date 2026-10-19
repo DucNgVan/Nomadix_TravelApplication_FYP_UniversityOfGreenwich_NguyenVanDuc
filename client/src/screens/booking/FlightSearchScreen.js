@@ -301,7 +301,7 @@ export default function FlightSearchScreen({ navigation }) {
               <View style={styles.airportCol}>
                 <Input
                   label="Origin (IATA or City)"
-                  placeholder="e.g. SGN or Ho Chi Minh"
+                  placeholder="e.g. SGN or Ho Chi Minh (Origin)"
                   value={origin}
                   onChangeText={(text) => {
                     setOrigin(text);

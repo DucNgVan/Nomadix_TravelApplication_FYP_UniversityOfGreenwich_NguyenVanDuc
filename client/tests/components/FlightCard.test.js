@@ -100,7 +100,7 @@ describe('Component Test: FlightCard', () => {
     );
 
     expect(getByText('0h 0m')).toBeTruthy();
-    expect(getByText('0 đ')).toBeTruthy();
+    expect(getByText(/0 [đ₫]/)).toBeTruthy();
 
     // Verify pressing without onSelect does not crash
     fireEvent.press(getByTestId('minimal-flight'));

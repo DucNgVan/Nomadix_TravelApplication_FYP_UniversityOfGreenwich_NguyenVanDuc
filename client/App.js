@@ -65,9 +65,9 @@ export default function App() {
   const getScreenTitle = () => {
     switch (activeTab) {
       case 'flights':
-        return 'Search Flights';
+        return 'Flight Booking';
       case 'hotels':
-        return 'Hotels & Resorts';
+        return 'Hotel Booking';
       case 'plan':
         return 'Trip Planner';
       case 'account':
@@ -86,12 +86,14 @@ export default function App() {
         />
 
         {/* Top Header: Screen Title on Left & Small NOMADIX on Right */}
-        <View style={[styles.topBar, { backgroundColor: themeColors.background, borderBottomColor: themeColors.border }]}>
-          <Text style={[styles.screenTitleTop, { color: themeColors.text }]}>
-            {getScreenTitle()}
-          </Text>
-          <View style={[styles.brandBadgeRight, { backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,122,255,0.08)' }]}>
-            <Text style={[styles.brandDotSmall, { color: themeColors.primary }]}>●</Text>
+        <View style={[styles.topBar, { backgroundColor: themeColors.card, borderBottomColor: themeColors.border }]}>
+          <View>
+            <Text style={[styles.screenTitleTop, { color: themeColors.text }]}>
+              {getScreenTitle()}
+            </Text>
+          </View>
+          <View style={[styles.brandBadgeRight, { backgroundColor: mode === 'dark' ? 'rgba(0,102,255,0.15)' : 'rgba(0,102,255,0.08)' }]}>
+            <View style={[styles.brandDotSmall, { backgroundColor: themeColors.primary }]} />
             <Text style={[styles.brandTitleSmall, { color: themeColors.primary }]}>NOMADIX</Text>
           </View>
         </View>
@@ -99,56 +101,56 @@ export default function App() {
         {/* Main Screen Content */}
         <View style={styles.screenContainer}>{renderActiveScreen()}</View>
 
-        {/* Bottom Navigation Bar: Exactly 4 Tabs with Monochrome Icons */}
+        {/* Bottom Navigation Bar: Exactly 4 Tabs with Ergonomic Active Pills */}
         <View style={[styles.bottomBar, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
           <TouchableOpacity
-            style={[styles.tabButton, activeTab === 'flights' && styles.tabButtonActive]}
+            style={[styles.tabButton, activeTab === 'flights' && [styles.tabButtonActive, { backgroundColor: mode === 'dark' ? 'rgba(0,102,255,0.2)' : 'rgba(0,102,255,0.08)' }]]}
             onPress={() => setActiveTab('flights')}
-            activeOpacity={0.8}
+            activeOpacity={0.7}
           >
-            <Text style={[styles.tabGlyph, activeTab === 'flights' && styles.tabGlyphActive]}>
+            <Text style={[styles.tabGlyph, activeTab === 'flights' && { color: themeColors.primary }]}>
               ✈
             </Text>
-            <Text style={[styles.tabLabel, activeTab === 'flights' && styles.tabLabelActive]}>
+            <Text style={[styles.tabLabel, { color: activeTab === 'flights' ? themeColors.primary : themeColors.textMuted }, activeTab === 'flights' && styles.tabLabelActive]}>
               Flights
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.tabButton, activeTab === 'hotels' && styles.tabButtonActive]}
+            style={[styles.tabButton, activeTab === 'hotels' && [styles.tabButtonActive, { backgroundColor: mode === 'dark' ? 'rgba(0,102,255,0.2)' : 'rgba(0,102,255,0.08)' }]]}
             onPress={() => setActiveTab('hotels')}
-            activeOpacity={0.8}
+            activeOpacity={0.7}
           >
-            <Text style={[styles.tabGlyph, activeTab === 'hotels' && styles.tabGlyphActive]}>
-              ⌂
+            <Text style={[styles.tabGlyph, activeTab === 'hotels' && { color: themeColors.primary }]}>
+              🏨
             </Text>
-            <Text style={[styles.tabLabel, activeTab === 'hotels' && styles.tabLabelActive]}>
+            <Text style={[styles.tabLabel, { color: activeTab === 'hotels' ? themeColors.primary : themeColors.textMuted }, activeTab === 'hotels' && styles.tabLabelActive]}>
               Hotels
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.tabButton, activeTab === 'plan' && styles.tabButtonActive]}
+            style={[styles.tabButton, activeTab === 'plan' && [styles.tabButtonActive, { backgroundColor: mode === 'dark' ? 'rgba(0,102,255,0.2)' : 'rgba(0,102,255,0.08)' }]]}
             onPress={() => setActiveTab('plan')}
-            activeOpacity={0.8}
+            activeOpacity={0.7}
           >
-            <Text style={[styles.tabGlyph, activeTab === 'plan' && styles.tabGlyphActive]}>
-              ⊞
+            <Text style={[styles.tabGlyph, activeTab === 'plan' && { color: themeColors.primary }]}>
+              🗺
             </Text>
-            <Text style={[styles.tabLabel, activeTab === 'plan' && styles.tabLabelActive]}>
+            <Text style={[styles.tabLabel, { color: activeTab === 'plan' ? themeColors.primary : themeColors.textMuted }, activeTab === 'plan' && styles.tabLabelActive]}>
               Plan
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.tabButton, activeTab === 'account' && styles.tabButtonActive]}
+            style={[styles.tabButton, activeTab === 'account' && [styles.tabButtonActive, { backgroundColor: mode === 'dark' ? 'rgba(0,102,255,0.2)' : 'rgba(0,102,255,0.08)' }]]}
             onPress={() => setActiveTab('account')}
-            activeOpacity={0.8}
+            activeOpacity={0.7}
           >
-            <Text style={[styles.tabGlyph, activeTab === 'account' && styles.tabGlyphActive]}>
-              ⊙
+            <Text style={[styles.tabGlyph, activeTab === 'account' && { color: themeColors.primary }]}>
+              👤
             </Text>
-            <Text style={[styles.tabLabel, activeTab === 'account' && styles.tabLabelActive]}>
+            <Text style={[styles.tabLabel, { color: activeTab === 'account' ? themeColors.primary : themeColors.textMuted }, activeTab === 'account' && styles.tabLabelActive]}>
               Profile
             </Text>
           </TouchableOpacity>
@@ -161,46 +163,45 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingTop: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
   },
   screenTitleTop: {
     fontSize: 20,
-    fontWeight: '900',
-    letterSpacing: -0.3,
+    fontWeight: '700',
+    letterSpacing: -0.2,
   },
   brandBadgeRight: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 12,
-    gap: 4,
+    borderRadius: 14,
+    gap: 6,
   },
   brandDotSmall: {
-    fontSize: 8,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   brandTitleSmall: {
     fontSize: 11,
-    fontWeight: '900',
-    letterSpacing: 1.2,
+    fontWeight: '700',
+    letterSpacing: 1.1,
   },
   screenContainer: {
     flex: 1,
   },
   bottomBar: {
     flexDirection: 'row',
-    backgroundColor: colors.card,
     borderTopWidth: 1,
-    borderColor: colors.border,
     paddingVertical: 8,
     paddingHorizontal: 12,
     justifyContent: 'space-around',
@@ -209,29 +210,22 @@ const styles = StyleSheet.create({
   tabButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 14,
-    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 16,
   },
   tabButtonActive: {
-    backgroundColor: 'rgba(10, 132, 255, 0.12)',
+    transform: [{ scale: 1.02 }],
   },
   tabGlyph: {
-    fontSize: 20,
-    color: colors.textMuted,
-    marginBottom: 3,
-  },
-  tabGlyphActive: {
-    color: colors.primary,
+    fontSize: 18,
+    marginBottom: 2,
   },
   tabLabel: {
-    ...typography.caption,
     fontSize: 11,
-    color: colors.textMuted,
     fontWeight: '500',
   },
   tabLabelActive: {
-    color: colors.primary,
     fontWeight: '700',
   },
 });

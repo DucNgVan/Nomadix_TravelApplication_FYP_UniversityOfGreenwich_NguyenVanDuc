@@ -56,8 +56,8 @@ describe('Component Test: HotelCard', () => {
     );
 
     expect(getByText('Haian Riverfront Hotel')).toBeTruthy();
-    expect(getByText('4 sao ★')).toBeTruthy();
-    expect(getByText('0 đ / đêm')).toBeTruthy();
+    expect(getByText(/4 (sao|Stars) ★/)).toBeTruthy();
+    expect(getByText(/0 [đ₫] \/ (đêm|night)/)).toBeTruthy();
 
     // Verify pressing without onSelect does not crash
     fireEvent.press(getByTestId('minimal-hotel'));

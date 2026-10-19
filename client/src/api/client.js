@@ -31,11 +31,11 @@ export const resolveApiBaseUrl = (
     }
   }
 
-  if (envUrl && !envUrl.includes('172.15.144.')) {
+  if (envUrl && !envUrl.includes('192.168.1.26')) {
     return envUrl;
   }
 
-  return 'http://192.168.1.26:5001/api/v1';
+  return 'http://172.15.144.95:5001/api/v1';
 };
 
 const DEFAULT_BASE_URL = resolveApiBaseUrl();
